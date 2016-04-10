@@ -1,0 +1,8 @@
+@I [HLS-10] Running '/opt/Xilinx/Vivado_HLS/2015.4/bin/unwrapped/lnx64.o/apcc'
+            for user 'drichmond' on host 'archetype' (Linux_x86_64 version 3.13.0-24-generic) on Thu Apr 07 13:43:50 PDT 2016
+            in directory '/home/drichmond/examples/sparse_mm/solution1/csim/build'
+error: invalid argument '-std=c++11' not allowed with 'C/ObjC'
+@E [APCC-1-1] clang compile failed: child process exited abnormally
+@E [APCC-1] ProcessSources failed
+@I [APCC-3] Tmp directory is /tmp/apcc_db_drichmond/197861460061830524109
+@E [APCC-1] APCC failed.

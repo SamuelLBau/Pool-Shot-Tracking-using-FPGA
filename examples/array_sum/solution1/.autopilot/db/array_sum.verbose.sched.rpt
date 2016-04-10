@@ -1,0 +1,1037 @@
+
+
+================================================================
+== Vivado HLS Report for 'array_sum'
+================================================================
+* Date:           Thu Apr  7 14:50:34 2016
+
+* Version:        2015.4 (Build 1412921 on Wed Nov 18 09:58:55 AM 2015)
+* Project:        array_sum
+* Solution:       solution1
+* Product family: virtex7
+* Target device:  xc7vx690tffg1761-2
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing (ns): 
+    * Summary: 
+    +--------+-------+----------+------------+
+    |  Clock | Target| Estimated| Uncertainty|
+    +--------+-------+----------+------------+
+    |ap_clk  |  10.00|      7.82|        1.25|
+    +--------+-------+----------+------------+
+
++ Latency (clock cycles): 
+    * Summary: 
+    +-----+-----+-----+-----+---------+
+    |  Latency  |  Interval | Pipeline|
+    | min | max | min | max |   Type  |
+    +-----+-----+-----+-----+---------+
+    |   33|   33|   34|   34|   none  |
+    +-----+-----+-----+-----+---------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        N/A
+
+============================================================
++ Verbose Summary: Synthesis Manager
+============================================================
+InlineROM: 1
+ExposeGlobal: 0
+============================================================
++ Verbose Summary: CDFG Model
+============================================================
+IsTopModel: 1
+ResetActiveHigh: 1
+IsCombinational: 0
+IsDatapathOnly: 0
+HasWiredReturn: 1
+HasMFsm: 0
+HasVarLatency: 1
+IsPipeline: 0
+IsRtlPipelined: 0
+IsInstanceOverlapped: 0
+IsDontTouch: 0
+HasImplIP: 0
+IsGatedGlobalClock: 0
+
+
+============================================================
++ Verbose Summary: Schedule
+============================================================
+* Number of FSM states: 34
+* Pipeline: 0
+* Dataflow Pipeline: 0
+
+* FSM state transitions: 
+1 --> 
+	2  / true
+2 --> 
+	3  / true
+3 --> 
+	4  / true
+4 --> 
+	5  / true
+5 --> 
+	6  / true
+6 --> 
+	7  / true
+7 --> 
+	8  / true
+8 --> 
+	9  / true
+9 --> 
+	10  / true
+10 --> 
+	11  / true
+11 --> 
+	12  / true
+12 --> 
+	13  / true
+13 --> 
+	14  / true
+14 --> 
+	15  / true
+15 --> 
+	16  / true
+16 --> 
+	17  / true
+17 --> 
+	18  / true
+18 --> 
+	19  / true
+19 --> 
+	20  / true
+20 --> 
+	21  / true
+21 --> 
+	22  / true
+22 --> 
+	23  / true
+23 --> 
+	24  / true
+24 --> 
+	25  / true
+25 --> 
+	26  / true
+26 --> 
+	27  / true
+27 --> 
+	28  / true
+28 --> 
+	29  / true
+29 --> 
+	30  / true
+30 --> 
+	31  / true
+31 --> 
+	32  / true
+32 --> 
+	33  / true
+33 --> 
+	34  / true
+34 --> 
+* FSM state operations: 
+
+ <State 1>: 2.05ns
+ST_1: array_addr [1/1] 0.00ns
+:4  %array_addr = getelementptr [64 x i32]* %array_r, i64 0, i64 0
+
+ST_1: array_load [2/2] 2.05ns
+:5  %array_load = load i32* %array_addr, align 4
+
+ST_1: array_addr_1 [1/1] 0.00ns
+:6  %array_addr_1 = getelementptr [64 x i32]* %array_r, i64 0, i64 1
+
+ST_1: array_load_1 [2/2] 2.05ns
+:7  %array_load_1 = load i32* %array_addr_1, align 4
+
+
+ <State 2>: 2.05ns
+ST_2: array_load [1/2] 2.05ns
+:5  %array_load = load i32* %array_addr, align 4
+
+ST_2: array_load_1 [1/2] 2.05ns
+:7  %array_load_1 = load i32* %array_addr_1, align 4
+
+ST_2: array_addr_2 [1/1] 0.00ns
+:8  %array_addr_2 = getelementptr [64 x i32]* %array_r, i64 0, i64 2
+
+ST_2: array_load_2 [2/2] 2.05ns
+:9  %array_load_2 = load i32* %array_addr_2, align 4
+
+ST_2: array_addr_3 [1/1] 0.00ns
+:10  %array_addr_3 = getelementptr [64 x i32]* %array_r, i64 0, i64 3
+
+ST_2: array_load_3 [2/2] 2.05ns
+:11  %array_load_3 = load i32* %array_addr_3, align 4
+
+
+ <State 3>: 5.06ns
+ST_3: array_load_2 [1/2] 2.05ns
+:9  %array_load_2 = load i32* %array_addr_2, align 4
+
+ST_3: array_load_3 [1/2] 2.05ns
+:11  %array_load_3 = load i32* %array_addr_3, align 4
+
+ST_3: array_addr_4 [1/1] 0.00ns
+:12  %array_addr_4 = getelementptr [64 x i32]* %array_r, i64 0, i64 4
+
+ST_3: array_load_4 [2/2] 2.05ns
+:13  %array_load_4 = load i32* %array_addr_4, align 4
+
+ST_3: array_addr_5 [1/1] 0.00ns
+:14  %array_addr_5 = getelementptr [64 x i32]* %array_r, i64 0, i64 5
+
+ST_3: array_load_5 [2/2] 2.05ns
+:15  %array_load_5 = load i32* %array_addr_5, align 4
+
+ST_3: tmp4 [1/1] 1.38ns
+:132  %tmp4 = add i32 %array_load, %array_load_1
+
+ST_3: tmp5 [1/1] 1.63ns
+:133  %tmp5 = add i32 %array_load_2, %array_load_3
+
+ST_3: tmp3 [1/1] 1.38ns
+:134  %tmp3 = add i32 %tmp5, %tmp4
+
+
+ <State 4>: 2.05ns
+ST_4: array_load_4 [1/2] 2.05ns
+:13  %array_load_4 = load i32* %array_addr_4, align 4
+
+ST_4: array_load_5 [1/2] 2.05ns
+:15  %array_load_5 = load i32* %array_addr_5, align 4
+
+ST_4: array_addr_6 [1/1] 0.00ns
+:16  %array_addr_6 = getelementptr [64 x i32]* %array_r, i64 0, i64 6
+
+ST_4: array_load_6 [2/2] 2.05ns
+:17  %array_load_6 = load i32* %array_addr_6, align 4
+
+ST_4: array_addr_7 [1/1] 0.00ns
+:18  %array_addr_7 = getelementptr [64 x i32]* %array_r, i64 0, i64 7
+
+ST_4: array_load_7 [2/2] 2.05ns
+:19  %array_load_7 = load i32* %array_addr_7, align 4
+
+
+ <State 5>: 5.06ns
+ST_5: array_load_6 [1/2] 2.05ns
+:17  %array_load_6 = load i32* %array_addr_6, align 4
+
+ST_5: array_load_7 [1/2] 2.05ns
+:19  %array_load_7 = load i32* %array_addr_7, align 4
+
+ST_5: array_addr_8 [1/1] 0.00ns
+:20  %array_addr_8 = getelementptr [64 x i32]* %array_r, i64 0, i64 8
+
+ST_5: array_load_8 [2/2] 2.05ns
+:21  %array_load_8 = load i32* %array_addr_8, align 4
+
+ST_5: array_addr_9 [1/1] 0.00ns
+:22  %array_addr_9 = getelementptr [64 x i32]* %array_r, i64 0, i64 9
+
+ST_5: array_load_9 [2/2] 2.05ns
+:23  %array_load_9 = load i32* %array_addr_9, align 4
+
+ST_5: tmp7 [1/1] 1.38ns
+:135  %tmp7 = add i32 %array_load_4, %array_load_5
+
+ST_5: tmp8 [1/1] 1.63ns
+:136  %tmp8 = add i32 %array_load_6, %array_load_7
+
+ST_5: tmp6 [1/1] 1.38ns
+:137  %tmp6 = add i32 %tmp8, %tmp7
+
+
+ <State 6>: 3.68ns
+ST_6: array_load_8 [1/2] 2.05ns
+:21  %array_load_8 = load i32* %array_addr_8, align 4
+
+ST_6: array_load_9 [1/2] 2.05ns
+:23  %array_load_9 = load i32* %array_addr_9, align 4
+
+ST_6: array_addr_10 [1/1] 0.00ns
+:24  %array_addr_10 = getelementptr [64 x i32]* %array_r, i64 0, i64 10
+
+ST_6: array_load_10 [2/2] 2.05ns
+:25  %array_load_10 = load i32* %array_addr_10, align 4
+
+ST_6: array_addr_11 [1/1] 0.00ns
+:26  %array_addr_11 = getelementptr [64 x i32]* %array_r, i64 0, i64 11
+
+ST_6: array_load_11 [2/2] 2.05ns
+:27  %array_load_11 = load i32* %array_addr_11, align 4
+
+ST_6: tmp11 [1/1] 1.63ns
+:139  %tmp11 = add i32 %array_load_8, %array_load_9
+
+
+ <State 7>: 3.68ns
+ST_7: array_load_10 [1/2] 2.05ns
+:25  %array_load_10 = load i32* %array_addr_10, align 4
+
+ST_7: array_load_11 [1/2] 2.05ns
+:27  %array_load_11 = load i32* %array_addr_11, align 4
+
+ST_7: array_addr_12 [1/1] 0.00ns
+:28  %array_addr_12 = getelementptr [64 x i32]* %array_r, i64 0, i64 12
+
+ST_7: array_load_12 [2/2] 2.05ns
+:29  %array_load_12 = load i32* %array_addr_12, align 4
+
+ST_7: array_addr_13 [1/1] 0.00ns
+:30  %array_addr_13 = getelementptr [64 x i32]* %array_r, i64 0, i64 13
+
+ST_7: array_load_13 [2/2] 2.05ns
+:31  %array_load_13 = load i32* %array_addr_13, align 4
+
+ST_7: tmp12 [1/1] 1.63ns
+:140  %tmp12 = add i32 %array_load_10, %array_load_11
+
+
+ <State 8>: 2.05ns
+ST_8: array_load_12 [1/2] 2.05ns
+:29  %array_load_12 = load i32* %array_addr_12, align 4
+
+ST_8: array_load_13 [1/2] 2.05ns
+:31  %array_load_13 = load i32* %array_addr_13, align 4
+
+ST_8: array_addr_14 [1/1] 0.00ns
+:32  %array_addr_14 = getelementptr [64 x i32]* %array_r, i64 0, i64 14
+
+ST_8: array_load_14 [2/2] 2.05ns
+:33  %array_load_14 = load i32* %array_addr_14, align 4
+
+ST_8: array_addr_15 [1/1] 0.00ns
+:34  %array_addr_15 = getelementptr [64 x i32]* %array_r, i64 0, i64 15
+
+ST_8: array_load_15 [2/2] 2.05ns
+:35  %array_load_15 = load i32* %array_addr_15, align 4
+
+
+ <State 9>: 7.82ns
+ST_9: array_load_14 [1/2] 2.05ns
+:33  %array_load_14 = load i32* %array_addr_14, align 4
+
+ST_9: array_load_15 [1/2] 2.05ns
+:35  %array_load_15 = load i32* %array_addr_15, align 4
+
+ST_9: array_addr_16 [1/1] 0.00ns
+:36  %array_addr_16 = getelementptr [64 x i32]* %array_r, i64 0, i64 16
+
+ST_9: array_load_16 [2/2] 2.05ns
+:37  %array_load_16 = load i32* %array_addr_16, align 4
+
+ST_9: array_addr_17 [1/1] 0.00ns
+:38  %array_addr_17 = getelementptr [64 x i32]* %array_r, i64 0, i64 17
+
+ST_9: array_load_17 [2/2] 2.05ns
+:39  %array_load_17 = load i32* %array_addr_17, align 4
+
+ST_9: tmp2 [1/1] 1.38ns
+:138  %tmp2 = add i32 %tmp6, %tmp3
+
+ST_9: tmp10 [1/1] 1.38ns
+:141  %tmp10 = add i32 %tmp12, %tmp11
+
+ST_9: tmp14 [1/1] 1.38ns
+:142  %tmp14 = add i32 %array_load_12, %array_load_13
+
+ST_9: tmp15 [1/1] 1.63ns
+:143  %tmp15 = add i32 %array_load_14, %array_load_15
+
+ST_9: tmp13 [1/1] 1.38ns
+:144  %tmp13 = add i32 %tmp15, %tmp14
+
+ST_9: tmp9 [1/1] 1.38ns
+:145  %tmp9 = add i32 %tmp13, %tmp10
+
+ST_9: tmp1 [1/1] 1.38ns
+:146  %tmp1 = add i32 %tmp9, %tmp2
+
+
+ <State 10>: 2.05ns
+ST_10: array_load_16 [1/2] 2.05ns
+:37  %array_load_16 = load i32* %array_addr_16, align 4
+
+ST_10: array_load_17 [1/2] 2.05ns
+:39  %array_load_17 = load i32* %array_addr_17, align 4
+
+ST_10: array_addr_18 [1/1] 0.00ns
+:40  %array_addr_18 = getelementptr [64 x i32]* %array_r, i64 0, i64 18
+
+ST_10: array_load_18 [2/2] 2.05ns
+:41  %array_load_18 = load i32* %array_addr_18, align 4
+
+ST_10: array_addr_19 [1/1] 0.00ns
+:42  %array_addr_19 = getelementptr [64 x i32]* %array_r, i64 0, i64 19
+
+ST_10: array_load_19 [2/2] 2.05ns
+:43  %array_load_19 = load i32* %array_addr_19, align 4
+
+
+ <State 11>: 5.06ns
+ST_11: array_load_18 [1/2] 2.05ns
+:41  %array_load_18 = load i32* %array_addr_18, align 4
+
+ST_11: array_load_19 [1/2] 2.05ns
+:43  %array_load_19 = load i32* %array_addr_19, align 4
+
+ST_11: array_addr_20 [1/1] 0.00ns
+:44  %array_addr_20 = getelementptr [64 x i32]* %array_r, i64 0, i64 20
+
+ST_11: array_load_20 [2/2] 2.05ns
+:45  %array_load_20 = load i32* %array_addr_20, align 4
+
+ST_11: array_addr_21 [1/1] 0.00ns
+:46  %array_addr_21 = getelementptr [64 x i32]* %array_r, i64 0, i64 21
+
+ST_11: array_load_21 [2/2] 2.05ns
+:47  %array_load_21 = load i32* %array_addr_21, align 4
+
+ST_11: tmp19 [1/1] 1.38ns
+:147  %tmp19 = add i32 %array_load_16, %array_load_17
+
+ST_11: tmp20 [1/1] 1.63ns
+:148  %tmp20 = add i32 %array_load_18, %array_load_19
+
+ST_11: tmp18 [1/1] 1.38ns
+:149  %tmp18 = add i32 %tmp20, %tmp19
+
+
+ <State 12>: 2.05ns
+ST_12: array_load_20 [1/2] 2.05ns
+:45  %array_load_20 = load i32* %array_addr_20, align 4
+
+ST_12: array_load_21 [1/2] 2.05ns
+:47  %array_load_21 = load i32* %array_addr_21, align 4
+
+ST_12: array_addr_22 [1/1] 0.00ns
+:48  %array_addr_22 = getelementptr [64 x i32]* %array_r, i64 0, i64 22
+
+ST_12: array_load_22 [2/2] 2.05ns
+:49  %array_load_22 = load i32* %array_addr_22, align 4
+
+ST_12: array_addr_23 [1/1] 0.00ns
+:50  %array_addr_23 = getelementptr [64 x i32]* %array_r, i64 0, i64 23
+
+ST_12: array_load_23 [2/2] 2.05ns
+:51  %array_load_23 = load i32* %array_addr_23, align 4
+
+
+ <State 13>: 5.06ns
+ST_13: array_load_22 [1/2] 2.05ns
+:49  %array_load_22 = load i32* %array_addr_22, align 4
+
+ST_13: array_load_23 [1/2] 2.05ns
+:51  %array_load_23 = load i32* %array_addr_23, align 4
+
+ST_13: array_addr_24 [1/1] 0.00ns
+:52  %array_addr_24 = getelementptr [64 x i32]* %array_r, i64 0, i64 24
+
+ST_13: array_load_24 [2/2] 2.05ns
+:53  %array_load_24 = load i32* %array_addr_24, align 4
+
+ST_13: array_addr_25 [1/1] 0.00ns
+:54  %array_addr_25 = getelementptr [64 x i32]* %array_r, i64 0, i64 25
+
+ST_13: array_load_25 [2/2] 2.05ns
+:55  %array_load_25 = load i32* %array_addr_25, align 4
+
+ST_13: tmp22 [1/1] 1.38ns
+:150  %tmp22 = add i32 %array_load_20, %array_load_21
+
+ST_13: tmp23 [1/1] 1.63ns
+:151  %tmp23 = add i32 %array_load_22, %array_load_23
+
+ST_13: tmp21 [1/1] 1.38ns
+:152  %tmp21 = add i32 %tmp23, %tmp22
+
+
+ <State 14>: 3.68ns
+ST_14: array_load_24 [1/2] 2.05ns
+:53  %array_load_24 = load i32* %array_addr_24, align 4
+
+ST_14: array_load_25 [1/2] 2.05ns
+:55  %array_load_25 = load i32* %array_addr_25, align 4
+
+ST_14: array_addr_26 [1/1] 0.00ns
+:56  %array_addr_26 = getelementptr [64 x i32]* %array_r, i64 0, i64 26
+
+ST_14: array_load_26 [2/2] 2.05ns
+:57  %array_load_26 = load i32* %array_addr_26, align 4
+
+ST_14: array_addr_27 [1/1] 0.00ns
+:58  %array_addr_27 = getelementptr [64 x i32]* %array_r, i64 0, i64 27
+
+ST_14: array_load_27 [2/2] 2.05ns
+:59  %array_load_27 = load i32* %array_addr_27, align 4
+
+ST_14: tmp26 [1/1] 1.63ns
+:154  %tmp26 = add i32 %array_load_24, %array_load_25
+
+
+ <State 15>: 3.68ns
+ST_15: array_load_26 [1/2] 2.05ns
+:57  %array_load_26 = load i32* %array_addr_26, align 4
+
+ST_15: array_load_27 [1/2] 2.05ns
+:59  %array_load_27 = load i32* %array_addr_27, align 4
+
+ST_15: array_addr_28 [1/1] 0.00ns
+:60  %array_addr_28 = getelementptr [64 x i32]* %array_r, i64 0, i64 28
+
+ST_15: array_load_28 [2/2] 2.05ns
+:61  %array_load_28 = load i32* %array_addr_28, align 4
+
+ST_15: array_addr_29 [1/1] 0.00ns
+:62  %array_addr_29 = getelementptr [64 x i32]* %array_r, i64 0, i64 29
+
+ST_15: array_load_29 [2/2] 2.05ns
+:63  %array_load_29 = load i32* %array_addr_29, align 4
+
+ST_15: tmp27 [1/1] 1.63ns
+:155  %tmp27 = add i32 %array_load_26, %array_load_27
+
+
+ <State 16>: 2.05ns
+ST_16: array_load_28 [1/2] 2.05ns
+:61  %array_load_28 = load i32* %array_addr_28, align 4
+
+ST_16: array_load_29 [1/2] 2.05ns
+:63  %array_load_29 = load i32* %array_addr_29, align 4
+
+ST_16: array_addr_30 [1/1] 0.00ns
+:64  %array_addr_30 = getelementptr [64 x i32]* %array_r, i64 0, i64 30
+
+ST_16: array_load_30 [2/2] 2.05ns
+:65  %array_load_30 = load i32* %array_addr_30, align 4
+
+ST_16: array_addr_31 [1/1] 0.00ns
+:66  %array_addr_31 = getelementptr [64 x i32]* %array_r, i64 0, i64 31
+
+ST_16: array_load_31 [2/2] 2.05ns
+:67  %array_load_31 = load i32* %array_addr_31, align 4
+
+
+ <State 17>: 7.82ns
+ST_17: array_load_30 [1/2] 2.05ns
+:65  %array_load_30 = load i32* %array_addr_30, align 4
+
+ST_17: array_load_31 [1/2] 2.05ns
+:67  %array_load_31 = load i32* %array_addr_31, align 4
+
+ST_17: array_addr_32 [1/1] 0.00ns
+:68  %array_addr_32 = getelementptr [64 x i32]* %array_r, i64 0, i64 32
+
+ST_17: array_load_32 [2/2] 2.05ns
+:69  %array_load_32 = load i32* %array_addr_32, align 4
+
+ST_17: array_addr_33 [1/1] 0.00ns
+:70  %array_addr_33 = getelementptr [64 x i32]* %array_r, i64 0, i64 33
+
+ST_17: array_load_33 [2/2] 2.05ns
+:71  %array_load_33 = load i32* %array_addr_33, align 4
+
+ST_17: tmp17 [1/1] 1.38ns
+:153  %tmp17 = add i32 %tmp21, %tmp18
+
+ST_17: tmp25 [1/1] 1.38ns
+:156  %tmp25 = add i32 %tmp27, %tmp26
+
+ST_17: tmp29 [1/1] 1.38ns
+:157  %tmp29 = add i32 %array_load_28, %array_load_29
+
+ST_17: tmp30 [1/1] 1.63ns
+:158  %tmp30 = add i32 %array_load_30, %array_load_31
+
+ST_17: tmp28 [1/1] 1.38ns
+:159  %tmp28 = add i32 %tmp30, %tmp29
+
+ST_17: tmp24 [1/1] 1.38ns
+:160  %tmp24 = add i32 %tmp28, %tmp25
+
+ST_17: tmp16 [1/1] 1.38ns
+:161  %tmp16 = add i32 %tmp24, %tmp17
+
+
+ <State 18>: 3.68ns
+ST_18: array_load_32 [1/2] 2.05ns
+:69  %array_load_32 = load i32* %array_addr_32, align 4
+
+ST_18: array_load_33 [1/2] 2.05ns
+:71  %array_load_33 = load i32* %array_addr_33, align 4
+
+ST_18: array_addr_34 [1/1] 0.00ns
+:72  %array_addr_34 = getelementptr [64 x i32]* %array_r, i64 0, i64 34
+
+ST_18: array_load_34 [2/2] 2.05ns
+:73  %array_load_34 = load i32* %array_addr_34, align 4
+
+ST_18: array_addr_35 [1/1] 0.00ns
+:74  %array_addr_35 = getelementptr [64 x i32]* %array_r, i64 0, i64 35
+
+ST_18: array_load_35 [2/2] 2.05ns
+:75  %array_load_35 = load i32* %array_addr_35, align 4
+
+ST_18: tmp35 [1/1] 1.63ns
+:163  %tmp35 = add i32 %array_load_32, %array_load_33
+
+
+ <State 19>: 3.68ns
+ST_19: array_load_34 [1/2] 2.05ns
+:73  %array_load_34 = load i32* %array_addr_34, align 4
+
+ST_19: array_load_35 [1/2] 2.05ns
+:75  %array_load_35 = load i32* %array_addr_35, align 4
+
+ST_19: array_addr_36 [1/1] 0.00ns
+:76  %array_addr_36 = getelementptr [64 x i32]* %array_r, i64 0, i64 36
+
+ST_19: array_load_36 [2/2] 2.05ns
+:77  %array_load_36 = load i32* %array_addr_36, align 4
+
+ST_19: array_addr_37 [1/1] 0.00ns
+:78  %array_addr_37 = getelementptr [64 x i32]* %array_r, i64 0, i64 37
+
+ST_19: array_load_37 [2/2] 2.05ns
+:79  %array_load_37 = load i32* %array_addr_37, align 4
+
+ST_19: tmp36 [1/1] 1.63ns
+:164  %tmp36 = add i32 %array_load_34, %array_load_35
+
+
+ <State 20>: 2.05ns
+ST_20: array_load_36 [1/2] 2.05ns
+:77  %array_load_36 = load i32* %array_addr_36, align 4
+
+ST_20: array_load_37 [1/2] 2.05ns
+:79  %array_load_37 = load i32* %array_addr_37, align 4
+
+ST_20: array_addr_38 [1/1] 0.00ns
+:80  %array_addr_38 = getelementptr [64 x i32]* %array_r, i64 0, i64 38
+
+ST_20: array_load_38 [2/2] 2.05ns
+:81  %array_load_38 = load i32* %array_addr_38, align 4
+
+ST_20: array_addr_39 [1/1] 0.00ns
+:82  %array_addr_39 = getelementptr [64 x i32]* %array_r, i64 0, i64 39
+
+ST_20: array_load_39 [2/2] 2.05ns
+:83  %array_load_39 = load i32* %array_addr_39, align 4
+
+
+ <State 21>: 6.44ns
+ST_21: array_load_38 [1/2] 2.05ns
+:81  %array_load_38 = load i32* %array_addr_38, align 4
+
+ST_21: array_load_39 [1/2] 2.05ns
+:83  %array_load_39 = load i32* %array_addr_39, align 4
+
+ST_21: array_addr_40 [1/1] 0.00ns
+:84  %array_addr_40 = getelementptr [64 x i32]* %array_r, i64 0, i64 40
+
+ST_21: array_load_40 [2/2] 2.05ns
+:85  %array_load_40 = load i32* %array_addr_40, align 4
+
+ST_21: array_addr_41 [1/1] 0.00ns
+:86  %array_addr_41 = getelementptr [64 x i32]* %array_r, i64 0, i64 41
+
+ST_21: array_load_41 [2/2] 2.05ns
+:87  %array_load_41 = load i32* %array_addr_41, align 4
+
+ST_21: tmp34 [1/1] 1.38ns
+:165  %tmp34 = add i32 %tmp36, %tmp35
+
+ST_21: tmp38 [1/1] 1.38ns
+:166  %tmp38 = add i32 %array_load_36, %array_load_37
+
+ST_21: tmp39 [1/1] 1.63ns
+:167  %tmp39 = add i32 %array_load_38, %array_load_39
+
+ST_21: tmp37 [1/1] 1.38ns
+:168  %tmp37 = add i32 %tmp39, %tmp38
+
+ST_21: tmp33 [1/1] 1.38ns
+:169  %tmp33 = add i32 %tmp37, %tmp34
+
+
+ <State 22>: 3.68ns
+ST_22: array_load_40 [1/2] 2.05ns
+:85  %array_load_40 = load i32* %array_addr_40, align 4
+
+ST_22: array_load_41 [1/2] 2.05ns
+:87  %array_load_41 = load i32* %array_addr_41, align 4
+
+ST_22: array_addr_42 [1/1] 0.00ns
+:88  %array_addr_42 = getelementptr [64 x i32]* %array_r, i64 0, i64 42
+
+ST_22: array_load_42 [2/2] 2.05ns
+:89  %array_load_42 = load i32* %array_addr_42, align 4
+
+ST_22: array_addr_43 [1/1] 0.00ns
+:90  %array_addr_43 = getelementptr [64 x i32]* %array_r, i64 0, i64 43
+
+ST_22: array_load_43 [2/2] 2.05ns
+:91  %array_load_43 = load i32* %array_addr_43, align 4
+
+ST_22: tmp42 [1/1] 1.63ns
+:170  %tmp42 = add i32 %array_load_40, %array_load_41
+
+
+ <State 23>: 3.68ns
+ST_23: array_load_42 [1/2] 2.05ns
+:89  %array_load_42 = load i32* %array_addr_42, align 4
+
+ST_23: array_load_43 [1/2] 2.05ns
+:91  %array_load_43 = load i32* %array_addr_43, align 4
+
+ST_23: array_addr_44 [1/1] 0.00ns
+:92  %array_addr_44 = getelementptr [64 x i32]* %array_r, i64 0, i64 44
+
+ST_23: array_load_44 [2/2] 2.05ns
+:93  %array_load_44 = load i32* %array_addr_44, align 4
+
+ST_23: array_addr_45 [1/1] 0.00ns
+:94  %array_addr_45 = getelementptr [64 x i32]* %array_r, i64 0, i64 45
+
+ST_23: array_load_45 [2/2] 2.05ns
+:95  %array_load_45 = load i32* %array_addr_45, align 4
+
+ST_23: tmp43 [1/1] 1.63ns
+:171  %tmp43 = add i32 %array_load_42, %array_load_43
+
+
+ <State 24>: 2.05ns
+ST_24: array_load_44 [1/2] 2.05ns
+:93  %array_load_44 = load i32* %array_addr_44, align 4
+
+ST_24: array_load_45 [1/2] 2.05ns
+:95  %array_load_45 = load i32* %array_addr_45, align 4
+
+ST_24: array_addr_46 [1/1] 0.00ns
+:96  %array_addr_46 = getelementptr [64 x i32]* %array_r, i64 0, i64 46
+
+ST_24: array_load_46 [2/2] 2.05ns
+:97  %array_load_46 = load i32* %array_addr_46, align 4
+
+ST_24: array_addr_47 [1/1] 0.00ns
+:98  %array_addr_47 = getelementptr [64 x i32]* %array_r, i64 0, i64 47
+
+ST_24: array_load_47 [2/2] 2.05ns
+:99  %array_load_47 = load i32* %array_addr_47, align 4
+
+
+ <State 25>: 6.44ns
+ST_25: array_load_46 [1/2] 2.05ns
+:97  %array_load_46 = load i32* %array_addr_46, align 4
+
+ST_25: array_load_47 [1/2] 2.05ns
+:99  %array_load_47 = load i32* %array_addr_47, align 4
+
+ST_25: array_addr_48 [1/1] 0.00ns
+:100  %array_addr_48 = getelementptr [64 x i32]* %array_r, i64 0, i64 48
+
+ST_25: array_load_48 [2/2] 2.05ns
+:101  %array_load_48 = load i32* %array_addr_48, align 4
+
+ST_25: array_addr_49 [1/1] 0.00ns
+:102  %array_addr_49 = getelementptr [64 x i32]* %array_r, i64 0, i64 49
+
+ST_25: array_load_49 [2/2] 2.05ns
+:103  %array_load_49 = load i32* %array_addr_49, align 4
+
+ST_25: tmp41 [1/1] 1.38ns
+:172  %tmp41 = add i32 %tmp43, %tmp42
+
+ST_25: tmp45 [1/1] 1.38ns
+:173  %tmp45 = add i32 %array_load_44, %array_load_45
+
+ST_25: tmp46 [1/1] 1.63ns
+:174  %tmp46 = add i32 %array_load_46, %array_load_47
+
+ST_25: tmp44 [1/1] 1.38ns
+:175  %tmp44 = add i32 %tmp46, %tmp45
+
+ST_25: tmp40 [1/1] 1.38ns
+:176  %tmp40 = add i32 %tmp44, %tmp41
+
+
+ <State 26>: 2.05ns
+ST_26: array_load_48 [1/2] 2.05ns
+:101  %array_load_48 = load i32* %array_addr_48, align 4
+
+ST_26: array_load_49 [1/2] 2.05ns
+:103  %array_load_49 = load i32* %array_addr_49, align 4
+
+ST_26: array_addr_50 [1/1] 0.00ns
+:104  %array_addr_50 = getelementptr [64 x i32]* %array_r, i64 0, i64 50
+
+ST_26: array_load_50 [2/2] 2.05ns
+:105  %array_load_50 = load i32* %array_addr_50, align 4
+
+ST_26: array_addr_51 [1/1] 0.00ns
+:106  %array_addr_51 = getelementptr [64 x i32]* %array_r, i64 0, i64 51
+
+ST_26: array_load_51 [2/2] 2.05ns
+:107  %array_load_51 = load i32* %array_addr_51, align 4
+
+
+ <State 27>: 5.06ns
+ST_27: array_load_50 [1/2] 2.05ns
+:105  %array_load_50 = load i32* %array_addr_50, align 4
+
+ST_27: array_load_51 [1/2] 2.05ns
+:107  %array_load_51 = load i32* %array_addr_51, align 4
+
+ST_27: array_addr_52 [1/1] 0.00ns
+:108  %array_addr_52 = getelementptr [64 x i32]* %array_r, i64 0, i64 52
+
+ST_27: array_load_52 [2/2] 2.05ns
+:109  %array_load_52 = load i32* %array_addr_52, align 4
+
+ST_27: array_addr_53 [1/1] 0.00ns
+:110  %array_addr_53 = getelementptr [64 x i32]* %array_r, i64 0, i64 53
+
+ST_27: array_load_53 [2/2] 2.05ns
+:111  %array_load_53 = load i32* %array_addr_53, align 4
+
+ST_27: tmp50 [1/1] 1.38ns
+:178  %tmp50 = add i32 %array_load_48, %array_load_49
+
+ST_27: tmp51 [1/1] 1.63ns
+:179  %tmp51 = add i32 %array_load_50, %array_load_51
+
+ST_27: tmp49 [1/1] 1.38ns
+:180  %tmp49 = add i32 %tmp51, %tmp50
+
+
+ <State 28>: 2.05ns
+ST_28: array_load_52 [1/2] 2.05ns
+:109  %array_load_52 = load i32* %array_addr_52, align 4
+
+ST_28: array_load_53 [1/2] 2.05ns
+:111  %array_load_53 = load i32* %array_addr_53, align 4
+
+ST_28: array_addr_54 [1/1] 0.00ns
+:112  %array_addr_54 = getelementptr [64 x i32]* %array_r, i64 0, i64 54
+
+ST_28: array_load_54 [2/2] 2.05ns
+:113  %array_load_54 = load i32* %array_addr_54, align 4
+
+ST_28: array_addr_55 [1/1] 0.00ns
+:114  %array_addr_55 = getelementptr [64 x i32]* %array_r, i64 0, i64 55
+
+ST_28: array_load_55 [2/2] 2.05ns
+:115  %array_load_55 = load i32* %array_addr_55, align 4
+
+
+ <State 29>: 5.06ns
+ST_29: array_load_54 [1/2] 2.05ns
+:113  %array_load_54 = load i32* %array_addr_54, align 4
+
+ST_29: array_load_55 [1/2] 2.05ns
+:115  %array_load_55 = load i32* %array_addr_55, align 4
+
+ST_29: array_addr_56 [1/1] 0.00ns
+:116  %array_addr_56 = getelementptr [64 x i32]* %array_r, i64 0, i64 56
+
+ST_29: array_load_56 [2/2] 2.05ns
+:117  %array_load_56 = load i32* %array_addr_56, align 4
+
+ST_29: array_addr_57 [1/1] 0.00ns
+:118  %array_addr_57 = getelementptr [64 x i32]* %array_r, i64 0, i64 57
+
+ST_29: array_load_57 [2/2] 2.05ns
+:119  %array_load_57 = load i32* %array_addr_57, align 4
+
+ST_29: tmp53 [1/1] 1.38ns
+:181  %tmp53 = add i32 %array_load_52, %array_load_53
+
+ST_29: tmp54 [1/1] 1.63ns
+:182  %tmp54 = add i32 %array_load_54, %array_load_55
+
+ST_29: tmp52 [1/1] 1.38ns
+:183  %tmp52 = add i32 %tmp54, %tmp53
+
+
+ <State 30>: 3.68ns
+ST_30: array_load_56 [1/2] 2.05ns
+:117  %array_load_56 = load i32* %array_addr_56, align 4
+
+ST_30: array_load_57 [1/2] 2.05ns
+:119  %array_load_57 = load i32* %array_addr_57, align 4
+
+ST_30: array_addr_58 [1/1] 0.00ns
+:120  %array_addr_58 = getelementptr [64 x i32]* %array_r, i64 0, i64 58
+
+ST_30: array_load_58 [2/2] 2.05ns
+:121  %array_load_58 = load i32* %array_addr_58, align 4
+
+ST_30: array_addr_59 [1/1] 0.00ns
+:122  %array_addr_59 = getelementptr [64 x i32]* %array_r, i64 0, i64 59
+
+ST_30: array_load_59 [2/2] 2.05ns
+:123  %array_load_59 = load i32* %array_addr_59, align 4
+
+ST_30: tmp57 [1/1] 1.63ns
+:185  %tmp57 = add i32 %array_load_56, %array_load_57
+
+
+ <State 31>: 3.68ns
+ST_31: array_load_58 [1/2] 2.05ns
+:121  %array_load_58 = load i32* %array_addr_58, align 4
+
+ST_31: array_load_59 [1/2] 2.05ns
+:123  %array_load_59 = load i32* %array_addr_59, align 4
+
+ST_31: array_addr_60 [1/1] 0.00ns
+:124  %array_addr_60 = getelementptr [64 x i32]* %array_r, i64 0, i64 60
+
+ST_31: array_load_60 [2/2] 2.05ns
+:125  %array_load_60 = load i32* %array_addr_60, align 4
+
+ST_31: array_addr_61 [1/1] 0.00ns
+:126  %array_addr_61 = getelementptr [64 x i32]* %array_r, i64 0, i64 61
+
+ST_31: array_load_61 [2/2] 2.05ns
+:127  %array_load_61 = load i32* %array_addr_61, align 4
+
+ST_31: tmp58 [1/1] 1.63ns
+:186  %tmp58 = add i32 %array_load_58, %array_load_59
+
+
+ <State 32>: 2.05ns
+ST_32: array_load_60 [1/2] 2.05ns
+:125  %array_load_60 = load i32* %array_addr_60, align 4
+
+ST_32: array_load_61 [1/2] 2.05ns
+:127  %array_load_61 = load i32* %array_addr_61, align 4
+
+ST_32: array_addr_62 [1/1] 0.00ns
+:128  %array_addr_62 = getelementptr [64 x i32]* %array_r, i64 0, i64 62
+
+ST_32: array_load_62 [2/2] 2.05ns
+:129  %array_load_62 = load i32* %array_addr_62, align 4
+
+ST_32: array_addr_63 [1/1] 0.00ns
+:130  %array_addr_63 = getelementptr [64 x i32]* %array_r, i64 0, i64 63
+
+ST_32: array_load_63 [2/2] 2.05ns
+:131  %array_load_63 = load i32* %array_addr_63, align 4
+
+
+ <State 33>: 7.82ns
+ST_33: array_load_62 [1/2] 2.05ns
+:129  %array_load_62 = load i32* %array_addr_62, align 4
+
+ST_33: array_load_63 [1/2] 2.05ns
+:131  %array_load_63 = load i32* %array_addr_63, align 4
+
+ST_33: tmp48 [1/1] 1.38ns
+:184  %tmp48 = add i32 %tmp52, %tmp49
+
+ST_33: tmp56 [1/1] 1.38ns
+:187  %tmp56 = add i32 %tmp58, %tmp57
+
+ST_33: tmp60 [1/1] 1.38ns
+:188  %tmp60 = add i32 %array_load_60, %array_load_61
+
+ST_33: tmp61 [1/1] 1.63ns
+:189  %tmp61 = add i32 %array_load_62, %array_load_63
+
+ST_33: tmp59 [1/1] 1.38ns
+:190  %tmp59 = add i32 %tmp61, %tmp60
+
+ST_33: tmp55 [1/1] 1.38ns
+:191  %tmp55 = add i32 %tmp59, %tmp56
+
+ST_33: tmp47 [1/1] 1.38ns
+:192  %tmp47 = add i32 %tmp55, %tmp48
+
+
+ <State 34>: 4.14ns
+ST_34: stg_286 [1/1] 0.00ns
+:0  call void (...)* @_ssdm_op_SpecBitsMap([64 x i32]* %array_r) nounwind, !map !0
+
+ST_34: stg_287 [1/1] 0.00ns
+:1  call void (...)* @_ssdm_op_SpecBitsMap(i32 %length_r) nounwind, !map !6
+
+ST_34: stg_288 [1/1] 0.00ns
+:2  call void (...)* @_ssdm_op_SpecBitsMap(i32 0) nounwind, !map !12
+
+ST_34: stg_289 [1/1] 0.00ns
+:3  call void (...)* @_ssdm_op_SpecTopModule([10 x i8]* @array_sum_str) nounwind
+
+ST_34: tmp [1/1] 1.38ns
+:162  %tmp = add i32 %tmp16, %tmp1
+
+ST_34: tmp32 [1/1] 1.38ns
+:177  %tmp32 = add i32 %tmp40, %tmp33
+
+ST_34: tmp31 [1/1] 1.38ns
+:193  %tmp31 = add i32 %tmp47, %tmp32
+
+ST_34: sum_1_s [1/1] 1.38ns
+:194  %sum_1_s = add nsw i32 %tmp31, %tmp
+
+ST_34: stg_294 [1/1] 0.00ns
+:195  ret i32 %sum_1_s
+
+
+
+============================================================
++ Verbose Summary: Binding
+============================================================
+N/A
+* FSMD analyzer results:
+  - Output states:
+  - Chain level:
+	State 1
+	State 2
+	State 3
+	State 4
+	State 5
+	State 6
+	State 7
+	State 8
+	State 9
+	State 10
+	State 11
+	State 12
+	State 13
+	State 14
+	State 15
+	State 16
+	State 17
+	State 18
+	State 19
+	State 20
+	State 21
+	State 22
+	State 23
+	State 24
+	State 25
+	State 26
+	State 27
+	State 28
+	State 29
+	State 30
+	State 31
+	State 32
+	State 33
+	State 34
+
+
+============================================================
++ Verbose Summary: Datapath Resource usage 
+============================================================
+N/A

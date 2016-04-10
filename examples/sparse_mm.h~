@@ -1,0 +1,12 @@
+#once
+typedef	struct csr_s_t { 
+	bool end_row:1;
+	uint column:31;
+	int value:32;
+} csr_s_t;
+
+typedef union csr
+{
+	csr_s_t csr_s;
+	unsigned long long csr_v;
+} csr_t;

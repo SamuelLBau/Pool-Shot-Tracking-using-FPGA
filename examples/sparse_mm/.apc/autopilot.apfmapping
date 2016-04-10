@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
+  <source>
+    <originFiles name="sparse_mm.cpp" path="/home/drichmond/examples/sparse_mm.cpp"/>
+  </source>
+  <testbench>
+    <originFiles name="sparse_mm_test.cpp" path="/home/drichmond/examples/sparse_mm_test.cpp"/>
+  </testbench>
+</autopilotfilemapping:AutoPilotFileMapping>

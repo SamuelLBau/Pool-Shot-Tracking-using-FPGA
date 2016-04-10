@@ -1,0 +1,472 @@
+@I [HLS-0] Workspace /home/drichmond/examples/array_sum/solution1 opened at Thu Apr 07 14:50:32 PDT 2016
+@I [HLS-100] Command "config_clock -quiet -name default -period 10 -default=false "
+@I [SYN-201] Setting up clock 'default' with a period of 10ns.
+@I [HLS-100] Command 'config_clock' returned 0; elapsed 5e-05Total elapsed time: 0.170 sec.
+@I [HLS-100] Command "open_platform DefaultPlatform "
+@I [HLS-100] Command 'open_platform' returned 0; elapsed 4.7e-05Total elapsed time: 0.171 sec.
+@I [HLS-100] Command "import_lib /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/virtex7/virtex7 "
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/common/xilinx.lib "
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/xilinx_interface.lib "
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/plb46.lib "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000359Total elapsed time: 0.172 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/fsl.lib "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000174Total elapsed time: 0.172 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/axi4.lib "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000264Total elapsed time: 0.172 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/maxi.lib "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000205Total elapsed time: 0.172 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/saxilite.lib "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000149Total elapsed time: 0.173 sec.
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.001611Total elapsed time: 0.173 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/common/dsp48.lib "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000135Total elapsed time: 0.173 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/ip/xfft.lib "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000112Total elapsed time: 0.173 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/ip/xfir.lib "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000101Total elapsed time: 0.173 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/ip/dds_compiler.lib "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 9.9e-05Total elapsed time: 0.174 sec.
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.005218Total elapsed time: 0.176 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/common/xilinx_old.lib "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000948Total elapsed time: 0.179 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/common/xilinx_vivado.lib "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.00074Total elapsed time: 0.180 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/common/xilinx.hlp "
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/common/target_info.tcl "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000134Total elapsed time: 0.182 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/xilinx_interface.hlp "
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/maxi.hlp "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000107Total elapsed time: 0.182 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/saxilite.hlp "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000107Total elapsed time: 0.183 sec.
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000389Total elapsed time: 0.183 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/common/dsp48.hlp "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000674Total elapsed time: 0.184 sec.
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.002421Total elapsed time: 0.184 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/virtex7/dsp48e1.hlp "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000104Total elapsed time: 0.184 sec.
+@I [HLS-100] Command "get_default_platform "
+@I [HLS-100] Command 'get_default_platform' returned 0; elapsed 7e-06Total elapsed time: 0.184 sec.
+@I [HLS-100] Command "config_chip_info -quiet -resource  {SLICE 91050 } {LUT 364200 } {FF 728400 } {DSP48E 1260} {BRAM 1590}  "
+@I [HLS-100] Command 'config_chip_info' returned 0; elapsed 2.6e-05Total elapsed time: 0.185 sec.
+@I [HLS-100] Command "config_chip_info -quiet -speed medium "
+@I [HLS-100] Command 'config_chip_info' returned 0; elapsed 7e-06Total elapsed time: 0.185 sec.
+@I [HLS-100] Command 'import_lib' returned 0; elapsed 0.015767Total elapsed time: 0.187 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/virtex7/virtex7.gen "
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/common/virtex.gen "
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/common/xilinx.gen "
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/plb46.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.001126Total elapsed time: 0.188 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/fsl.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000434Total elapsed time: 0.189 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/axi4.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.002094Total elapsed time: 0.191 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/nativeAXI4.gen "
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/saxilite.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.003626Total elapsed time: 0.195 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/maxi.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.007177Total elapsed time: 0.202 sec.
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.011Total elapsed time: 0.202 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/scripts/xilinxcoregen.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.008874Total elapsed time: 0.211 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/XilEDKCoreGen.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.007802Total elapsed time: 0.219 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/ip/dds_compiler.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.002328Total elapsed time: 0.221 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/ip/xfir.gen "
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/tps/tcl/tcllib1.11.1/struct/list.tcl "
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/tps/tcl/tcllib1.11.1/cmdline/cmdline.tcl "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000472Total elapsed time: 0.232 sec.
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.001081Total elapsed time: 0.232 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/tps/tcl/tcllib1.11.1/math/bignum.tcl "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000414Total elapsed time: 0.239 sec.
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.022269Total elapsed time: 0.244 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/ip/xfft.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.074205Total elapsed time: 0.318 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/ip/util.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000139Total elapsed time: 0.318 sec.
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.131003Total elapsed time: 0.318 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/common/dsp48.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000104Total elapsed time: 0.319 sec.
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.132437Total elapsed time: 0.319 sec.
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.13259Total elapsed time: 0.319 sec.
+@I [HLS-100] Command "open_platform DefaultPlatform "
+@I [HLS-100] Command 'open_platform' returned 0; elapsed 6e-06Total elapsed time: 0.320 sec.
+@I [HLS-100] Command "import_lib /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/virtex7/virtex7_fpv6 "
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/common/xilinx_fpv7.lib "
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/common/xilinx_hp.lib "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.00049Total elapsed time: 0.320 sec.
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.002494Total elapsed time: 0.322 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/common/xilinx_fpv.hlp "
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/common/xilinx.hlp "
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/common/target_info.tcl "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.00012Total elapsed time: 0.326 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/xilinx_interface.hlp "
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/maxi.hlp "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 7.2e-05Total elapsed time: 0.326 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/saxilite.hlp "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 7.4e-05Total elapsed time: 0.326 sec.
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.00025Total elapsed time: 0.326 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/common/dsp48.hlp "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000396Total elapsed time: 0.327 sec.
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.001553Total elapsed time: 0.327 sec.
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.001918Total elapsed time: 0.328 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/virtex7/virtex7_hp.hlp "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000559Total elapsed time: 0.328 sec.
+@I [HLS-100] Command 'import_lib' returned 0; elapsed 0.011624Total elapsed time: 0.331 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/virtex7/virtex7_fpv6.gen "
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/common/xilinx_fpv6.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000999Total elapsed time: 0.332 sec.
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.001096Total elapsed time: 0.332 sec.
+@I [HLS-100] Command "set_part xc7vx690tffg1761-2 "
+@I [HLS-100] Command "add_library xilinx/virtex7/virtex7:xc7vx690t:ffg1761:-2 "
+@I [HLS-100] Command "get_default_platform "
+@I [HLS-100] Command 'get_default_platform' returned 0; elapsed 4e-06Total elapsed time: 0.335 sec.
+@I [HLS-100] Command "license_isbetapart xc7vx690t "
+@I [HLS-100] Command 'license_isbetapart' returned 1; elapsed 0.00497Total elapsed time: 0.340 sec.
+@I [HLS-100] Command "get_default_platform "
+@I [HLS-100] Command 'get_default_platform' returned 0; elapsed 4e-06Total elapsed time: 0.341 sec.
+@I [HLS-100] Command "config_chip_info -quiet -resource  {SLICE 108300} {LUT 433200 } {FF 866400 } {DSP48E 3600} {BRAM 2940}  "
+@I [HLS-100] Command 'config_chip_info' returned 0; elapsed 1.6e-05Total elapsed time: 0.341 sec.
+@I [HLS-100] Command "config_chip_info -quiet -speed medium "
+@I [HLS-100] Command 'config_chip_info' returned 0; elapsed 4e-06Total elapsed time: 0.341 sec.
+@I [HLS-100] Command 'add_library' returned 0; elapsed 0.006832Total elapsed time: 0.341 sec.
+@I [HLS-100] Command "add_library xilinx/virtex7/virtex7_fpv6 "
+@I [HLS-100] Command "get_default_platform "
+@I [HLS-100] Command 'get_default_platform' returned 0; elapsed 3e-06Total elapsed time: 0.342 sec.
+@I [HLS-100] Command 'add_library' returned 0; elapsed 0.000903Total elapsed time: 0.342 sec.
+@I [HLS-10] Setting target device to 'xc7vx690tffg1761-2'
+@I [HLS-100] Command 'set_part' returned 0; elapsed 0.009683Total elapsed time: 0.342 sec.
+@I [HLS-100] Command "get_default_platform "
+@I [HLS-100] Command 'get_default_platform' returned 0; elapsed 3e-06Total elapsed time: 0.342 sec.
+@I [HLS-100] Command "config_chip_info -quiet -resource  {SLICE 108300} {LUT 433200 } {FF 866400 } {DSP48E 3600} {BRAM 2940}  "
+@I [HLS-100] Command 'config_chip_info' returned 0; elapsed 6e-06Total elapsed time: 0.342 sec.
+@I [HLS-100] Command "config_chip_info -quiet -speed medium "
+@I [HLS-100] Command 'config_chip_info' returned 0; elapsed 3e-06Total elapsed time: 0.343 sec.
+@I [HLS-100] Command 'open_solution' returned 0; elapsed 0.175998Total elapsed time: 0.343 sec.
+@I [HLS-100] Command "set_part xc7vx690tffg1761-2 "
+@I [HLS-100] Command "add_library xilinx/virtex7/virtex7:xc7vx690t:ffg1761:-2 "
+@I [HLS-100] Command "get_default_platform "
+@I [HLS-100] Command 'get_default_platform' returned 0; elapsed 3e-06Total elapsed time: 0.344 sec.
+@I [HLS-100] Command "license_isbetapart xc7vx690t "
+@I [HLS-100] Command 'license_isbetapart' returned 1; elapsed 1.7e-05Total elapsed time: 0.344 sec.
+@I [HLS-100] Command "get_default_platform "
+@I [HLS-100] Command 'get_default_platform' returned 0; elapsed 3e-06Total elapsed time: 0.345 sec.
+@I [HLS-100] Command "config_chip_info -quiet -resource  {SLICE 108300} {LUT 433200 } {FF 866400 } {DSP48E 3600} {BRAM 2940}  "
+@I [HLS-100] Command 'config_chip_info' returned 0; elapsed 7e-06Total elapsed time: 0.345 sec.
+@I [HLS-100] Command "config_chip_info -quiet -speed medium "
+@I [HLS-100] Command 'config_chip_info' returned 0; elapsed 3e-06Total elapsed time: 0.345 sec.
+@I [HLS-100] Command 'add_library' returned 0; elapsed 0.00147Total elapsed time: 0.345 sec.
+@I [HLS-100] Command "add_library xilinx/virtex7/virtex7_fpv6 "
+@I [HLS-100] Command "get_default_platform "
+@I [HLS-100] Command 'get_default_platform' returned 0; elapsed 3e-06Total elapsed time: 0.346 sec.
+@I [HLS-100] Command 'add_library' returned 0; elapsed 0.000867Total elapsed time: 0.346 sec.
+@I [HLS-100] Command 'set_part' returned 0; elapsed 0.003311Total elapsed time: 0.346 sec.
+@I [HLS-100] Command "create_clock -period 10 -name default "
+@I [HLS-100] Command 'create_clock' returned 0; elapsed 0.00067Total elapsed time: 0.347 sec.
+@I [HLS-100] Command "csynth_design "
+@I [HLS-100] Command "elaborate -effort=medium -skip_syncheck=0 -keep_printf=0 -lm=0 -skip_cdt=0 -skip_transform=0 -ng=0 -g=0 -opt_fp=0 "
+@I [HLS-10] Analyzing design file 'array_sum.c' ... 
+@0 [HLS-0] Analyzing design file 'array_sum.c' ... 
+@I [HLS-0] Compiling one TU...
+@I [HLS-0] 
+Checking before pre-process: exec clang -fno-limit-debug-info -gcc-toolchain "/opt/Xilinx/Vivado_HLS/2015.4/lnx64/tools/gcc" -hls    -fno-math-errno -c -emit-llvm -O0  -mllvm -disable-llvm-optzns -std=gnu89   -DAESL_SYN -D__SYNTHESIS__ -D__HLS_SYN__ -I "/opt/Xilinx/Vivado_HLS/2015.4/common/technology/autopilot" -I "/opt/Xilinx/Vivado_HLS/2015.4/common/technology/autopilot/ap_sysc" -include etc/autopilot_ssdm_op.h  "array_sum.c"  -o "/home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.pp.00.o"
+
+@I [HLS-100] Command "is_encrypted /home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.pp.00.o "
+@I [HLS-100] Command 'is_encrypted' returned 0; elapsed 0.000126Total elapsed time: 0.392 sec.
+@I [HLS-0] Syntax Checker time: 0 seconds per iteration
+@I [HLS-0] 
+Source preprocessing: exec clang -fno-limit-debug-info -gcc-toolchain "/opt/Xilinx/Vivado_HLS/2015.4/lnx64/tools/gcc" -hls -fno-exceptions  -D__llvm__  -CC -E "array_sum.c"     -fno-math-errno -c -emit-llvm -O0  -mllvm -disable-llvm-optzns -std=gnu89   -DAESL_SYN -D__SYNTHESIS__ -D__HLS_SYN__ -I "/opt/Xilinx/Vivado_HLS/2015.4/common/technology/autopilot" -I "/opt/Xilinx/Vivado_HLS/2015.4/common/technology/autopilot/ap_sysc" -include etc/autopilot_ssdm_op.h  -o "/home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.pp.0.c"
+
+@I [HLS-0] GCC PP time: 0 seconds per iteration
+@I [HLS-100] Command "list_core -type functional_unit "
+@I [HLS-100] Command 'list_core' returned 0; elapsed 0.000211Total elapsed time: 0.442 sec.
+@I [HLS-0] Marker-Pragma convertor: /home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.pp.0.c /home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.pp.0.c.ap-line.c /home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.pp.0.c.ap-line.c.CXX 1
+@I [HLS-0] 
+Source processor: exec /opt/Xilinx/Vivado_HLS/2015.4/tps/lnx64/jre/bin/java -Xmx512m -classpath   "/opt/Xilinx/Vivado_HLS/2015.4/lib/classes/autopilot.sourceprocessor.jar:/opt/Xilinx/Vivado_HLS/2015.4/lib/classes/org.eclipse.cdt.core_5.3.0.xilinx_patch.jar:/opt/Xilinx/Vivado_HLS/2015.4/lib/classes/org.eclipse.core.runtime_3.7.0.v20110110.jar:/opt/Xilinx/Vivado_HLS/2015.4/lib/classes/org.eclipse.equinox.common_3.6.0.v20110523.jar:/opt/Xilinx/Vivado_HLS/2015.4/lib/classes/com.ibm.icu_4.4.2.v20110208.jar:/opt/Xilinx/Vivado_HLS/2015.4/lib/classes/jargs.jar:/opt/Xilinx/Vivado_HLS/2015.4/lnx64/tools/eclipse/plugins/org.eclipse.emf.common_2.10.1.v20150123-0348.jar:/opt/Xilinx/Vivado_HLS/2015.4/lnx64/tools/eclipse/plugins/org.eclipse.emf.ecore_2.10.2.v20150123-0348.jar:/opt/Xilinx/Vivado_HLS/2015.4/lnx64/tools/eclipse/plugins/org.eclipse.emf.ecore.xmi_2.10.2.v20150123-0348.jar:/opt/Xilinx/Vivado_HLS/2015.4/lnx64/tools/eclipse/plugins/com.autoesl.autopilot.ui.directiveFileModel_1.0.0.jar:/opt/Xilinx/Vivado_HLS/2015.4/lnx64/tools/eclipse/plugins/com.autoesl.autopilot.ui.common_1.0.0.jar"  autopilot.sourceprocessor.CParser  "/home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.pp.0.c.ap-line.c"  -m "array_sum" -o "/home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.pp.0.c.ap-cdt.c" -c --pp --directive /home/drichmond/examples/array_sum/solution1/solution1.directive --source /home/drichmond/examples/array_sum.c --error /home/drichmond/examples/array_sum/solution1/.autopilot/db --funcunit "AddSub AddSub_DSP AddSubnS DAddSub_fulldsp DAddSub_nodsp DDiv DExp_fulldsp DExp_meddsp DExp_nodsp DLog_fulldsp DLog_meddsp DLog_nodsp DMul_fulldsp DMul_maxdsp DMul_meddsp DMul_nodsp DRSqrt DRecip DSqrt DivnS FAddSub_fulldsp FAddSub_nodsp FDiv FExp_fulldsp FExp_meddsp FExp_nodsp FLog_fulldsp FLog_meddsp FLog_nodsp FMul_fulldsp FMul_maxdsp FMul_meddsp FMul_nodsp FRSqrt_fulldsp FRSqrt_nodsp FRecip_fulldsp FRecip_nodsp FSqrt HAddSub_nodsp HDiv HMul_fulldsp HMul_maxdsp HMul_nodsp HSqrt Mul Mul2S Mul3S Mul4S Mul5S Mul6S Mul_LUT MulnS MuxnS" --ca --gf --df --pd --p2d /home/drichmond/examples/array_sum/solution1/.autopilot/db --sd --scff /home/drichmond/examples/array_sum/solution1/.autopilot/db/.systemc_flag --ad
+
+@I [HLS-0] Marker-Pragma convertor: /home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.pp.0.c.ap-cdt.c /home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.pragma.0.c /home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.pragma.0.c.ap-line.CXX 0
+@I [HLS-100] Command "source /home/drichmond/examples/array_sum/solution1/.autopilot/db/pragma.status.tcl "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 6.3e-05Total elapsed time: 1.24 sec.
+@I [HLS-0] CDT processor time: 0 seconds per iteration
+@I [HLS-0] Pragma handling time: 0 seconds per iteration
+@I [HLS-0] 
+Source preprocessing: exec clang -fno-limit-debug-info -gcc-toolchain "/opt/Xilinx/Vivado_HLS/2015.4/lnx64/tools/gcc" -hls -fno-exceptions  -D__llvm__  -CC -E "/home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.pragma.1.c"     -fno-math-errno -c -emit-llvm -O0  -mllvm -disable-llvm-optzns -std=gnu89   -DAESL_SYN -D__SYNTHESIS__ -D__HLS_SYN__ -I "/opt/Xilinx/Vivado_HLS/2015.4/common/technology/autopilot" -I "/opt/Xilinx/Vivado_HLS/2015.4/common/technology/autopilot/ap_sysc" -include etc/autopilot_ssdm_op.h  -o "/home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.pragma.2.c"
+
+@I [HLS-0] exec clang -fno-limit-debug-info -gcc-toolchain /opt/Xilinx/Vivado_HLS/2015.4/lnx64/tools/gcc -hls -hls-analyze-label -hls-analyze-pragma -fno-exceptions  -D__llvm__  -w  "/home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.pragma.2.c"    -fno-math-errno -c -emit-llvm -O0  -mllvm -disable-llvm-optzns -std=gnu89  -DAESL_SYN -D__SYNTHESIS__ -D__HLS_SYN__ -I "/opt/Xilinx/Vivado_HLS/2015.4/common/technology/autopilot" -I "/opt/Xilinx/Vivado_HLS/2015.4/common/technology/autopilot/ap_sysc" -include etc/autopilot_ssdm_op.h -g -o "/home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.g.bc"
+@I [HLS-10] Validating synthesis directives ...
+@0 [HLS-0] Validating synthesis directives ...
+@I [HLS-100] Command "source /home/drichmond/examples/array_sum/solution1/.autopilot/db/pragma.status.tcl "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 5.1e-05Total elapsed time: 1.126 sec.
+@I [HLS-0] Linking all ...
+@I [HLS-0] exec llvm-ld  "/home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.bc"  -disable-opt  -L/opt/Xilinx/Vivado_HLS/2015.4/lnx64/lib -lm_basic -o "/home/drichmond/examples/array_sum/solution1/.autopilot/db/a.o.pre"
+@I [HLS-0] Link time: 0 seconds per iteration
+@I [HLS-0] Linking all ...
+@I [HLS-0] exec llvm-ld  "/home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.g.bc"  -disable-opt  -L/opt/Xilinx/Vivado_HLS/2015.4/lnx64/lib -lm_basic -o "/home/drichmond/examples/array_sum/solution1/.autopilot/db/a.g.pre"
+@I [HLS-0] Link time: 0 seconds per iteration
+@I [HLS-100] Command "opt_and_import_c a -opt_level=2 -skip_syncheck=0 -ng=0 -keep_printf=0 "
+@I [HLS-100] Command "cleanup_all_models "
+@I [HLS-100] Command 'cleanup_all_models' returned 0; elapsed 2.4e-05Total elapsed time: 1.205 sec.
+@I [HLS-10] Starting code transformations ...
+@0 [HLS-0] Starting code transformations ...
+@I [HLS-0] std xform: transform -hls -share-std-xform -always-inline -promote-dbg-pointer  -interface-preproc  -scalarrepl -mem2reg -keep-read-access -instcombine -dce  -promote-dbg-pointer  -bitop-raise  -indvars -loop-simplify -xunroll  -constprop -instcombine -simplifycfg -indvars  -simplifycfg -dce -globaldce  -basicaa  -simplifycfg -mem2reg -globalopt  -global-constprop -deadargelim -instcombine -simplifycfg  -prune-eh -simplifycfg  -scalarrepl -instcombine -reassociate -licm  -simplifycfg -loop-simplify -indvars -instcombine  -simplifycfg -mem2reg -loop-simplify -indvars -instcombine  -gvn -gvn -instcombine -adce  -break-crit-edges  -simplifycfg -loop-delete  -global-array-opt -dce -dse -adce  -find-syn-modules -top array_sum  -deadargelim  -mem2reg -instcombine -dce  -presyn-prepare -auto-rom-infer  -interface-preproc  -syn-check -check-rec-only  -find-region -simplifycfg -func-extr -function-inline  -globaldce -mem2reg -instcombine -dce   -gvn -globaldce -adce -adse  -constprop -instcombine -bit-constprop  -instcombine -dce -simplifycfg -bitop-raise  -simplifycfg -dce -loop-delete -reassociate  -globalopt -global-privatize -mem2reg -dce  -global-constprop -pointer-simplify -constprop -dce  -func-inst -deadargelim  -promote-dbg-pointer  -norm-name   /home/drichmond/examples/array_sum/solution1/.autopilot/db/a.g.0.bc -o /home/drichmond/examples/array_sum/solution1/.autopilot/db/a.g.1.bc -f  -phase std-opt
+@I [HLS-0] Std xform time: 0 seconds per iteration
+@I [HLS-100] Command "is_encrypted /home/drichmond/examples/array_sum/solution1/.autopilot/db/a.g.1.bc "
+@I [HLS-100] Command 'is_encrypted' returned 0; elapsed 6.6e-05Total elapsed time: 1.250 sec.
+@I [HLS-10] Checking synthesizability ...
+@0 [HLS-0] Checking synthesizability ...
+@I [HLS-0] syn check 1/2: transform -hls -syn-check -check-rec-only -disaggr -scalarrepl -norm-name -dce  -mem2reg -instcombine  -function-uniquify -directive-preproc -mem2reg -dse -dce -auto-rom-infer -dce  -array-normalize -instcombine -dce  -array-seg-normalize -instcombine -dce  -array-flatten -instcombine -dce  -array-burst -dce  -deadargelim -promote-global-argument  -function-inline -globaldce -dce  -doublePtrSimplify -doublePtrElim -dce  -doublePtrSimplify -promote-dbg-pointer  -dce -scalarrepl -dse -adse -instcombine  -ptrLegalization  -simplifycfg -dce -instcombine  -pointer-simplify -ptrArgReplace -dce -instcombine   -disaggr -scalarrepl -norm-name -dce  -mem2reg -instcombine -ptrLegalization   -simplifycfg -deadargelim  -instcombine -dce -inst-simplify  -function-uniquify -directive-preproc -mem2reg -dse -dce  -globaldce    /home/drichmond/examples/array_sum/solution1/.autopilot/db/a.g.1.bc -o /home/drichmond/examples/array_sum/solution1/.autopilot/db/a.g.2.prechk.bc -f
+@I [HLS-0] Syn check 1/2 time: 0 seconds per iteration
+@I [HLS-0] syn check 2/2: transform -syn-check   /home/drichmond/examples/array_sum/solution1/.autopilot/db/a.g.2.prechk.bc -o /home/drichmond/examples/array_sum/solution1/.autopilot/db/a.g.2.bc -f  -phase syn-check
+@I [HLS-0] Syn check 2/2 time: 0 seconds per iteration
+@I [HLS-0] Compiler optimizing ...
+@I [HLS-0] Share syncheck's 1.bc for syn flow: copy /home/drichmond/examples/array_sum/solution1/.autopilot/db/a.g.1.bc to /home/drichmond/examples/array_sum/solution1/.autopilot/db/a.o.1.bc
+@I [HLS-0] presyn 1: transform -hls -tmp /home/drichmond/examples/array_sum/solution1/.autopilot/db -type-info  -function-uniquify -directive-preproc -mem2reg -dse -dce  -disaggr -scalarrepl -norm-name -deadargelim  -mem2reg -instcombine -dce -auto-rom-infer -dce -function-uniquify  -resource-proc  -clib-intrinsic-prepare -dce  -func-buffer -dce -array-normalize  -func-legal -instcombine -gvn -constprop -dce   -ptrArgReplace -mem2reg -instcombine -dce  -array-seg-normalize -deadargelim  -instcombine -dce  -pointer-simplify -dce  -port-alignment -dce  -interface-preproc  -data-pack -instcombine -dce   -basicaa -aggr-aa -aggrmodref-aa -aggr-aa -gvn -gvn  -basicaa -aggr-aa -aggrmodref-aa -aggr-aa -dse -adse -adce  -loop-simplify -indvars -instcombine  -gvn -loop-simplify -mem2reg -dce -simplifycfg  -find-region -instcombine  -auto-loop-pipeline  -inst-simplify  -interface-preproc  -indvars -auto-loop-unroll -loop-simplify -loop-bound -xunroll  -constprop -instcombine -simplifycfg -indvars  -simplifycfg -dce -globaldce  -attach-range  -gvn -inst-simplify  -constprop -simplifycfg -dce  -pointer-simplify -dce  -globalopt -constprop -dce  -array-promote -constprop -instcombine -dce  -ptrArgReplace -mem2reg  -instcombine -simplifycfg -dce  -auto-par -instcombine -dce  -array-transform-check  -array-reshape -instcombine -simplifycfg -dce  -ptrArgReplace -deadargelim -mem2reg  -instcombine -simplifycfg -dce   -duplicate-dataflow-processes -globaldce  -array-partition -instcombine -simplifycfg -dce  -ptrArgReplace -global-constprop -deadargelim -mem2reg  -func-legal -instcombine -dce -global-constprop -deadargelim -mem2reg  -instcombine -simplifycfg -dce   -globalopt -constprop -dce  -array-promote -constprop -instcombine -dce  -ptrArgReplace -mem2reg  -instcombine -simplifycfg -dce   -mem-intrinsic-preproc -dce  -global-privatize  -mem2reg -globaldce  -promote-global-argument  -ptrArgReplace -mem2reg -instcombine -dce  -globalopt -mergereturn -simplify-global-access -mem2reg -dce  -pointer-simplify -dce  -functionattrs  -basicaa -aggr-aa -aggrmodref-aa -aggr-aa -gvn -gvn  -basicaa -aggr-aa -aggrmodref-aa -aggr-aa -dse -adse -adce  -inst-simplify -dce -norm-name  -function-inline -globaldce  -func-inst -constprop -instcombine -simplifycfg -dce  -func-legal -dce   -loop-bound  -arraycheck -bitwidthmin -on-by-dataflow  -loop-delete -instcombine -simplifycfg  -globaldce -dce -gvn -deadargelim -dce -loop-simplify -clean-region -simplifycfg -propagate-stable-arguments  -loop-stream -instcombine -simplifycfg -dce -globaldce  -stream-intrinsic-preproc -dce  -check-ap-stream -loop-simplify -eliminate-keepreads  -extract-dataflow-in-loop -loop-simplify -dce -gvn -deadargelim  -check-dataflow-syntax  -legalize-stream-variable -legalize-global -legalize-global-1  -extract-subproc -dce -dead-channel-elimination  -canonicalize-gep -globaldce -dce -gvn -deadargelim  -scalar-propagation -deadargelim -globaldce -mem2reg  -check-dataflow-channels -function-stream -dce -globaldce  -prop-fifo-spec -internal-stream-gen  -canonicalize-gep -globaldce -dce -gvn -deadargelim   -mergereturn -indvars -loop-simplify  -array-stream -instcombine -simplifycfg -dce  -bundle-memfifo-ops -deadargelim    -function-uniquify -directive-preproc -mem2reg -dse -dce  -group-axi-access    -licm -simplifycfg -dce -loop-delete  -norm-name  /home/drichmond/examples/array_sum/solution1/.autopilot/db/a.o.1.bc -o /home/drichmond/examples/array_sum/solution1/.autopilot/db/a.o.1.tmp.bc -f
+@I [XFORM-501] Unrolling loop 'Loop-1' (array_sum.c:4) in function 'array_sum' completely.
+@I [HLS-0] Presyn 1 time: 0 seconds per iteration
+@I [HLS-0] presyn 2: transform -hls -keep-callgraph -scalarrepl -mem2reg  -port-alignment -attach-range -dce  -pipe-mux-gen  -indvars -loop-bound  -inst-simplify -instcombine -dce  -merge-array-access -mem2reg -dce  -clean-region -mergereturn -if-conv  -instcombine -dce -constprop  -basicaa -aggr-aa -aggrmodref-aa -aggr-aa -gvn -gvn  -basicaa -aggr-aa -aggrmodref-aa -aggr-aa -dse -adse -adce  -scalarrepl -mem2reg  -global-constprop -deadargelim -deadargelim  -instcombine -dce -simplifycfg    -ptrArgReplace -mem2reg -function-inline  -globaldce -mem2reg -instcombine -dce -expr-balance  -instcombine -dce  -bitwidthmin  -directive-preproc  -inst-rectify -instcombine -dce  -functionattrs  -constprop -instcombine -bit-constprop  -simplify-global-access  -globalopt -globaldce  -inst-simplify -instcombine -elimdeaddata -dce  -loop-delete -simplifycfg   -norm-name /home/drichmond/examples/array_sum/solution1/.autopilot/db/a.o.1.tmp.bc -o /home/drichmond/examples/array_sum/solution1/.autopilot/db/a.o.2.bc -f  -phase presyn
+@I [XFORM-11] Balancing expressions in function 'array_sum' (array_sum.c:1)...63 expression(s) balanced.
+@I [HLS-0] Presyn 2 time: 0 seconds per iteration
+@I [HLS-100] Command "is_encrypted /home/drichmond/examples/array_sum/solution1/.autopilot/db/a.o.2.bc "
+@I [HLS-100] Command 'is_encrypted' returned 0; elapsed 5.5e-05Total elapsed time: 1.594 sec.
+@I [HLS-0] build ssdm: transform -hls  -function-uniquify -auto-function-inline -globaldce  -ptrArgReplace -mem2reg -instcombine -dce  -reset-lda  -loop-simplify -indvars -licm -loop-dep  -loop-bound -licm -loop-simplify -flattenloopnest  -array-flatten -gvn -instcombine -dce  -array-map -dce -func-legal  -gvn -adce -instcombine -cfgopt -simplifycfg -loop-simplify   -array-burst -promote-global-argument -dce  -axi4-lower -array-seg-normalize  -basicaa -aggrmodref-aa -globalsmodref-aa -aggr-aa -gvn -gvn  -basicaa -aggrmodref-aa -globalsmodref-aa -aggr-aa -dse -adse -adce -licm  -inst-simplify -dce  -globaldce -array-stream -eliminate-keepreads -instcombine  -dce   -deadargelim -doublePtrSimplify  -doublePtrElim -dce -doublePtrSimplify -promote-dbg-pointer  -dce -scalarrepl -mem2reg -disaggr -norm-name -mem2reg  -instcombine  -dse -adse -adce -ptrLegalization -dce -auto-rom-infer -array-flatten -dce -instcombine  -loop-rot -constprop -cfgopt -simplifycfg -loop-simplify -indvars -pointer-simplify -dce -loop-bound  -loop-simplify -loop-preproc  -constprop -global-constprop -gvn -mem2reg -instcombine -dce  -loop-merge -dce  -bitwidthmin  -deadargelim -dce  -scalar-propagation -deadargelim -globaldce -mem2reg  -interface-preproc -interface-gen  -deadargelim -directive-preproc -inst-simplify -dce  -gvn -mem2reg -instcombine -dce -adse  -loop-bound  -instcombine -cfgopt -simplifycfg -loop-simplify  -clean-region -io-protocol  -find-region -mem2reg  -bitop-raise  -inst-simplify -inst-rectify -instcombine -adce -deadargelim  -loop-simplify -phi-opt -bitop-raise  -cfgopt -simplifycfg -strip-dead-prototypes  -interface-lower -bitop-lower -intrinsic-lower -auto-function-inline  -basicaa -aggrmodref-aa -globalsmodref-aa -aggr-aa  -inst-simplify -simplifycfg   -mergereturn -inst-simplify -inst-rectify  -dce -bitop-lower  -loop-rewind -pointer-simplify -dce -cfgopt  -read-loop-dep -dce -bitwidth -norm-name -legalize    -cdfg-build  /home/drichmond/examples/array_sum/solution1/.autopilot/db/a.o.2.bc -o /home/drichmond/examples/array_sum/solution1/.autopilot/db/a.o.3.bc -f  -phase build-ssdm
+@I [HLS-0] Build ssdm time: 0 seconds per iteration
+@I [HLS-100] Command "is_encrypted /home/drichmond/examples/array_sum/solution1/.autopilot/db/a.o.3.bc "
+@I [HLS-100] Command 'is_encrypted' returned 0; elapsed 7e-05Total elapsed time: 1.659 sec.
+@I [HLS-0] Finish building internal data model.
+@I [HLS-100] Command 'opt_and_import_c' returned 0; elapsed 0.394753Total elapsed time: 1.685 sec.
+@I [HLS-111] Elapsed time: 0.781214 seconds; current memory usage: 55.3 MB.
+@I [HLS-100] Command 'elaborate' returned 0; elapsed 0.434504Total elapsed time: 1.685 sec.
+@I [HLS-100] Command "autosyn "
+@I [HLS-10] Starting hardware synthesis ...
+@0 [HLS-0] Starting hardware synthesis ...
+@I [HLS-0] Synthesizing C/C++ design ...
+@I [HLS-10] Synthesizing 'array_sum' ...
+@0 [HLS-0] Synthesizing 'array_sum' ...
+@I [HLS-100] Command "ap_set_top_model array_sum "
+@I [HLS-100] Command 'ap_set_top_model' returned 0; elapsed 6.5e-05Total elapsed time: 1.686 sec.
+@I [HLS-100] Command "get_model_list array_sum -filter all-wo-channel -topdown "
+@I [HLS-100] Command 'get_model_list' returned 0; elapsed 3.5e-05Total elapsed time: 1.686 sec.
+@I [HLS-100] Command "preproc_iomode -model array_sum "
+@I [HLS-100] Command 'preproc_iomode' returned 0; elapsed 0.000119Total elapsed time: 1.686 sec.
+@I [HLS-100] Command "get_model_list array_sum -filter all-wo-channel "
+@I [HLS-100] Command 'get_model_list' returned 0; elapsed 1.8e-05Total elapsed time: 1.687 sec.
+@I [HLS-0] Model list for configure: array_sum
+@I [HLS-0] Configuring Module : array_sum ...
+@I [HLS-100] Command "set_default_model array_sum "
+@I [HLS-100] Command 'set_default_model' returned 0; elapsed 2.7e-05Total elapsed time: 1.687 sec.
+@I [HLS-100] Command "apply_spec_resource_limit array_sum "
+@I [HLS-100] Command 'apply_spec_resource_limit' returned 0; elapsed 3.6e-05Total elapsed time: 1.687 sec.
+@I [HLS-0] Model list for preprocess: array_sum
+@I [HLS-0] Preprocessing Module: array_sum ...
+@I [HLS-100] Command "set_default_model array_sum "
+@I [HLS-100] Command 'set_default_model' returned 0; elapsed 1.5e-05Total elapsed time: 1.687 sec.
+@I [HLS-100] Command "cdfg_preprocess -model array_sum "
+@I [HLS-100] Command 'cdfg_preprocess' returned 0; elapsed 0.001101Total elapsed time: 1.688 sec.
+@I [HLS-100] Command "rtl_gen_preprocess array_sum "
+@W [SYN-107] Renaming port name 'array_sum/array' to 'array_sum/array_r' to avoid the conflict with HDL keywords or other object names.
+@W [SYN-107] Renaming port name 'array_sum/length' to 'array_sum/length_r' to avoid the conflict with HDL keywords or other object names.
+@I [HLS-100] Command 'rtl_gen_preprocess' returned 0; elapsed 0.000542Total elapsed time: 1.689 sec.
+@I [HLS-0] Model list for synthesis: array_sum
+@I [HLS-10] ----------------------------------------------------------------
+@0 [HLS-0] ----------------------------------------------------------------
+@I [HLS-10] -- Scheduling module 'array_sum' 
+@0 [HLS-0] -- Scheduling module 'array_sum' 
+@I [HLS-10] ----------------------------------------------------------------
+@0 [HLS-0] ----------------------------------------------------------------
+@I [HLS-100] Command "set_default_model array_sum "
+@I [HLS-100] Command 'set_default_model' returned 0; elapsed 7e-06Total elapsed time: 1.689 sec.
+@I [HLS-100] Command "schedule -model array_sum "
+@I [SCHED-11] Starting scheduling ...
+@I [SCHED-11] Finished scheduling.
+@I [HLS-100] Command 'schedule' returned 0; elapsed 0.058131Total elapsed time: 1.747 sec.
+@I [HLS-111] Elapsed time: 0.062746 seconds; current memory usage: 56.2 MB.
+@I [HLS-100] Command "report -o /home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.verbose.sched.rpt -verbose -f "
+@I [HLS-100] Command 'report' returned 0; elapsed 0.003604Total elapsed time: 1.751 sec.
+@I [HLS-100] Command "db_write -o /home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.sched.adb -f "
+@I [HLS-100] Command 'db_write' returned 0; elapsed 0.009143Total elapsed time: 1.760 sec.
+@I [HLS-0] Finish scheduling array_sum.
+@I [HLS-10] ----------------------------------------------------------------
+@0 [HLS-0] ----------------------------------------------------------------
+@I [HLS-10] -- Exploring micro-architecture for module 'array_sum' 
+@0 [HLS-0] -- Exploring micro-architecture for module 'array_sum' 
+@I [HLS-10] ----------------------------------------------------------------
+@0 [HLS-0] ----------------------------------------------------------------
+@I [HLS-100] Command "set_default_model array_sum "
+@I [HLS-100] Command 'set_default_model' returned 0; elapsed 1.1e-05Total elapsed time: 1.761 sec.
+@I [HLS-100] Command "bind -model array_sum "
+@I [BIND-110] clear=
+@I [BIND-110] debug=
+@I [BIND-110] drf=
+@I [BIND-110] effort=
+@I [BIND-110] fast_refine=
+@I [BIND-110] fu_weight=[ 0.0 -- 1.0 ]
+@I [BIND-110] global_opt=
+@I [BIND-110] gsearch=
+@I [BIND-110] help=
+@I [BIND-110] help-hidden=
+@I [BIND-110] min_mem_port=
+@I [BIND-110] min_op=
+@I [BIND-110] minreg=
+@I [BIND-110] ml=
+@I [BIND-110] model=array_sum
+@I [BIND-110] no_false_path=
+@I [BIND-110] no_min_op=
+@I [BIND-110] normalize=
+@I [BIND-110] quiet=
+@I [BIND-110] refine=
+@I [BIND-110] reg_weight=[ 0.0 -- 1.0 ]
+@I [BIND-110] search=
+@I [BIND-110] tight_delay=
+@I [BIND-110] verbose=
+@I [BIND-110] wFF=
+@I [BIND-110] wFU=
+@I [BIND-110] wMUX=
+@I [BIND-110] wNET=
+@I [BIND-100] Starting micro-architecture generation ...
+@I [BIND-101] Performing variable lifetime analysis.
+@I [BIND-101] Exploring resource sharing.
+@I [BIND-101] Binding ...
+@I [BIND-100] Finished micro-architecture generation.
+@I [HLS-100] Command 'bind' returned 0; elapsed 0.01796Total elapsed time: 1.779 sec.
+@I [HLS-111] Elapsed time: 0.031418 seconds; current memory usage: 56.9 MB.
+@I [HLS-100] Command "report -o /home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.verbose.bind.rpt -verbose -f "
+@I [HLS-100] Command 'report' returned 0; elapsed 0.011506Total elapsed time: 1.791 sec.
+@I [HLS-100] Command "db_write -o /home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.bind.adb -f "
+@I [HLS-100] Command 'db_write' returned 0; elapsed 0.011431Total elapsed time: 1.802 sec.
+@I [HLS-0] Finish binding array_sum.
+@I [HLS-100] Command "get_model_list array_sum -filter all-wo-channel "
+@I [HLS-100] Command 'get_model_list' returned 0; elapsed 1.6e-05Total elapsed time: 1.802 sec.
+@I [HLS-0] Preprocessing for RTLGen ...
+@I [HLS-100] Command "rtl_gen_preprocess array_sum "
+@I [HLS-100] Command 'rtl_gen_preprocess' returned 0; elapsed 0.000399Total elapsed time: 1.803 sec.
+@I [HLS-0] Model list for RTL generation: array_sum
+@I [HLS-10] ----------------------------------------------------------------
+@0 [HLS-0] ----------------------------------------------------------------
+@I [HLS-10] -- Generating RTL for module 'array_sum' 
+@0 [HLS-0] -- Generating RTL for module 'array_sum' 
+@I [HLS-10] ----------------------------------------------------------------
+@0 [HLS-0] ----------------------------------------------------------------
+@I [HLS-100] Command "create_rtl_model array_sum -vendor xilinx -mg_file /home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.compgen.tcl "
+@I [RTGEN-500] Setting interface mode on port 'array_sum/array_r' to 'ap_memory'.
+@I [RTGEN-500] Setting interface mode on port 'array_sum/length_r' to 'ap_none'.
+@I [RTGEN-500] Setting interface mode on function 'array_sum' to 'ap_ctrl_hs'.
+@W [RTGEN-101] Port 'array_sum/length_r' has no fanin or fanout and is left dangling.
+               Please use C simulation to confirm this function argument can be read from or written to.
+@I [RTGEN-100] Finished creating RTL model for 'array_sum'.
+@I [HLS-100] Command 'create_rtl_model' returned 0; elapsed 0.033239Total elapsed time: 1.837 sec.
+@I [HLS-111] Elapsed time: 0.057574 seconds; current memory usage: 57.7 MB.
+@I [HLS-100] Command "source /home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.rtl_wrap.cfg.tcl "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000172Total elapsed time: 1.837 sec.
+@I [HLS-100] Command "gen_rtl array_sum -istop -style xilinx -tracefl mytrace -tracefmt vcd -traceopt all -f -lang sc -o /home/drichmond/examples/array_sum/solution1/syn/systemc/array_sum -synmodules array_sum "
+@I [HLS-100] Command 'gen_rtl' returned 0; elapsed 0.001779Total elapsed time: 1.839 sec.
+@I [HLS-100] Command "gen_rtl array_sum -istop -style xilinx -f -lang vhdl -o /home/drichmond/examples/array_sum/solution1/syn/vhdl/array_sum "
+@I [HLS-100] Command 'gen_rtl' returned 0; elapsed 0.005058Total elapsed time: 1.844 sec.
+@I [HLS-100] Command "gen_rtl array_sum -istop -style xilinx -f -lang vlog -o /home/drichmond/examples/array_sum/solution1/syn/verilog/array_sum "
+@I [HLS-100] Command 'gen_rtl' returned 0; elapsed 0.003259Total elapsed time: 1.848 sec.
+@I [HLS-100] Command "export_constraint_db -o /home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.constraint.tcl -f -tool general "
+@I [HLS-100] Command 'export_constraint_db' returned 0; elapsed 6.8e-05Total elapsed time: 1.848 sec.
+@I [HLS-100] Command "report -model array_sum -o /home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.design.xml -verbose -f -dv "
+@I [HLS-100] Command 'report' returned 0; elapsed 0.003816Total elapsed time: 1.852 sec.
+@I [HLS-100] Command "report -model array_sum -o /home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.sdaccel.xml -verbose -f -sdaccel "
+@I [HLS-100] Command 'report' returned 0; elapsed 0.006042Total elapsed time: 1.858 sec.
+@I [HLS-100] Command "gen_tb_info array_sum -o /home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum -p /home/drichmond/examples/array_sum/solution1/.autopilot/db "
+@I [HLS-100] Command 'gen_tb_info' returned 0; elapsed 0.000264Total elapsed time: 1.858 sec.
+@I [HLS-100] Command "report -model array_sum -o /home/drichmond/examples/array_sum/solution1/syn/report/array_sum_csynth.rpt -f "
+@I [HLS-100] Command 'report' returned 0; elapsed 0.003161Total elapsed time: 1.861 sec.
+@I [HLS-100] Command "report -model array_sum -o /home/drichmond/examples/array_sum/solution1/syn/report/array_sum_csynth.xml -f -x "
+@I [HLS-100] Command 'report' returned 0; elapsed 0.002096Total elapsed time: 1.864 sec.
+@I [HLS-100] Command "report -model array_sum -o /home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.verbose.rpt -verbose -f "
+@I [HLS-100] Command 'report' returned 0; elapsed 0.014597Total elapsed time: 1.878 sec.
+@I [HLS-100] Command "db_write -model array_sum -o /home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.adb -f "
+@I [HLS-100] Command 'db_write' returned 0; elapsed 0.013681Total elapsed time: 1.892 sec.
+@I [HLS-100] Command "sc_get_clocks array_sum "
+@I [HLS-100] Command 'sc_get_clocks' returned 0; elapsed 8e-06Total elapsed time: 1.922 sec.
+@I [HLS-100] Command "sc_get_portdomain array_sum "
+@I [HLS-100] Command 'sc_get_portdomain' returned 0; elapsed 3e-06Total elapsed time: 1.922 sec.
+@I [HLS-0] Model list for RTL component generation: array_sum
+@I [HLS-0] Handling components in module [array_sum] ... 
+@I [HLS-100] Command "source /home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.compgen.tcl "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000123Total elapsed time: 1.923 sec.
+@I [HLS-0] Append model array_sum
+@I [HLS-0] Generating RTL model list ...
+@I [HLS-0] All models in this session: array_sum
+@I [HLS-0] To file: write model array_sum
+@I [HLS-0] Finished generating RTL model list.
+
+
+@I [HLS-0] RTL Generation done.
+@I [HLS-0] CAS Generation done.
+@I [HLS-0] CBC Generation done.
+@I [HLS-100] Command "export_ssdm /home/drichmond/examples/array_sum/solution1/.autopilot/db/a.export.ll "
+@I [HLS-100] Command 'export_ssdm' returned 0; elapsed 0.000184Total elapsed time: 1.923 sec.
+@I [HLS-100] Command "source /home/drichmond/examples/array_sum/solution1/.autopilot/db/global.setting.tcl "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000119Total elapsed time: 1.925 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/generic/autopilot/common.gen "
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/generic/autopilot/APCoreGen.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000366Total elapsed time: 1.926 sec.
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000715Total elapsed time: 1.926 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/generic/autopilot/op.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000222Total elapsed time: 1.926 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/generic/autopilot/op_simcore.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000609Total elapsed time: 1.927 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/generic/autopilot/interface.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 6.2e-05Total elapsed time: 1.927 sec.
+@I [HLS-100] Command "source /home/drichmond/examples/array_sum/solution1/.autopilot/db/global.setting.tcl "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000105Total elapsed time: 1.927 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/virtex7/virtex7.gen "
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/common/virtex.gen "
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/common/xilinx.gen "
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/plb46.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000879Total elapsed time: 1.929 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/fsl.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000315Total elapsed time: 1.929 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/axi4.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.001467Total elapsed time: 1.931 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/nativeAXI4.gen "
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/saxilite.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.002463Total elapsed time: 1.933 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/maxi.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.004877Total elapsed time: 1.938 sec.
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.00746Total elapsed time: 1.938 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/scripts/xilinxcoregen.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.006045Total elapsed time: 1.944 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/interface/XilEDKCoreGen.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.005617Total elapsed time: 1.950 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/ip/dds_compiler.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.002439Total elapsed time: 1.952 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/ip/xfir.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.021933Total elapsed time: 1.974 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/ip/xfft.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.069657Total elapsed time: 2.44 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/ip/util.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000146Total elapsed time: 2.44 sec.
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.116516Total elapsed time: 2.44 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/common/dsp48.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000102Total elapsed time: 2.45 sec.
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.117905Total elapsed time: 2.45 sec.
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.117996Total elapsed time: 2.45 sec.
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/virtex7/virtex7_fpv6.gen "
+@I [HLS-100] Command "source /opt/Xilinx/Vivado_HLS/2015.4/common/technology/xilinx/common/xilinx_fpv6.gen "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.001099Total elapsed time: 2.47 sec.
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.001193Total elapsed time: 2.47 sec.
+@I [HLS-100] Command "source /home/drichmond/examples/array_sum/solution1/.autopilot/db/global.setting.tcl "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000113Total elapsed time: 2.47 sec.
+@I [HLS-100] Command "source /home/drichmond/examples/array_sum/solution1/.autopilot/db/global.setting.tcl "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000106Total elapsed time: 2.47 sec.
+@I [HLS-100] Command "source /home/drichmond/examples/array_sum/solution1/.autopilot/db/global.setting.tcl "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000105Total elapsed time: 2.48 sec.
+@I [HLS-100] Command "source /home/drichmond/examples/array_sum/solution1/.autopilot/db/global.setting.tcl "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000104Total elapsed time: 2.48 sec.
+@I [HLS-100] Command "source /home/drichmond/examples/array_sum/solution1/.autopilot/db/array_sum.compgen.tcl "
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.000102Total elapsed time: 2.48 sec.
+@I [HLS-10] Finished generating all RTL models.
+@0 [HLS-0] Finished generating all RTL models.
+@I [WSYSC-301] Generating RTL SystemC for 'array_sum'.
+@I [WVHDL-304] Generating RTL VHDL for 'array_sum'.
+@I [WVLOG-307] Generating RTL Verilog for 'array_sum'.
+@I [HLS-100] Command 'autosyn' returned 0; elapsed 0.364125Total elapsed time: 2.49 sec.
+@I [HLS-100] Command 'csynth_design' returned 0; elapsed 0.798791Total elapsed time: 2.49 sec.
+@I [HLS-100] Command 'ap_source' returned 0; elapsed 0.982392Total elapsed time: 2.49 sec.
+@I [HLS-100] Command "cleanup_all "
+@I [HLS-100] Command 'cleanup_all' returned 0; elapsed 0.002783Total elapsed time: 2.52 sec.

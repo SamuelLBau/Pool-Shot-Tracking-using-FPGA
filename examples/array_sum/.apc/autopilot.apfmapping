@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
+  <source>
+    <originFiles name="array_sum.c" path="/home/drichmond/examples/array_sum.c"/>
+  </source>
+  <testbench>
+    <originFiles name="array_sum_test.c" path="/home/drichmond/examples/array_sum_test.c"/>
+  </testbench>
+</autopilotfilemapping:AutoPilotFileMapping>

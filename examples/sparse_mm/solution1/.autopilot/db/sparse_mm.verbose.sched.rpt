@@ -1,0 +1,354 @@
+
+
+================================================================
+== Vivado HLS Report for 'sparse_mm'
+================================================================
+* Date:           Thu Apr  7 14:55:51 2016
+
+* Version:        2015.4 (Build 1412921 on Wed Nov 18 09:58:55 AM 2015)
+* Project:        sparse_mm
+* Solution:       solution1
+* Product family: virtex7
+* Target device:  xc7vx690tffg1761-2
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing (ns): 
+    * Summary: 
+    +--------+-------+----------+------------+
+    |  Clock | Target| Estimated| Uncertainty|
+    +--------+-------+----------+------------+
+    |ap_clk  |  10.00|      8.28|        1.25|
+    +--------+-------+----------+------------+
+
++ Latency (clock cycles): 
+    * Summary: 
+    +-----+-----+-----+-----+---------+
+    |  Latency  |  Interval | Pipeline|
+    | min | max | min | max |   Type  |
+    +-----+-----+-----+-----+---------+
+    |    ?|    ?|    ?|    ?|   none  |
+    +-----+-----+-----+-----+---------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        +-------------+-----+-----+----------+-----------+-----------+------+----------+
+        |             |  Latency  | Iteration|  Initiation Interval  | Trip |          |
+        |  Loop Name  | min | max |  Latency |  achieved |   target  | Count| Pipelined|
+        +-------------+-----+-----+----------+-----------+-----------+------+----------+
+        |- Loop 1     |    ?|    ?|         ?|          -|          -|     ?|    no    |
+        | + Loop 1.1  |    ?|    ?|  7 ~ 13  |          -|          -|     ?|    no    |
+        +-------------+-----+-----+----------+-----------+-----------+------+----------+
+
+============================================================
++ Verbose Summary: Synthesis Manager
+============================================================
+InlineROM: 1
+ExposeGlobal: 0
+============================================================
++ Verbose Summary: CDFG Model
+============================================================
+IsTopModel: 1
+ResetActiveHigh: 1
+IsCombinational: 0
+IsDatapathOnly: 0
+HasWiredReturn: 1
+HasMFsm: 0
+HasVarLatency: 1
+IsPipeline: 0
+IsRtlPipelined: 0
+IsInstanceOverlapped: 0
+IsDontTouch: 0
+HasImplIP: 0
+IsGatedGlobalClock: 0
+
+
+============================================================
++ Verbose Summary: Schedule
+============================================================
+* Number of FSM states: 18
+* Pipeline: 0
+* Dataflow Pipeline: 0
+
+* FSM state transitions: 
+1 --> 
+	2  / true
+2 --> 
+	3  / (tmp)
+3 --> 
+	2  / (!tmp_1)
+	4  / (tmp_1)
+4 --> 
+	5  / true
+5 --> 
+	6  / true
+6 --> 
+	7  / (!tmp_6)
+	16  / (tmp_6)
+7 --> 
+	8  / true
+8 --> 
+	9  / true
+9 --> 
+	10  / true
+10 --> 
+	11  / true
+11 --> 
+	12  / true
+12 --> 
+	13  / true
+13 --> 
+	14  / true
+14 --> 
+	15  / true
+15 --> 
+	3  / true
+16 --> 
+	17  / true
+17 --> 
+	18  / true
+18 --> 
+	3  / true
+* FSM state operations: 
+
+ <State 1>: 0.89ns
+ST_1: stg_19 [1/1] 0.00ns
+:0  call void (...)* @_ssdm_op_SpecBitsMap([4194304 x i64]* %a), !map !0
+
+ST_1: stg_20 [1/1] 0.00ns
+:1  call void (...)* @_ssdm_op_SpecBitsMap(i32 %a_y), !map !6
+
+ST_1: stg_21 [1/1] 0.00ns
+:2  call void (...)* @_ssdm_op_SpecBitsMap(i32 %a_x), !map !12
+
+ST_1: stg_22 [1/1] 0.00ns
+:3  call void (...)* @_ssdm_op_SpecBitsMap([2048 x i32]* %b), !map !16
+
+ST_1: stg_23 [1/1] 0.00ns
+:4  call void (...)* @_ssdm_op_SpecBitsMap(i32 %b_y), !map !22
+
+ST_1: stg_24 [1/1] 0.00ns
+:5  call void (...)* @_ssdm_op_SpecBitsMap(i32 %b_x), !map !26
+
+ST_1: stg_25 [1/1] 0.00ns
+:6  call void (...)* @_ssdm_op_SpecBitsMap([2048 x i32]* %c), !map !30
+
+ST_1: stg_26 [1/1] 0.00ns
+:7  call void (...)* @_ssdm_op_SpecTopModule([10 x i8]* @sparse_mm_str) nounwind
+
+ST_1: b_x_read [1/1] 0.00ns
+:8  %b_x_read = call i32 @_ssdm_op_Read.ap_auto.i32(i32 %b_x)
+
+ST_1: a_y_read [1/1] 0.00ns
+:9  %a_y_read = call i32 @_ssdm_op_Read.ap_auto.i32(i32 %a_y)
+
+ST_1: stg_29 [1/1] 0.89ns
+:10  br label %.loopexit
+
+
+ <State 2>: 2.31ns
+ST_2: ibx [1/1] 0.00ns
+.loopexit:0  %ibx = phi i31 [ 0, %0 ], [ %ibx_1, %.preheader ]
+
+ST_2: ibx_cast [1/1] 0.00ns
+.loopexit:1  %ibx_cast = zext i31 %ibx to i32
+
+ST_2: tmp [1/1] 1.41ns
+.loopexit:2  %tmp = icmp slt i32 %ibx_cast, %b_x_read
+
+ST_2: ibx_1 [1/1] 1.63ns
+.loopexit:3  %ibx_1 = add i31 %ibx, 1
+
+ST_2: stg_34 [1/1] 0.89ns
+.loopexit:4  br i1 %tmp, label %.preheader, label %4
+
+ST_2: stg_35 [1/1] 0.00ns
+:0  ret void
+
+
+ <State 3>: 1.95ns
+ST_3: a_i [1/1] 0.00ns
+.preheader:0  %a_i = phi i32 [ 0, %.loopexit ], [ %a_i_1, %3 ], [ %a_i_1, %2 ]
+
+ST_3: iay [1/1] 0.00ns
+.preheader:1  %iay = phi i32 [ 0, %.loopexit ], [ %iay_1, %2 ], [ %iay, %3 ]
+
+ST_3: sum [1/1] 0.00ns
+.preheader:2  %sum = phi i32 [ 0, %.loopexit ], [ 0, %2 ], [ %sum_1, %3 ]
+
+ST_3: tmp_1 [1/1] 1.41ns
+.preheader:3  %tmp_1 = icmp ult i32 %iay, %a_y_read
+
+ST_3: a_i_1 [1/1] 1.63ns
+.preheader:4  %a_i_1 = add nsw i32 %a_i, 1
+
+ST_3: stg_41 [1/1] 0.00ns
+.preheader:5  br i1 %tmp_1, label %1, label %.loopexit
+
+ST_3: tmp_2 [1/1] 0.00ns
+:0  %tmp_2 = sext i32 %a_i to i64
+
+ST_3: a_addr [1/1] 0.00ns
+:1  %a_addr = getelementptr [4194304 x i64]* %a, i64 0, i64 %tmp_2
+
+ST_3: a_load [4/4] 1.95ns
+:2  %a_load = load i64* %a_addr, align 8
+
+
+ <State 4>: 1.95ns
+ST_4: a_load [3/4] 1.95ns
+:2  %a_load = load i64* %a_addr, align 8
+
+
+ <State 5>: 1.95ns
+ST_5: a_load [2/4] 1.95ns
+:2  %a_load = load i64* %a_addr, align 8
+
+
+ <State 6>: 8.28ns
+ST_6: a_load [1/4] 1.95ns
+:2  %a_load = load i64* %a_addr, align 8
+
+ST_6: tmp_6 [1/1] 0.00ns
+:3  %tmp_6 = trunc i64 %a_load to i1
+
+ST_6: column [1/1] 0.00ns
+:4  %column = call i31 @_ssdm_op_PartSelect.i31.i64.i32.i32(i64 %a_load, i32 1, i32 31)
+
+ST_6: column_cast [1/1] 0.00ns
+:5  %column_cast = zext i31 %column to i32
+
+ST_6: value [1/1] 0.00ns
+:6  %value = call i32 @_ssdm_op_PartSelect.i32.i64.i32.i32(i64 %a_load, i32 32, i32 63)
+
+ST_6: stg_52 [1/1] 0.00ns
+:7  br i1 %tmp_6, label %2, label %3
+
+ST_6: iay_1 [1/1] 1.63ns
+:0  %iay_1 = add nsw i32 %iay, 1
+
+ST_6: tmp_3 [3/3] 8.28ns
+:1  %tmp_3 = mul nsw i32 %iay, %b_x_read
+
+
+ <State 7>: 8.28ns
+ST_7: tmp_8 [3/3] 8.28ns
+:0  %tmp_8 = mul i32 %column_cast, %b_x_read
+
+
+ <State 8>: 8.28ns
+ST_8: tmp_8 [2/3] 8.28ns
+:0  %tmp_8 = mul i32 %column_cast, %b_x_read
+
+
+ <State 9>: 8.28ns
+ST_9: tmp_8 [1/3] 8.28ns
+:0  %tmp_8 = mul i32 %column_cast, %b_x_read
+
+
+ <State 10>: 3.68ns
+ST_10: tmp_9 [1/1] 1.63ns
+:1  %tmp_9 = add i32 %tmp_8, %ibx_cast
+
+ST_10: tmp_s [1/1] 0.00ns
+:2  %tmp_s = zext i32 %tmp_9 to i64
+
+ST_10: b_addr [1/1] 0.00ns
+:3  %b_addr = getelementptr [2048 x i32]* %b, i64 0, i64 %tmp_s
+
+ST_10: b_load [2/2] 2.05ns
+:4  %b_load = load i32* %b_addr, align 4
+
+
+ <State 11>: 2.05ns
+ST_11: b_load [1/2] 2.05ns
+:4  %b_load = load i32* %b_addr, align 4
+
+
+ <State 12>: 8.28ns
+ST_12: tmp_7 [3/3] 8.28ns
+:5  %tmp_7 = mul nsw i32 %b_load, %value
+
+
+ <State 13>: 8.28ns
+ST_13: tmp_7 [2/3] 8.28ns
+:5  %tmp_7 = mul nsw i32 %b_load, %value
+
+
+ <State 14>: 8.28ns
+ST_14: tmp_7 [1/3] 8.28ns
+:5  %tmp_7 = mul nsw i32 %b_load, %value
+
+
+ <State 15>: 1.63ns
+ST_15: sum_1 [1/1] 1.63ns
+:6  %sum_1 = add nsw i32 %tmp_7, %sum
+
+ST_15: stg_67 [1/1] 0.00ns
+:7  br label %.preheader
+
+
+ <State 16>: 8.28ns
+ST_16: tmp_3 [2/3] 8.28ns
+:1  %tmp_3 = mul nsw i32 %iay, %b_x_read
+
+
+ <State 17>: 8.28ns
+ST_17: tmp_3 [1/3] 8.28ns
+:1  %tmp_3 = mul nsw i32 %iay, %b_x_read
+
+
+ <State 18>: 3.68ns
+ST_18: tmp_5 [1/1] 1.63ns
+:2  %tmp_5 = add nsw i32 %tmp_3, %ibx_cast
+
+ST_18: tmp_4 [1/1] 0.00ns
+:3  %tmp_4 = sext i32 %tmp_5 to i64
+
+ST_18: c_addr [1/1] 0.00ns
+:4  %c_addr = getelementptr [2048 x i32]* %c, i64 0, i64 %tmp_4
+
+ST_18: stg_73 [1/1] 2.05ns
+:5  store i32 %sum, i32* %c_addr, align 4
+
+ST_18: stg_74 [1/1] 0.00ns
+:6  br label %.preheader
+
+
+
+============================================================
++ Verbose Summary: Binding
+============================================================
+N/A
+* FSMD analyzer results:
+  - Output states:
+  - Chain level:
+	State 1
+	State 2
+	State 3
+	State 4
+	State 5
+	State 6
+	State 7
+	State 8
+	State 9
+	State 10
+	State 11
+	State 12
+	State 13
+	State 14
+	State 15
+	State 16
+	State 17
+	State 18
+
+
+============================================================
++ Verbose Summary: Datapath Resource usage 
+============================================================
+N/A

@@ -1,0 +1,11 @@
+   Compiling ../../../../sparse_mm_test.cpp in debug mode
+   Compiling ../../../../sparse_mm.cpp in debug mode
+   Generating csim.exe
+8
+
+
+
+Len CSR A: 1064210
+Equals returned 1
+Equals returned 1
+@I [SIM-1] CSim done with 0 errors.

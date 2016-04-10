@@ -1,0 +1,58 @@
+@I [HLS-10] Running '/opt/Xilinx/Vivado_HLS/2015.4/bin/unwrapped/lnx64.o/vivado_hls'
+            for user 'drichmond' on host 'archetype' (Linux_x86_64 version 3.13.0-24-generic) on Thu Apr 07 14:55:49 PDT 2016
+            in directory '/home/drichmond/examples'
+@I [HLS-10] Opening project '/home/drichmond/examples/sparse_mm'.
+@I [HLS-10] Adding design file 'sparse_mm.cpp' to the project
+@I [HLS-10] Adding test bench file 'sparse_mm_test.cpp' to the project
+@I [HLS-10] Opening solution '/home/drichmond/examples/sparse_mm/solution1'.
+@I [SYN-201] Setting up clock 'default' with a period of 10ns.
+@I [HLS-10] Setting target device to 'xc7vx690tffg1761-2'
+@I [SYN-201] Setting up clock 'default' with a period of 10ns.
+@I [HLS-10] Analyzing design file 'sparse_mm.cpp' ... 
+@I [HLS-10] Validating synthesis directives ...
+@I [HLS-10] Starting code transformations ...
+@I [HLS-10] Checking synthesizability ...
+@I [HLS-111] Elapsed time: 0.551628 seconds; current memory usage: 55.1 MB.
+@I [HLS-10] Starting hardware synthesis ...
+@I [HLS-10] Synthesizing 'sparse_mm' ...
+@I [HLS-10] ----------------------------------------------------------------
+@I [HLS-10] -- Scheduling module 'sparse_mm' 
+@I [HLS-10] ----------------------------------------------------------------
+@I [SCHED-11] Starting scheduling ...
+@I [SCHED-11] Finished scheduling.
+@I [HLS-111] Elapsed time: 0.068002 seconds; current memory usage: 55.8 MB.
+@I [HLS-10] ----------------------------------------------------------------
+@I [HLS-10] -- Exploring micro-architecture for module 'sparse_mm' 
+@I [HLS-10] ----------------------------------------------------------------
+@I [BIND-100] Starting micro-architecture generation ...
+@I [BIND-101] Performing variable lifetime analysis.
+@I [BIND-101] Exploring resource sharing.
+@I [BIND-101] Binding ...
+@I [BIND-100] Finished micro-architecture generation.
+@I [HLS-111] Elapsed time: 0.014436 seconds; current memory usage: 56 MB.
+@I [HLS-10] ----------------------------------------------------------------
+@I [HLS-10] -- Generating RTL for module 'sparse_mm' 
+@I [HLS-10] ----------------------------------------------------------------
+@I [RTGEN-500] Setting interface mode on port 'sparse_mm/a' to 'ap_memory'.
+@I [RTGEN-500] Setting interface mode on port 'sparse_mm/a_y' to 'ap_none'.
+@I [RTGEN-500] Setting interface mode on port 'sparse_mm/a_x' to 'ap_none'.
+@I [RTGEN-500] Setting interface mode on port 'sparse_mm/b' to 'ap_memory'.
+@I [RTGEN-500] Setting interface mode on port 'sparse_mm/b_y' to 'ap_none'.
+@I [RTGEN-500] Setting interface mode on port 'sparse_mm/b_x' to 'ap_none'.
+@I [RTGEN-500] Setting interface mode on port 'sparse_mm/c' to 'ap_memory'.
+@I [RTGEN-500] Setting interface mode on function 'sparse_mm' to 'ap_ctrl_hs'.
+@W [RTGEN-101] Port 'sparse_mm/a_x' has no fanin or fanout and is left dangling.
+               Please use C simulation to confirm this function argument can be read from or written to.
+@W [RTGEN-101] Port 'sparse_mm/b_y' has no fanin or fanout and is left dangling.
+               Please use C simulation to confirm this function argument can be read from or written to.
+@I [RTGEN-100] Generating core module 'sparse_mm_mul_31ns_32s_32_3': 1 instance(s).
+@I [RTGEN-100] Generating core module 'sparse_mm_mul_32s_32s_32_3': 2 instance(s).
+@I [RTGEN-100] Finished creating RTL model for 'sparse_mm'.
+@I [HLS-111] Elapsed time: 0.039348 seconds; current memory usage: 56.5 MB.
+@I [RTMG-282] Generating pipelined core: 'sparse_mm_mul_32s_32s_32_3_Mul3S_0'
+@I [RTMG-282] Generating pipelined core: 'sparse_mm_mul_31ns_32s_32_3_Mul3S_1'
+@I [HLS-10] Finished generating all RTL models.
+@I [WSYSC-301] Generating RTL SystemC for 'sparse_mm'.
+@I [WVHDL-304] Generating RTL VHDL for 'sparse_mm'.
+@I [WVLOG-307] Generating RTL Verilog for 'sparse_mm'.
+@I [HLS-112] Total elapsed time: 1.961 seconds; peak memory usage: 56.5 MB.
