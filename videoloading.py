@@ -112,7 +112,7 @@ def detectWhiteBall(frame):
 	whiteUpper = (33, 255, 255)
 	greenLower = (54, 0, 0)
 	greenUpper = (70, 255, 255)
-
+	frame = cv2.GaussianBlur(frame,(3,3),0)
 	
 	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -121,11 +121,12 @@ def detectWhiteBall(frame):
 	#mask = greenMast
 	#mask = cv2.bitwise_or(greenMask, whiteMask)
 	mask = getHSVMaskExcludeTable(hsv)
+	#mask = getHSVMaskIncludeBalls(hsv)
 	frame = imutils.resize(frame, width=850)
 	mask = imutils.resize(mask, width=850)
 	#mask = getHSVMaskIncludeBalls(hsv)
-	#mask = cv2.erode(mask, None, iterations=2)
-	#mask = cv2.dilate(mask, None, iterations=2)
+	mask = cv2.erode(mask, None, iterations=4)
+	mask = cv2.dilate(mask, None, iterations=9)
 	cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
 		cv2.CHAIN_APPROX_SIMPLE)[-2]
 	center = None
@@ -143,7 +144,7 @@ def detectWhiteBall(frame):
 				center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 		 
 				# only proceed if the radius meets a minimum size
-				if radius > 11 and radius < 21:
+				if radius > 10 and radius < 30:
 					# draw the circle and centroid on the frame,
 					# then update the list of tracked points
 					cv2.circle(frame, (int(x), int(y)), int(radius),
