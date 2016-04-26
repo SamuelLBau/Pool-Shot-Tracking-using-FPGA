@@ -1,6 +1,5 @@
 import numpy as np
 import cv2
-import imutils
 
 def getHoughCircles(img,minRadius=2,maxRadius=12,minDistance=1):
 	img = cv2.GaussianBlur(img,(3,3),0)
@@ -44,12 +43,7 @@ def drawBlobs(img):
 	im_with_keypoints = cv2.drawKeypoints(img, keypoints, np.array([]), (0,0,255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
 	return im_with_keypoints
 
-def getHSVMaskExcludeTable(hsv):
-	THRESHOLD = 3000
-	XTOP = 148
-	XBOT = 1800
-	YTOP = 144
-	YBOT = 935
+def getHSVMaskExcludeTable(hsv,THRESHOLD=3000,XTOP=148,XBOT=1800,YTOP=144,YBOT=935):
 	croppedHSV = hsv[YTOP:YBOT,XTOP:XBOT]
 	histogram = cv2.calcHist([croppedHSV], [0], None, [180], [0, 180])
 
@@ -108,37 +102,30 @@ def getHSVMaskIncludeBalls(hsv):
 	return outMask
 
 def getMask(frame):
-    frame = cv2.GaussianBlur(frame,(3,3),0)
-	
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-	#greenMask = cv2.inRange(hsv, greenLower, greenUpper)
-	#whiteMask = cv2.inRange(hsv, whiteLower, whiteUpper)
-	#mask = greenMast
-	#mask = cv2.bitwise_or(greenMask, whiteMask)
+    frame = cv2.GaussianBlur(frame,(3,3),0)
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     mask = getHSVMaskExcludeTable(hsv)
-	#mask = getHSVMaskIncludeBalls(hsv)
-    #frame = imutils.resize(frame, width=850)
-    #mask = imutils.resize(mask, width=850)
-	#mask = getHSVMaskIncludeBalls(hsv)
     mask = cv2.erode(mask, None, iterations=4)
     mask = cv2.dilate(mask, None, iterations=9)
+    
     return mask
+    
 def detectBlobs(frame,mask):
 
-    cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
+    blobs = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
 		cv2.CHAIN_APPROX_SIMPLE)[-2]
-    return cnts
+    return blobs
 	#return mask
 
-def getCircles(cnts):
+def getCircles(blobs):
     circles = []
-    if len(cnts) > 0:
+    if len(blobs) > 0:
 		# find the largest contour in the mask, then use
 		# it to compute the minimum enclosing circle and
 		# centroid
 		#c = max(cnts, key=cv2.contourArea)
-		for c in cnts:
+		for c in blobs:
 			circles.append(cv2.minEnclosingCircle(c))
                     
     return circles
@@ -159,30 +146,3 @@ def drawFrame(frame,circles):
                     cv2.circle(frame, center, 5, (0, 0, 255), -1)
                     
     return frame
-cap = cv2.VideoCapture("croppedAndRotatedVideo1.mp4")
-#fgbg = cv2.bgsegm.createBackgroundSubtractorMOG()
-#fgbg = cv2.bgsegm.createBackgroundSubtractorGMG()
-
-while(cap.isOpened()):
-    ret, frame = cap.read()
-    #bgsub = subtractBackground(fgbg,frame)
-    #circles = getHoughCircles(frame)
-    #cimg = drawCirclesOnFrame(circles,frame)
-    #im_with_keypoints = drawBlobs(frame)
-    
-    #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    mask = getMask(frame)
-    blobs = detectBlobs(frame,mask)
-    circles = getCircles(blobs)
-    
-    outFrame = drawFrame(frame,blobs)
-    
-    
-    
-    outFrame = imutils.resize(outFrame, width=850)
-    cv2.imshow('frame', outFrame)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-
-cap.release()
-cv2.destroyAllWindows()
