@@ -107,54 +107,62 @@ def getHSVMaskIncludeBalls(hsv):
 
 	return outMask
 
-def detectWhiteBall(frame):
-	whiteLower = (27, 0, 0)
-	whiteUpper = (33, 255, 255)
-	greenLower = (54, 0, 0)
-	greenUpper = (70, 255, 255)
-	frame = cv2.GaussianBlur(frame,(3,3),0)
+def detectBlobs(frame):
+    whiteLower = (27, 0, 0)
+    whiteUpper = (33, 255, 255)
+    greenLower = (54, 0, 0)
+    greenUpper = (70, 255, 255)
+    frame = cv2.GaussianBlur(frame,(3,3),0)
 	
-	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
 	#greenMask = cv2.inRange(hsv, greenLower, greenUpper)
 	#whiteMask = cv2.inRange(hsv, whiteLower, whiteUpper)
 	#mask = greenMast
 	#mask = cv2.bitwise_or(greenMask, whiteMask)
-	mask = getHSVMaskExcludeTable(hsv)
+    mask = getHSVMaskExcludeTable(hsv)
 	#mask = getHSVMaskIncludeBalls(hsv)
-	frame = imutils.resize(frame, width=850)
-	mask = imutils.resize(mask, width=850)
+    #frame = imutils.resize(frame, width=850)
+    #mask = imutils.resize(mask, width=850)
 	#mask = getHSVMaskIncludeBalls(hsv)
-	mask = cv2.erode(mask, None, iterations=4)
-	mask = cv2.dilate(mask, None, iterations=9)
-	cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
+    mask = cv2.erode(mask, None, iterations=4)
+    mask = cv2.dilate(mask, None, iterations=9)
+    cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
 		cv2.CHAIN_APPROX_SIMPLE)[-2]
-	center = None
+    center = None
 	## only proceed if at least one contour was found
-	if len(cnts) > 0:
+    return cnts
+	#return mask
+
+def getCircles(cnts):
+    circles = []
+    if len(cnts) > 0:
 		# find the largest contour in the mask, then use
 		# it to compute the minimum enclosing circle and
 		# centroid
 		#c = max(cnts, key=cv2.contourArea)
 		for c in cnts:
+			circles.append(cv2.minEnclosingCircle(c))
+                    
+    return circles
 
-			((x, y), radius) = cv2.minEnclosingCircle(c)
-			M = cv2.moments(c)
-			if M["m00"] > 0:
-				center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
-		 
-				# only proceed if the radius meets a minimum size
-				if radius > 10 and radius < 30:
-					# draw the circle and centroid on the frame,
-					# then update the list of tracked points
-					cv2.circle(frame, (int(x), int(y)), int(radius),
-						(0, 255, 255), 2)
-					cv2.circle(frame, center, 5, (0, 0, 255), -1)
-	return frame
-	#return mask
-	
-
-cap = cv2.VideoCapture('video2.mp4')
+def drawFrame(frame,circles):
+    if(circles != None):
+        for c in circles:
+            ((x, y), radius) = cv2.minEnclosingCircle(c)
+            M = cv2.moments(c)
+            if M["m00"] > 0:
+                center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
+                # only proceed if the radius meets a minimum size
+                if radius > 20 and radius < 50:
+                    # draw the circle and centroid on the frame,
+                    # then update the list of tracked points
+                    cv2.circle(frame, (int(x), int(y)), int(radius),
+                        (0, 255, 255), 2)
+                    cv2.circle(frame, center, 5, (0, 0, 255), -1)
+                    
+    return frame
+cap = cv2.VideoCapture("croppedAndRotatedVideo1.mp4")
 #fgbg = cv2.bgsegm.createBackgroundSubtractorMOG()
 #fgbg = cv2.bgsegm.createBackgroundSubtractorGMG()
 
@@ -166,9 +174,13 @@ while(cap.isOpened()):
     #im_with_keypoints = drawBlobs(frame)
     
     #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    whiteball = detectWhiteBall(frame)
-
-    cv2.imshow('frame', whiteball)
+    cnts = detectBlobs(frame)
+    circles = getCircles(cnts)
+    
+    outFrame = drawFrame(frame,cnts)
+    
+    outFrame = imutils.resize(outFrame, width=850)
+    cv2.imshow('frame', outFrame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
