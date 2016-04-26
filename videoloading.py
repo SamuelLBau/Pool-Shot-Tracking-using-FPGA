@@ -107,11 +107,7 @@ def getHSVMaskIncludeBalls(hsv):
 
 	return outMask
 
-def detectBlobs(frame):
-    whiteLower = (27, 0, 0)
-    whiteUpper = (33, 255, 255)
-    greenLower = (54, 0, 0)
-    greenUpper = (70, 255, 255)
+def getMask(frame):
     frame = cv2.GaussianBlur(frame,(3,3),0)
 	
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -127,10 +123,11 @@ def detectBlobs(frame):
 	#mask = getHSVMaskIncludeBalls(hsv)
     mask = cv2.erode(mask, None, iterations=4)
     mask = cv2.dilate(mask, None, iterations=9)
+    return mask
+def detectBlobs(frame,mask):
+
     cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
 		cv2.CHAIN_APPROX_SIMPLE)[-2]
-    center = None
-	## only proceed if at least one contour was found
     return cnts
 	#return mask
 
@@ -174,10 +171,13 @@ while(cap.isOpened()):
     #im_with_keypoints = drawBlobs(frame)
     
     #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    cnts = detectBlobs(frame)
-    circles = getCircles(cnts)
+    mask = getMask(frame)
+    blobs = detectBlobs(frame,mask)
+    circles = getCircles(blobs)
     
-    outFrame = drawFrame(frame,cnts)
+    outFrame = drawFrame(frame,blobs)
+    
+    
     
     outFrame = imutils.resize(outFrame, width=850)
     cv2.imshow('frame', outFrame)
