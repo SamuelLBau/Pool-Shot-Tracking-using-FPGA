@@ -1,6 +1,8 @@
 import numpy as np
 import cv2
 
+import imutils
+
 def getHoughCircles(img,minRadius=2,maxRadius=12,minDistance=1):
 	img = cv2.GaussianBlur(img,(3,3),0)
 	img = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -13,36 +15,6 @@ def getHoughLines(img,minLength,minSeparation):
 	lines = cv2.HoughLinesP(edges,1,np.pi/180,180,minLength,minSeparation)
 	return lines
 
-def drawCirclesOnFrame(circles,frame):
-	if(circles != None):
-		circles = np.uint16(np.around(circles))
-		for i in circles[0,:]:
-			# draw the outer circle
-			cv2.circle(frame,(i[0],i[1]),i[2],(0,255,0),2)
-			# draw the center of the circle
-			cv2.circle(frame,(i[0],i[1]),2,(0,0,255),3)
-	return frame
-
-def subtractBackground(fgbg,frame):
-	#gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)	
-	fgmask = fgbg.apply(frame)
-	return fgmask
-
-def drawBlobs(img):
-	gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-	# set the parameters
-	params = cv2.SimpleBlobDetector_Params()
-	params.filterByArea = True
-	params.minArea = 20
-	params.maxArea = 30
-	params.filterByCircularity = True
-	params.minCircularity = 0.7
-	# declare the blob detector
-	detector = cv2.SimpleBlobDetector_create(params)
-	keypoints = detector.detect(img)
-	im_with_keypoints = cv2.drawKeypoints(img, keypoints, np.array([]), (0,0,255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-	return im_with_keypoints
-
 def getHSVMaskExcludeTable(hsv,THRESHOLD=3000,XTOP=148,XBOT=1800,YTOP=144,YBOT=935):
 	croppedHSV = hsv[YTOP:YBOT,XTOP:XBOT]
 	histogram = cv2.calcHist([croppedHSV], [0], None, [180], [0, 180])
@@ -54,6 +26,8 @@ def getHSVMaskExcludeTable(hsv,THRESHOLD=3000,XTOP=148,XBOT=1800,YTOP=144,YBOT=9
 	return hsv[:,:,0]
 
 def getHSVMaskIncludeBalls(hsv):
+    #This method is outdated, it works by adding each color for each ball to the mask
+    #Appears more efficient to instead subtract the pool table
 	#These are currently hard-coded, hopefully we can do something else with it later
 	outputArray = np.array([255,255,255])
 
@@ -105,13 +79,19 @@ def getMask(frame):
 
     frame = cv2.GaussianBlur(frame,(3,3),0)
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    mask = getHSVMaskExcludeTable(hsv)
-    mask = cv2.erode(mask, None, iterations=4)
-    mask = cv2.dilate(mask, None, iterations=9)
+    mask = getHSVMaskExcludeTable(hsv)              #This method currently appears better
+    
+    
+    #May add more stages here to improve ball finding
+    erodeAndDilate(hsv,4,9)
     
     return mask
-    
-def detectBlobs(frame,mask):
+
+def erodeAndDilate(mask,erodeIT=0,dilateIT=0):
+    mask = cv2.erode(mask, None, iterations=erodeIT)
+    mask = cv2.dilate(mask, None, iterations=dilateIT)
+    return mask
+def detectBlobs(mask):
 
     blobs = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
 		cv2.CHAIN_APPROX_SIMPLE)[-2]
@@ -130,15 +110,16 @@ def getCircles(blobs):
                     
     return circles
 
-def drawFrame(frame,circles):
-    if(circles != None):
-        for c in circles:
+def drawCirclesFrame(frame,blobs,minradius=20,maxradius=50):
+    #Given an input frame and a list of blobs, generate a list of circles blob
+    if(blobs != None):
+        for c in blobs:
             ((x, y), radius) = cv2.minEnclosingCircle(c)
             M = cv2.moments(c)
-            if M["m00"] > 0:
+            if M["m00"] > 0:#Solves a div/0 issues we were having
                 center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
                 # only proceed if the radius meets a minimum size
-                if radius > 20 and radius < 50:
+                if radius > minradius and radius < maxradius:
                     # draw the circle and centroid on the frame,
                     # then update the list of tracked points
                     cv2.circle(frame, (int(x), int(y)), int(radius),
@@ -146,3 +127,65 @@ def drawFrame(frame,circles):
                     cv2.circle(frame, center, 5, (0, 0, 255), -1)
                     
     return frame
+    
+def generateCircleList(frame):
+    mask = getMask(frame)               #Generates mask
+    blobs = detectBlobs(mask)     #Finds contours from video
+    circles = getCircles(blobs)         #Generates list of circles from countour list
+    return circles
+def drawTableFrame(frame,table):
+    print("Draw table frame")
+    
+def getTable(frame):        #Takes in a gaussian blurred image
+    #This method still assumes table makes up majority of image
+    THRESHOLD = 3000
+    contourMode = cv2.RETR_LIST
+    contourMethod = cv2.CHAIN_APPROX_SIMPLE
+    
+    print("mode: %d"%(contourMode))
+    print("method: %d"%(contourMethod))
+    
+    frame = cv2.GaussianBlur(frame,(3,3),0)
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    mask = hsv
+    
+    histogram = cv2.calcHist([hsv], [0], None, [180], [0, 180])
+   
+    mask[histogram[mask[:,:,0]] < THRESHOLD] = 0
+    mask = cv2.threshold(mask,40,255,cv2.THRESH_BINARY)[1]
+    mask = mask[:,:,0]
+    
+    blobs = cv2.findContours(mask.copy(),contourMode,contourMethod)[1]
+    
+    maxContourArea = 0
+    maxContourIndex = 0
+    i=0
+    for blob in blobs:
+        area = cv2.contourArea(blob,False)
+        
+        if(area > maxContourArea):
+            maxContourArea = area
+            maxContourIndex = i
+        i=i+1
+            
+            
+    print("i = %d"%(maxContourIndex))    
+
+    hull = cv2.convexHull(blobs[maxContourIndex])       #This is the shape of the
+
+    rect = cv2.boundingRect(hull)
+    topLeft = [rect[0],rect[1]]
+    topRight = [rect[0]+rect[2],rect[1]]
+    botLeft = [rect[0],rect[1]+rect[3]]
+    botRight = [rect[0]+rect[2],rect[1]+rect[3]]
+    rectangle = np.array([topLeft,topRight,botRight,botLeft])
+
+    print(rectangle)
+    showImage = np.zeros(mask.shape,np.uint8)
+    showImage = cv2.drawContours(showImage.copy(),[rectangle],0,(255),-1)
+    
+    showImage =cv2.bitwise_and(frame[:,:,0],showImage)
+    
+    showImage = imutils.resize(showImage, width=850)
+    cv2.imshow('frame', showImage)
+    

@@ -1,46 +1,59 @@
 import numpy as np
 import cv2
 import imutils
-
 from ballDetection import *
 
+INPUT_VIDEO_FILE = "croppedAndRotatedVideo1"
+INPUT_EXTENSION = ".mp4"
+OUTPUT_MASK_FILE = INPUT_VIDEO_FILE+"_mask.mp4"
+OUTPUT_CIRCLES_FILE = INPUT_VIDEO_FILE+"_circles.mp4"
+INPUT_VIDEO_FILE = INPUT_VIDEO_FILE + INPUT_EXTENSION
 
-cap = cv2.VideoCapture("croppedAndRotatedVideo1.mp4")
+WRITE_CIRCLES_VIDEO = False
+WRITE_MASK_VIDEO = False
+
+
+
+cap = cv2.VideoCapture(INPUT_VIDEO_FILE)
 
 ret, frame = cap.read()
 frameHeight,frameWidth,depth = frame.shape
 #(*'H264')
 fourcc = cv2.VideoWriter_fourcc("X","V","I","D")
+if WRITE_MASK_VIDEO:
+    maskWriter = cv2.VideoWriter(OUTPUT_MASK_FILE,fourcc,30,(frameWidth,frameHeight),0)
 
-maskWriter = cv2.VideoWriter("croppedAndRotatedVideo1_mask.mp4",fourcc,30,(frameWidth,frameHeight),0)
-resultWriter = cv2.VideoWriter("croppedAndRotatedVideo1_result.mp4",fourcc,30,(frameWidth,frameHeight))
+if WRITE_CIRCLES_VIDEO:
+    circlesWriter = cv2.VideoWriter(OUTPUT_CIRCLES_FILE,fourcc,30,(frameWidth,frameHeight))
 
-#fgbg = cv2.bgsegm.createBackgroundSubtractorMOG()
-#fgbg = cv2.bgsegm.createBackgroundSubtractorGMG()
 
 while(cap.isOpened()):
-    ret, frame = cap.read()
-    #bgsub = subtractBackground(fgbg,frame)
-    #circles = getHoughCircles(frame)
-    #cimg = drawCirclesOnFrame(circles,frame)
-    #im_with_keypoints = drawBlobs(frame)
+    ret, frame = cap.read()             #Gets frame from the video
+    table = getTable(frame)
     
-    #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    mask = getMask(frame)
-    blobs = detectBlobs(frame,mask)
-    circles = getCircles(blobs)
+    #circles = generateCircleList(frame) #This does same operation as next 3 lines
+    mask = getMask(frame)               #Generates mask
+    blobs = detectBlobs(mask)     #Finds contours from video
+    circles = getCircles(blobs)         #Generates list of circles from countour list
     
-    outFrame = drawFrame(frame,blobs)
+    circlesFrame = drawCirclesFrame(frame,blobs)
+    tableFrame = drawTableFrame(frame,table)
     
-    maskWriter.write(mask)
-    resultWriter.write(outFrame)
+    if WRITE_MASK_VIDEO:
+        maskWriter.write(mask)
+    if WRITE_CIRCLES_VIDEO:
+        circlesWriter.write(circlesFrame)
     
-    outFrame = imutils.resize(outFrame, width=850)
-    cv2.imshow('frame', outFrame)
+    circlesFrame = imutils.resize(circlesFrame, width=850)
+    
+    
+    #cv2.imshow('frame', tableFrame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-maskWriter.release()
-resultWriter.release()
+if WRITE_CIRCLES_VIDEO:
+    circlesWriter.release()
+if WRITE_MASK_VIDEO:
+    maskWriter.release()
 cap.release()
 cv2.destroyAllWindows()
