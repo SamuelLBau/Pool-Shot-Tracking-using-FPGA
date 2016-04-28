@@ -3,10 +3,13 @@ import cv2
 import imutils
 from ballDetection import *
 
-INPUT_VIDEO_FILE = "croppedAndRotatedVideo1"
+MAX_FRAMES = 180
+
+INPUT_VIDEO_FILE = "GoPro4deFisheye"
 INPUT_EXTENSION = ".mp4"
 OUTPUT_MASK_FILE = INPUT_VIDEO_FILE+"_mask.mp4"
 OUTPUT_CIRCLES_FILE = INPUT_VIDEO_FILE+"_circles.mp4"
+OUTPUT_TABLE_FILE = INPUT_VIDEO_FILE+"_table.mp4"
 INPUT_VIDEO_FILE = INPUT_VIDEO_FILE + INPUT_EXTENSION
 
 WRITE_CIRCLES_VIDEO = False
@@ -25,12 +28,13 @@ if WRITE_MASK_VIDEO:
 
 if WRITE_CIRCLES_VIDEO:
     circlesWriter = cv2.VideoWriter(OUTPUT_CIRCLES_FILE,fourcc,30,(frameWidth,frameHeight))
-
+    
+tableWriter = cv2.VideoWriter(OUTPUT_TABLE_FILE,fourcc,30,(frameWidth,frameHeight),0)
+count = 0
 
 while(cap.isOpened()):
     ret, frame = cap.read()             #Gets frame from the video
     table = getTable(frame)
-    
     #circles = generateCircleList(frame) #This does same operation as next 3 lines
     mask = getMask(frame)               #Generates mask
     blobs = detectBlobs(mask)     #Finds contours from video
@@ -43,17 +47,22 @@ while(cap.isOpened()):
         maskWriter.write(mask)
     if WRITE_CIRCLES_VIDEO:
         circlesWriter.write(circlesFrame)
+        
+    tableWriter.write(table)
     
     circlesFrame = imutils.resize(circlesFrame, width=850)
     
     
-    #cv2.imshow('frame', tableFrame)
+    #cv2.imshow('frame', table)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
+    count = count+1
+        
 if WRITE_CIRCLES_VIDEO:
     circlesWriter.release()
 if WRITE_MASK_VIDEO:
     maskWriter.release()
+tableWriter.release()
 cap.release()
 cv2.destroyAllWindows()

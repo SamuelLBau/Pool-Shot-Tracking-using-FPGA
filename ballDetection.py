@@ -137,13 +137,11 @@ def drawTableFrame(frame,table):
     print("Draw table frame")
     
 def getTable(frame):        #Takes in a gaussian blurred image
+    #TODO: CURRENTLY METHOD DOES NOT CROP PROPERLY, NEED TO TEST WITH DE-FISHEYED VIDEO
     #This method still assumes table makes up majority of image
     THRESHOLD = 3000
     contourMode = cv2.RETR_LIST
     contourMethod = cv2.CHAIN_APPROX_SIMPLE
-    
-    print("mode: %d"%(contourMode))
-    print("method: %d"%(contourMethod))
     
     frame = cv2.GaussianBlur(frame,(3,3),0)
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -168,8 +166,7 @@ def getTable(frame):        #Takes in a gaussian blurred image
             maxContourIndex = i
         i=i+1
             
-            
-    print("i = %d"%(maxContourIndex))    
+                
 
     hull = cv2.convexHull(blobs[maxContourIndex])       #This is the shape of the
 
@@ -179,13 +176,14 @@ def getTable(frame):        #Takes in a gaussian blurred image
     botLeft = [rect[0],rect[1]+rect[3]]
     botRight = [rect[0]+rect[2],rect[1]+rect[3]]
     rectangle = np.array([topLeft,topRight,botRight,botLeft])
+    
 
-    print(rectangle)
     showImage = np.zeros(mask.shape,np.uint8)
-    showImage = cv2.drawContours(showImage.copy(),[rectangle],0,(255),-1)
+    showImage = cv2.drawContours(showImage.copy(),[hull],0,(255),-1)
     
     showImage =cv2.bitwise_and(frame[:,:,0],showImage)
     
-    showImage = imutils.resize(showImage, width=850)
-    cv2.imshow('frame', showImage)
+    #showImage = imutils.resize(showImage, width=850)
+    #cv2.imshow('frame', showImage)
+    return showImage        #TEMPORARY, normally return table (holes) info
     
