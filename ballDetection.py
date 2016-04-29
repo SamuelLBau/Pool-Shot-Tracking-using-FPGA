@@ -147,3 +147,94 @@ def drawFrame(frame,circles):
                     
 
     return frame
+
+    
+def getTable(hsv,frame=None):        
+    #Takes in a gaussian blurred image in HSV domain
+    #This method still assumes the table takes up most of the image
+    #It outputs the cropped / rotated image in hsv space
+    THRESHOLD = 3000
+    contourMode = cv2.RETR_LIST
+    contourMethod = cv2.CHAIN_APPROX_SIMPLE
+    
+    
+    mask = hsv  #hsv is held because it is needed for the bitwise_and later
+    width,length,layers = mask.shape
+    
+    histogram = cv2.calcHist([hsv], [0], None, [180], [0, 180])
+   
+    mask = mask[:,:,0]
+    print(hsv[:,:,0].shape)
+    print(mask.shape)
+    print(histogram.shape)
+    thing = histogram[hsv[:,:,0]][:,:,0]
+    print(thing.shape)
+    mask[thing < THRESHOLD] = 0
+    mask = cv2.threshold(mask,40,255,cv2.THRESH_BINARY)[1]
+    
+    blobs = cv2.findContours(mask.copy(),contourMode,contourMethod)[1]
+    
+    maxContourArea = 0
+    maxContourIndex = 0
+    i=0
+    for blob in blobs:
+        area = cv2.contourArea(blob,False)
+        
+        if(area > maxContourArea):
+            maxContourArea = area
+            maxContourIndex = i
+        i=i+1
+            
+
+    rect = cv2.minAreaRect(blobs[maxContourIndex])
+    box = np.int0(cv2.boxPoints(rect))
+    
+    #rotMatrix = getTable2DRotation(box,rect,width,length)
+    rotMatrix = getAffineRotation(box,rect,width,length)
+    
+    #This crops the image appropriately
+    #AFTER THIS POINT, mask is re-used to save space
+    #All references to mask could be replaced with OUTFRAME
+    outFrame = cv2.drawContours(np.zeros((width,length),np.uint8),[box],0,(255),-1)
+    
+    #THIS IS JUST SOME DEBUG CODE
+    if(frame !=None):
+        showImage = frame
+        showImage[:,:,0] =cv2.bitwise_and(frame[:,:,0],outFrame)
+        showImage[:,:,1] =cv2.bitwise_and(frame[:,:,1],outFrame)
+        showImage[:,:,2] =cv2.bitwise_and(frame[:,:,2],outFrame)
+    
+        showImage = cv2.warpAffine(showImage,rotMatrix,(length,width))
+        showImage = imutils.resize(showImage, width=850)
+        cv2.imshow('frame',showImage)
+    
+    outFrame =cv2.bitwise_and(hsv[:,:,0],outFrame)
+    
+    outFrame = cv2.warpAffine(outFrame,rotMatrix,(length,width))
+    
+    tableBounds = 1#TODO, actually bound these
+    holeBounds = 1#TODO, actually bound these
+
+    #This simply displays the image
+    return [outFrame,(tableBounds,holeBounds)]        #TEMPORARY, normally return table (holes) info
+
+def getAffineRotation(box,rect,width,length):
+    yVarMax = 0
+    xVarMax = 0
+    for i in range(0,3):
+        for j in range(0,3):
+            yVar = box[i][1]-box[j][1]
+            xVar = box[i][0]-box[j][0]
+            
+            if(yVar > yVarMax):
+                yVarMax = yVar
+            if(xVar > xVarMax):
+                xVarMax = xVar
+    if(yVarMax > xVarMax):
+        TBOX = [box[1],box[2],box[3]]
+    else:
+        TBOX = [box[0],box[1],box[2]]
+
+    originalCoords = np.float32([TBOX[0],TBOX[1],TBOX[2]])
+    newCoords = np.float32([[0,0],[0,width],[length,width]])
+    return cv2.getAffineTransform(originalCoords,newCoords)    
