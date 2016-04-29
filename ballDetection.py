@@ -136,28 +136,35 @@ def generateCircleList(frame):
 def drawTableFrame(frame,table):
     print("Draw table frame")
     
-def getTable(frame):        #Takes in a gaussian blurred image
-    #TODO: CURRENTLY METHOD DOES NOT CROP PROPERLY, NEED TO TEST WITH DE-FISHEYED VIDEO
-    #This method still assumes table makes up majority of image
+def getTable(hsv,frame=None):        
+    #Takes in a gaussian blurred image in HSV domain
+    #This method still assumes the table takes up most of the image
+    #It outputs the cropped / rotated image in hsv space
     THRESHOLD = 3000
     contourMode = cv2.RETR_LIST
     contourMethod = cv2.CHAIN_APPROX_SIMPLE
     
-    frame = cv2.GaussianBlur(frame,(3,3),0)
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    mask = hsv
     
-    histogram = cv2.calcHist([hsv], [0], None, [180], [0, 180])
+    mask = hsv  #hsv is held because it is needed for the bitwise_and later
+    width,length = mask.shape
+    
+    histogram = cv2.calcHist([mask], [0], None, [180], [0, 180])
    
-    mask[histogram[mask[:,:,0]] < THRESHOLD] = 0
+    print(mask.shape)
+    print(histogram.shape)
+    print("Here0")
+    thing = histogram[mask][:,:,0]
+    mask[thing < THRESHOLD] = 0
+    print("Here pre thresh")
     mask = cv2.threshold(mask,40,255,cv2.THRESH_BINARY)[1]
-    mask = mask[:,:,0]
-    
+    print("Here1")
+    print(mask.dtype)
     blobs = cv2.findContours(mask.copy(),contourMode,contourMethod)[1]
     
     maxContourArea = 0
     maxContourIndex = 0
     i=0
+    print("Here2")
     for blob in blobs:
         area = cv2.contourArea(blob,False)
         
@@ -168,22 +175,104 @@ def getTable(frame):        #Takes in a gaussian blurred image
             
                 
 
-    hull = cv2.convexHull(blobs[maxContourIndex])       #This is the shape of the
+    #hull = cv2.convexHull(blobs[maxContourIndex])       #This is the shape of the
+    print("Here3")
+    rect = cv2.minAreaRect(blobs[maxContourIndex])
+    box = np.int0(cv2.boxPoints(rect))
+    
+    #rotMatrix = getTable2DRotation(box,rect,width,length)
+    print("Here4")
+    rotMatrix = getAffineRotation(box,rect,width,length)
+    
+    #This crops the image appropriately
+    #AFTER THIS POINT, mask is re-used to save space
+    #All references to mask could be replaced with OUTFRAME
+    print("Here5")
+    mask = cv2.drawContours(np.zeros((width,length),np.uint8),[box],0,(255),-1)
+    
+    #THIS IS JUST SOME DEBUG CODE
+    if(frame !=None):
+        showImage = frame
+        showImage[:,:,0] =cv2.bitwise_and(frame[:,:,0],mask)
+        showImage[:,:,1] =cv2.bitwise_and(frame[:,:,1],mask)
+        showImage[:,:,2] =cv2.bitwise_and(frame[:,:,2],mask)
+    
+        showImage = cv2.warpAffine(showImage,rotMatrix,(length,width))
+        showImage = imutils.resize(showImage, width=850)
+        cv2.imshow('frame',showImage)
+    
+    mask =cv2.bitwise_and(hsv,mask)
+    
+    mask = cv2.warpAffine(mask,rotMatrix,(length,width))
+    
+    tableBounds = 1#TODO, actually bound these
+    holeBounds = 1#TODO, actually bound these
 
-    rect = cv2.boundingRect(hull)
-    topLeft = [rect[0],rect[1]]
-    topRight = [rect[0]+rect[2],rect[1]]
-    botLeft = [rect[0],rect[1]+rect[3]]
-    botRight = [rect[0]+rect[2],rect[1]+rect[3]]
-    rectangle = np.array([topLeft,topRight,botRight,botLeft])
+    #This simply displays the image
+    return [mask,(tableBounds,holeBounds)]        #TEMPORARY, normally return table (holes) info
     
+    
+def getTable2DRotation(box,rect,width,length):
+    
+    
+    #This determines whether box is oriented vertically or horizontally
+    yVarMax = 0
+    xVarMax = 0
+    for i in range(0,3):
+        for j in range(0,3):
+            yVar = box[i][1]-box[j][1]
+            xVar = box[i][0]-box[j][0]
+            
+            if(yVar > yVarMax):
+                yVarMax = yVar
+            if(xVar > xVarMax):
+                xVarMax = xVar
+    #This determines the angle the table must be rotated by
+    rotAngle = rect[2]
+    if(yVarMax > xVarMax):
+        rotAngle = rotAngle + 90
+        maxLength = yVarMax
+        minLength = xVarMax
+    else:
+        maxLength = xVarMax
+        minLength = yVarMax
+    
+    widthRatio = width / float(minLength)
+    lengthRatio = length / float(maxLength)
+    #This determines scaling factor of image
+    
+    if(widthRatio > lengthRatio):
+        rotScale = lengthRatio
+    else:
+        rotScale = widthRatio
+    rotCenter = rect[0]
+    
+    #This performs the rotation / scaling on the image
+    rotMatrix = cv2.getRotationMatrix2D(rotCenter,rotAngle,rotScale) 
+    return rotMatrix
+    
+def getAffineRotation(box,rect,width,length):
+    #This determines whether box is oriented vertically or horizontally
+    yVarMax = 0
+    xVarMax = 0
+    for i in range(0,3):
+        for j in range(0,3):
+            yVar = box[i][1]-box[j][1]
+            xVar = box[i][0]-box[j][0]
+            
+            if(yVar > yVarMax):
+                yVarMax = yVar
+            if(xVar > xVarMax):
+                xVarMax = xVar
+                
+    #This should rotate the image if it s rotated topside
+    if(yVarMax > xVarMax):
+        TBOX = [box[1],box[2],box[3]]
+    else:
+        TBOX = [box[0],box[1],box[2]]
 
-    showImage = np.zeros(mask.shape,np.uint8)
-    showImage = cv2.drawContours(showImage.copy(),[hull],0,(255),-1)
-    
-    showImage =cv2.bitwise_and(frame[:,:,0],showImage)
-    
-    #showImage = imutils.resize(showImage, width=850)
-    #cv2.imshow('frame', showImage)
-    return showImage        #TEMPORARY, normally return table (holes) info
-    
+        
+    #this is the actual transform
+    originalCoords = np.float32([TBOX[0],TBOX[1],TBOX[2]])
+    newCoords = np.float32([[0,0],[0,width],[length,width]])
+    return cv2.getAffineTransform(originalCoords,newCoords)
