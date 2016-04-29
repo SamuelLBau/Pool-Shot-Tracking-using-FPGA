@@ -1,8 +1,6 @@
 import numpy as np
 import cv2
 
-import imutils
-
 def getHoughCircles(img,minRadius=2,maxRadius=12,minDistance=1):
 	img = cv2.GaussianBlur(img,(3,3),0)
 	img = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -15,6 +13,36 @@ def getHoughLines(img,minLength,minSeparation):
 	lines = cv2.HoughLinesP(edges,1,np.pi/180,180,minLength,minSeparation)
 	return lines
 
+def drawCirclesOnFrame(circles,frame):
+	if(circles != None):
+		circles = np.uint16(np.around(circles))
+		for i in circles[0,:]:
+			# draw the outer circle
+			cv2.circle(frame,(i[0],i[1]),i[2],(0,255,0),2)
+			# draw the center of the circle
+			cv2.circle(frame,(i[0],i[1]),2,(0,0,255),3)
+	return frame
+
+def subtractBackground(fgbg,frame):
+	#gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)	
+	fgmask = fgbg.apply(frame)
+	return fgmask
+
+def drawBlobs(img):
+	gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+	# set the parameters
+	params = cv2.SimpleBlobDetector_Params()
+	params.filterByArea = True
+	params.minArea = 20
+	params.maxArea = 30
+	params.filterByCircularity = True
+	params.minCircularity = 0.7
+	# declare the blob detector
+	detector = cv2.SimpleBlobDetector_create(params)
+	keypoints = detector.detect(img)
+	im_with_keypoints = cv2.drawKeypoints(img, keypoints, np.array([]), (0,0,255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+	return im_with_keypoints
+
 def getHSVMaskExcludeTable(hsv,THRESHOLD=3000,XTOP=148,XBOT=1800,YTOP=144,YBOT=935):
 	croppedHSV = hsv[YTOP:YBOT,XTOP:XBOT]
 	histogram = cv2.calcHist([croppedHSV], [0], None, [180], [0, 180])
@@ -26,8 +54,6 @@ def getHSVMaskExcludeTable(hsv,THRESHOLD=3000,XTOP=148,XBOT=1800,YTOP=144,YBOT=9
 	return hsv[:,:,0]
 
 def getHSVMaskIncludeBalls(hsv):
-    #This method is outdated, it works by adding each color for each ball to the mask
-    #Appears more efficient to instead subtract the pool table
 	#These are currently hard-coded, hopefully we can do something else with it later
 	outputArray = np.array([255,255,255])
 
@@ -79,19 +105,13 @@ def getMask(frame):
 
     frame = cv2.GaussianBlur(frame,(3,3),0)
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    mask = getHSVMaskExcludeTable(hsv)              #This method currently appears better
-    
-    
-    #May add more stages here to improve ball finding
-    erodeAndDilate(hsv,4,9)
+    mask = getHSVMaskExcludeTable(hsv)
+    mask = cv2.erode(mask, None, iterations=4)
+    mask = cv2.dilate(mask, None, iterations=9)
     
     return mask
-
-def erodeAndDilate(mask,erodeIT=0,dilateIT=0):
-    mask = cv2.erode(mask, None, iterations=erodeIT)
-    mask = cv2.dilate(mask, None, iterations=dilateIT)
-    return mask
-def detectBlobs(mask):
+    
+def detectBlobs(frame,mask):
 
     blobs = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
 		cv2.CHAIN_APPROX_SIMPLE)[-2]
@@ -110,169 +130,20 @@ def getCircles(blobs):
                     
     return circles
 
-def drawCirclesFrame(frame,blobs,minradius=20,maxradius=50):
-    #Given an input frame and a list of blobs, generate a list of circles blob
-    if(blobs != None):
-        for c in blobs:
+def drawFrame(frame,circles):
+    if(circles != None):
+        for c in circles:
             ((x, y), radius) = cv2.minEnclosingCircle(c)
             M = cv2.moments(c)
-            if M["m00"] > 0:#Solves a div/0 issues we were having
+            if M["m00"] > 0:
                 center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
                 # only proceed if the radius meets a minimum size
-                if radius > minradius and radius < maxradius:
+                if radius > 20 and radius < 50:
                     # draw the circle and centroid on the frame,
                     # then update the list of tracked points
                     cv2.circle(frame, (int(x), int(y)), int(radius),
                         (0, 255, 255), 2)
                     cv2.circle(frame, center, 5, (0, 0, 255), -1)
                     
+
     return frame
-    
-def generateCircleList(frame):
-    mask = getMask(frame)               #Generates mask
-    blobs = detectBlobs(mask)     #Finds contours from video
-    circles = getCircles(blobs)         #Generates list of circles from countour list
-    return circles
-def drawTableFrame(frame,table):
-    print("Draw table frame")
-    
-def getTable(hsv,frame=None):        
-    #Takes in a gaussian blurred image in HSV domain
-    #This method still assumes the table takes up most of the image
-    #It outputs the cropped / rotated image in hsv space
-    THRESHOLD = 3000
-    contourMode = cv2.RETR_LIST
-    contourMethod = cv2.CHAIN_APPROX_SIMPLE
-    
-    
-    mask = hsv  #hsv is held because it is needed for the bitwise_and later
-    width,length = mask.shape
-    
-    histogram = cv2.calcHist([mask], [0], None, [180], [0, 180])
-   
-    print(mask.shape)
-    print(histogram.shape)
-    print("Here0")
-    thing = histogram[mask][:,:,0]
-    mask[thing < THRESHOLD] = 0
-    print("Here pre thresh")
-    mask = cv2.threshold(mask,40,255,cv2.THRESH_BINARY)[1]
-    print("Here1")
-    print(mask.dtype)
-    blobs = cv2.findContours(mask.copy(),contourMode,contourMethod)[1]
-    
-    maxContourArea = 0
-    maxContourIndex = 0
-    i=0
-    print("Here2")
-    for blob in blobs:
-        area = cv2.contourArea(blob,False)
-        
-        if(area > maxContourArea):
-            maxContourArea = area
-            maxContourIndex = i
-        i=i+1
-            
-                
-
-    #hull = cv2.convexHull(blobs[maxContourIndex])       #This is the shape of the
-    print("Here3")
-    rect = cv2.minAreaRect(blobs[maxContourIndex])
-    box = np.int0(cv2.boxPoints(rect))
-    
-    #rotMatrix = getTable2DRotation(box,rect,width,length)
-    print("Here4")
-    rotMatrix = getAffineRotation(box,rect,width,length)
-    
-    #This crops the image appropriately
-    #AFTER THIS POINT, mask is re-used to save space
-    #All references to mask could be replaced with OUTFRAME
-    print("Here5")
-    mask = cv2.drawContours(np.zeros((width,length),np.uint8),[box],0,(255),-1)
-    
-    #THIS IS JUST SOME DEBUG CODE
-    if(frame !=None):
-        showImage = frame
-        showImage[:,:,0] =cv2.bitwise_and(frame[:,:,0],mask)
-        showImage[:,:,1] =cv2.bitwise_and(frame[:,:,1],mask)
-        showImage[:,:,2] =cv2.bitwise_and(frame[:,:,2],mask)
-    
-        showImage = cv2.warpAffine(showImage,rotMatrix,(length,width))
-        showImage = imutils.resize(showImage, width=850)
-        cv2.imshow('frame',showImage)
-    
-    mask =cv2.bitwise_and(hsv,mask)
-    
-    mask = cv2.warpAffine(mask,rotMatrix,(length,width))
-    
-    tableBounds = 1#TODO, actually bound these
-    holeBounds = 1#TODO, actually bound these
-
-    #This simply displays the image
-    return [mask,(tableBounds,holeBounds)]        #TEMPORARY, normally return table (holes) info
-    
-    
-def getTable2DRotation(box,rect,width,length):
-    
-    
-    #This determines whether box is oriented vertically or horizontally
-    yVarMax = 0
-    xVarMax = 0
-    for i in range(0,3):
-        for j in range(0,3):
-            yVar = box[i][1]-box[j][1]
-            xVar = box[i][0]-box[j][0]
-            
-            if(yVar > yVarMax):
-                yVarMax = yVar
-            if(xVar > xVarMax):
-                xVarMax = xVar
-    #This determines the angle the table must be rotated by
-    rotAngle = rect[2]
-    if(yVarMax > xVarMax):
-        rotAngle = rotAngle + 90
-        maxLength = yVarMax
-        minLength = xVarMax
-    else:
-        maxLength = xVarMax
-        minLength = yVarMax
-    
-    widthRatio = width / float(minLength)
-    lengthRatio = length / float(maxLength)
-    #This determines scaling factor of image
-    
-    if(widthRatio > lengthRatio):
-        rotScale = lengthRatio
-    else:
-        rotScale = widthRatio
-    rotCenter = rect[0]
-    
-    #This performs the rotation / scaling on the image
-    rotMatrix = cv2.getRotationMatrix2D(rotCenter,rotAngle,rotScale) 
-    return rotMatrix
-    
-def getAffineRotation(box,rect,width,length):
-    #This determines whether box is oriented vertically or horizontally
-    yVarMax = 0
-    xVarMax = 0
-    for i in range(0,3):
-        for j in range(0,3):
-            yVar = box[i][1]-box[j][1]
-            xVar = box[i][0]-box[j][0]
-            
-            if(yVar > yVarMax):
-                yVarMax = yVar
-            if(xVar > xVarMax):
-                xVarMax = xVar
-                
-    #This should rotate the image if it s rotated topside
-    if(yVarMax > xVarMax):
-        TBOX = [box[1],box[2],box[3]]
-    else:
-        TBOX = [box[0],box[1],box[2]]
-
-        
-    #this is the actual transform
-    originalCoords = np.float32([TBOX[0],TBOX[1],TBOX[2]])
-    newCoords = np.float32([[0,0],[0,width],[length,width]])
-    return cv2.getAffineTransform(originalCoords,newCoords)

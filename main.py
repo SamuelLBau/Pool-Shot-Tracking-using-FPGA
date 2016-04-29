@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import imutils
+<<<<<<< HEAD
 from ballDetection import *
 
 
@@ -16,62 +17,50 @@ INPUT_VIDEO_FILE = INPUT_VIDEO_FILE + INPUT_EXTENSION
 
 WRITE_CIRCLES_VIDEO = False
 WRITE_MASK_VIDEO = False
+=======
+>>>>>>> parent of 928bfb9... Initial Table Detection Code
+
+from ballDetection import *
 
 
-
-cap = cv2.VideoCapture(INPUT_VIDEO_FILE)
+cap = cv2.VideoCapture("croppedAndRotatedVideo1.mp4")
 
 ret, frame = cap.read()
 frameHeight,frameWidth,depth = frame.shape
 #(*'H264')
 fourcc = cv2.VideoWriter_fourcc("X","V","I","D")
-if WRITE_MASK_VIDEO:
-    maskWriter = cv2.VideoWriter(OUTPUT_MASK_FILE,fourcc,30,(frameWidth,frameHeight),0)
 
-if WRITE_CIRCLES_VIDEO:
-    circlesWriter = cv2.VideoWriter(OUTPUT_CIRCLES_FILE,fourcc,30,(frameWidth,frameHeight))
-    
-tableWriter = cv2.VideoWriter(OUTPUT_TABLE_FILE,fourcc,30,(frameWidth,frameHeight),0)
-count = 0
+
+maskWriter = cv2.VideoWriter("croppedAndRotatedVideo1_mask.mp4",fourcc,30,(frameWidth,frameHeight),0)
+resultWriter = cv2.VideoWriter("croppedAndRotatedVideo1_result.mp4",fourcc,30,(frameWidth,frameHeight))
+
+#fgbg = cv2.bgsegm.createBackgroundSubtractorMOG()
+#fgbg = cv2.bgsegm.createBackgroundSubtractorGMG()
 
 while(cap.isOpened()):
-    ret, frame = cap.read()             #Gets frame from the video
+    ret, frame = cap.read()
+    #bgsub = subtractBackground(fgbg,frame)
+    #circles = getHoughCircles(frame)
+    #cimg = drawCirclesOnFrame(circles,frame)
+    #im_with_keypoints = drawBlobs(frame)
     
+    #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    mask = getMask(frame)
+    blobs = detectBlobs(frame,mask)
+    circles = getCircles(blobs)
     
-    hsv = cv2.GaussianBlur(frame,(3,3),0)
-    hsv = cv2.cvtColor(hsv, cv2.COLOR_BGR2HSV)
+
+    outFrame = drawFrame(frame,blobs)
     
-    #H is the Hue array 
-    [H,table] = getTable(hsv[:,:,0]) 
-    #circles = generateCircleList(frame) #This does same operation as next 3 lines
-    #mask = getMask(frame)               #Generates mask
-    #blobs = detectBlobs(mask)     #Finds contours from video
-    #circles = getCircles(blobs)         #Generates list of circles from countour list
+    maskWriter.write(mask)
+    resultWriter.write(outFrame)
     
-    #circlesFrame = drawCirclesFrame(frame,blobs)
-    #tableFrame = drawTableFrame(frame,table)
-    
-    if WRITE_MASK_VIDEO:
-        maskWriter.write(mask)
-    if WRITE_CIRCLES_VIDEO:
-        circlesWriter.write(circlesFrame)
-    
-    print(count)
-    tableWriter.write(H)
-    
-    #circlesFrame = imutils.resize(circlesFrame, width=850)
-    #cv2.imshow('frame',imutils.resize(frame, width=850))
+    outFrame = imutils.resize(outFrame, width=850)
+    cv2.imshow('frame', outFrame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-    count = count+1
-    if(count > 180):
-        break
-        
-if WRITE_CIRCLES_VIDEO:
-    circlesWriter.release()
-if WRITE_MASK_VIDEO:
-    maskWriter.release()
-tableWriter.release()
+maskWriter.release()
+resultWriter.release()
 cap.release()
 cv2.destroyAllWindows()
