@@ -1,9 +1,16 @@
 import numpy as np
 import cv2
 import imutils
-
-
 from ballDetection import *
+
+
+
+MAX_FRAMES = 180
+
+WRITE_CIRCLES_VIDEO = False
+WRITE_MASK_VIDEO = False
+
+
 
 VIDEO_IN_NAME = "GoPro4DeFisheye3"
 VIDEO_EXTENSION = ".mp4"
@@ -15,6 +22,7 @@ VIDEO_IN_NAME = VIDEO_IN_NAME+ VIDEO_EXTENSION
 fourcc = cv2.VideoWriter_fourcc("X","V","I","D")
 
 cap = cv2.VideoCapture(VIDEO_IN_NAME)
+
 
 ret, frame = cap.read()
 frameHeight,frameWidth,depth = frame.shape
@@ -60,6 +68,7 @@ while(cap.isOpened()):
     
     outFrame = imutils.resize(tableFrame, width=850)
     #cv2.imshow('frame', outFrame)
+
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
