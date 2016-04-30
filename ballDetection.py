@@ -1,6 +1,8 @@
 import numpy as np
 import cv2
 
+import imutils
+
 def getHoughCircles(img,minRadius=2,maxRadius=12,minDistance=1):
 	img = cv2.GaussianBlur(img,(3,3),0)
 	img = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -43,15 +45,13 @@ def drawBlobs(img):
 	im_with_keypoints = cv2.drawKeypoints(img, keypoints, np.array([]), (0,0,255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
 	return im_with_keypoints
 
-def getHSVMaskExcludeTable(hsv,THRESHOLD=3000,XTOP=148,XBOT=1800,YTOP=144,YBOT=935):
-	croppedHSV = hsv[YTOP:YBOT,XTOP:XBOT]
-	histogram = cv2.calcHist([croppedHSV], [0], None, [180], [0, 180])
+def getHSVMaskExcludeTable(H,THRESHOLD=15000):
+	histogram = cv2.calcHist([H], [0], None, [180], [0, 180])
 
-	croppedHSV[histogram[croppedHSV[:,:,0]] > THRESHOLD] = 0
+	H[histogram[H][:,:,0] > THRESHOLD] = 0
 	#print(hsv[:,:,0].shape)
-	croppedHSV = cv2.threshold(croppedHSV,1,255,cv2.THRESH_BINARY)[1]
-	hsv = cv2.copyMakeBorder(croppedHSV,YTOP,(1080-YBOT),XTOP,(1920-XBOT),cv2.BORDER_CONSTANT,0)
-	return hsv[:,:,0]
+	H = cv2.threshold(H,1,255,cv2.THRESH_BINARY)[1]
+	return H
 
 def getHSVMaskIncludeBalls(hsv):
 	#These are currently hard-coded, hopefully we can do something else with it later
@@ -101,11 +101,9 @@ def getHSVMaskIncludeBalls(hsv):
 
 	return outMask
 
-def getMask(frame):
-
-    frame = cv2.GaussianBlur(frame,(3,3),0)
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    mask = getHSVMaskExcludeTable(hsv)
+def getMask(H):
+    #Accepts just HUE as input
+    mask = getHSVMaskExcludeTable(H)
     mask = cv2.erode(mask, None, iterations=4)
     mask = cv2.dilate(mask, None, iterations=9)
     
@@ -149,7 +147,7 @@ def drawFrame(frame,circles):
     return frame
 
     
-def getTable(hsv,frame=None):        
+def getTable(hsv,frame=None,writer=None):        
     #Takes in a gaussian blurred image in HSV domain
     #This method still assumes the table takes up most of the image
     #It outputs the cropped / rotated image in hsv space
@@ -164,11 +162,7 @@ def getTable(hsv,frame=None):
     histogram = cv2.calcHist([hsv], [0], None, [180], [0, 180])
    
     mask = mask[:,:,0]
-    print(hsv[:,:,0].shape)
-    print(mask.shape)
-    print(histogram.shape)
     thing = histogram[hsv[:,:,0]][:,:,0]
-    print(thing.shape)
     mask[thing < THRESHOLD] = 0
     mask = cv2.threshold(mask,40,255,cv2.THRESH_BINARY)[1]
     
@@ -184,8 +178,47 @@ def getTable(hsv,frame=None):
             maxContourArea = area
             maxContourIndex = i
         i=i+1
-            
-
+    
+    hull = cv2.convexHull(blobs[maxContourIndex],returnPoints = True)
+    tableMask = cv2.bitwise_and(hsv[:,:,0],cv2.drawContours(np.zeros((width,length),np.uint8),[hull],0,(255),-1))
+    
+    #Threshold image, should help isolate table
+    THRESHOLD = width*length*.3
+    histogram = cv2.calcHist([mask], [0], None, [180], [0, 180])
+    
+    #tableMask[histogram[tableMask][:,:,0] < THRESHOLD] = 0
+    
+    minLineLength = 500
+    maxLineGap = 1
+    canny = cv2.Canny(mask,100,100,apertureSize = 3)
+    
+    showImage = imutils.resize(tableMask, width=850)
+    cv2.imshow('frame',showImage)
+    
+    lines = cv2.HoughLines(canny,2,np.pi/180*1,200)
+    if(lines != None):
+        cont = 0
+        print(len(lines))
+        for line in lines:
+            for rho,theta in line:
+                a = np.cos(theta)
+                b = np.sin(theta)
+                x0 = a*rho
+                y0 = b*rho
+                x1 = int(x0 + 1000*(-b))
+                y1 = int(y0 + 1000*(a))
+                x2 = int(x0 - 1000*(-b))
+                y2 = int(y0 - 1000*(a))
+                #cv2.line(mask,(x1,y1),(x2,y2),(255,255,0),2)
+        #for [[x1,y1,x2,y2]] in lines:
+         #   cv2.line(mask,(x1,y1),(x2,y2),(255,255,0),2)
+          #  cont=cont+1
+        #print(cont)
+    
+    
+    showImage = imutils.resize(mask, width=850)
+    #cv2.imshow('frame',showImage)
+    
     rect = cv2.minAreaRect(blobs[maxContourIndex])
     box = np.int0(cv2.boxPoints(rect))
     
@@ -196,8 +229,8 @@ def getTable(hsv,frame=None):
     #AFTER THIS POINT, mask is re-used to save space
     #All references to mask could be replaced with OUTFRAME
     outFrame = cv2.drawContours(np.zeros((width,length),np.uint8),[box],0,(255),-1)
-    
     #THIS IS JUST SOME DEBUG CODE
+    croppedFrame = frame
     if(frame !=None):
         showImage = frame
         showImage[:,:,0] =cv2.bitwise_and(frame[:,:,0],outFrame)
@@ -205,20 +238,22 @@ def getTable(hsv,frame=None):
         showImage[:,:,2] =cv2.bitwise_and(frame[:,:,2],outFrame)
     
         showImage = cv2.warpAffine(showImage,rotMatrix,(length,width))
+        croppedFrame = showImage
         showImage = imutils.resize(showImage, width=850)
-        cv2.imshow('frame',showImage)
+        #cv2.imshow('frame',showImage)
+        if(writer != None):
+            writer.write(showImage)
     
     outFrame =cv2.bitwise_and(hsv[:,:,0],outFrame)
     
     outFrame = cv2.warpAffine(outFrame,rotMatrix,(length,width))
     
-    tableBounds = 1#TODO, actually bound these
-    holeBounds = 1#TODO, actually bound these
 
     #This simply displays the image
-    return [outFrame,(tableBounds,holeBounds)]        #TEMPORARY, normally return table (holes) info
+    return [outFrame,croppedFrame]        #TEMPORARY, normally return table (holes) info
 
 def getAffineRotation(box,rect,width,length):
+    #TODO: This seems to mirror image for some reason, look into that
     yVarMax = 0
     xVarMax = 0
     for i in range(0,3):
