@@ -32,6 +32,7 @@ frameHeight,frameWidth,depth = frame.shape
 
 
 
+
 #maskWriter = cv2.VideoWriter(MASK_VIDEO_NAME ,fourcc,30,(frameWidth,frameHeight),0)
 tableWriter = cv2.VideoWriter(TABLE_VIDEO_NAME,fourcc,30,(frameWidth,frameHeight)) 
 #circlesWriter = cv2.VideoWriter(CIRCLE_VIDEO_NAME,fourcc,30,(frameWidth,frameHeight))

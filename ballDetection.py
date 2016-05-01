@@ -272,4 +272,4 @@ def getAffineRotation(box,rect,width,length):
 
     originalCoords = np.float32([TBOX[0],TBOX[1],TBOX[2]])
     newCoords = np.float32([[0,0],[0,width],[length,width]])
-    return cv2.getAffineTransform(originalCoords,newCoords)    
+    return cv2.getAffineTransform(originalCoords,newCoords)
