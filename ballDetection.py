@@ -252,35 +252,5 @@ def getAffineRotation(box,width,length):
 
     originalCoords = np.float32([TBOX[0],TBOX[1],TBOX[2]])
     newCoords = np.float32([[0,0],[0,width],[length,width]])
-    return cv2.getAffineTransform(originalCoords,newCoords)
 
-def rotateFrame(box,frame):
-    #should work on both frame and HSV
-    #rotMatrix = getTable2DRotation(box,rect,width,length)
-    width,length,layers = frame.shape
-    rotMatrix = getAffineRotation(box,width,length)
-    
-    #This crops the image appropriately
-    #AFTER THIS POINT, mask is re-used to save space
-    #All references to mask could be replaced with OUTFRAME
-    mask = cv2.drawContours(np.zeros((width,length),np.uint8),[box],0,(255),-1)
-    outFrame = frame.copy()
-    #THIS IS JUST SOME DEBUG CODE   if(frame !=None):
-    outFrame[:,:,0] =cv2.bitwise_and(frame[:,:,0],mask)
-    outFrame[:,:,1] =cv2.bitwise_and(frame[:,:,1],mask)
-    outFrame[:,:,2] =cv2.bitwise_and(frame[:,:,2],mask)
-    
-    outFrame[:,:,0] = cv2.warpAffine(outFrame[:,:,0],rotMatrix,(length,width))
-    outFrame[:,:,1] = cv2.warpAffine(outFrame[:,:,1],rotMatrix,(length,width))
-    outFrame[:,:,2] = cv2.warpAffine(outFrame[:,:,2],rotMatrix,(length,width))
-    
-
-    #This simply displays the image
-    return outFrame        #TEMPORARY, normally return table (holes) info
-    
-def averageBox(box,newbox,count):
-    count =float(count)
-    for i in range(0,3):
-        box[i][0] = box[i][0]*(count)/(count+1) + newbox[i][0]/(count+1)
-        box[i][1] = box[i][1]*(count)/(count+1) + newbox[i][1]/(count+1)
-    return box
+    return cv2.getAffineTransform(originalCoords,newCoords) s
