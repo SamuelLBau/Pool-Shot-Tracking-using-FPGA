@@ -24,8 +24,13 @@ Mat processVideo(Mat inImage,Size insize, VideoWriter maskVWriter, VideoWriter t
 
 	//TODO: reccomendedShot = reccomendShot(detectedBallList,insize);
 
+	//NOTE: To save space, will re-use tempImage1
 	//TODO: drawnBallImage = drawBilliardBalls(tableImage,insize,detectedBallList);
 
+	//NOTE: To save space, will re-use outImage
+	//TODO drawnShotAndBall = drawRecommendedShot(drawnBallImage,insize,reccomendedShot);
+
+	//temporary line until draw code is added
 	outImage = tableImage;
 	
 	//inImage.copyTo(outImage);
@@ -135,12 +140,24 @@ Mat getTable(Mat inImage,Size inSize,Mat tempImage1,Mat tempImageHSV)
 			maxIndex = generalCounter;
 		}
 	}
+
+
+
+
 	//hsv_channels[0] = bitwise_and(singleChannelFrame2, inImage);
 #if DEBUG
-	//drawContours(singleChannelFrame2, contourList, maxIndex, Scalar(255, 255, 255), -1);
+	drawContours(singleChannelFrame2, contourList, maxIndex, Scalar(255, 255, 255), -1);
 	//imshow("table contour", singleChannelFrame2);
 	//waitKey(33);          //delay 33ms
 #endif
+
+
+
+
+
+
+
+
 	//THIS IS RESPONSIBLE FOR DETERMINING TABLE BOUNDS
 	//------------------------------------------------------------------
 	//THIS IS THE SIMPLE MINRECT METHOD
@@ -152,6 +169,23 @@ Mat getTable(Mat inImage,Size inSize,Mat tempImage1,Mat tempImageHSV)
 #endif
 #if RECTANGLE_HOUGH_METHOD
 	//TODO: USE HOUGH LINES TO FIND REAL EDGES OF TABLE
+	imshow("singleChannelFrame1", singleChannelFrame1);
+	waitKey(33);          //delay 33ms
+	imshow("singleChannelFrame2", singleChannelFrame2);
+	waitKey(33);          //delay 33ms
+	singleChannelFrame2 = Scalar(0, 0, 0);
+	drawContours(singleChannelFrame2, contourList, maxIndex, Scalar(255, 255, 255), -1);
+	bitwise_and(singleChannelFrame2, singleChannelFrame1, singleChannelFrame1);
+
+	//vector<Vec2f> lines;
+	//HoughLinesP(singleChannelFrame1, lines,);
+
+
+
+	imshow("masked", singleChannelFrame2);
+	waitKey(33);          //delay 33ms
+	imshow("maskedTable", singleChannelFrame1);
+	waitKey(33);          //delay 33ms
 #endif
 
 
@@ -205,7 +239,7 @@ Mat getTable(Mat inImage,Size inSize,Mat tempImage1,Mat tempImageHSV)
 	frameCorners[2] = Point2f(inSize.width, inSize.height);
 	Mat rotMat = getAffineTransform(affineRectCorners, frameCorners);
 
-	warpAffine(tempImageHSV, tempImage1, rotMat, inSize);
+	warpAffine(inImage, tempImage1, rotMat, inSize);
 
 
 	//imshow("Rotated Table", tempImage1);
