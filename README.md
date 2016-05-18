@@ -26,6 +26,13 @@ target="_blank"><img src="http://img.youtube.com/vi/HbJJNquY9z8/0.jpg"
 alt="POOL BALL RECOGNITION" width="360" height="270" border="10" /></a>
 
 
+Recognition improved to 95% accurate(April 30th)
+------------------------------------------------
+To improve identification accuracy we converted the algorithm to HSV space and implemented two different error correction algorithms. First, we applied process of elimination by eliminating the ball classified with the most confidence from possible choices for other balls. This helped improve accuracy for classifying yellow or yellow-striped balls. Second, we weighed the classification confidence with proximity to past location. We found that this improved accuracy over the tested set of detected ball images.
+
+A selection of ball images used and accuracy on the test set is reported below. If we take into account the images that contain no balls, our average accuracy is slightly less than 95%, however we expect this to be less of a problem with improvements made in ball detection. In general, our classifier performs worse on striped balls.
+
+
 
 Dynamic Table Identification(April 30th)
 ----------------------------------------
