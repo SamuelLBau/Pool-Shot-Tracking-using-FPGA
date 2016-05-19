@@ -32,6 +32,7 @@ To improve identification accuracy we converted the algorithm to HSV space and i
 
 A selection of ball images used and accuracy on the test set is reported below. If we take into account the images that contain no balls, our average accuracy is slightly less than 95%, however we expect this to be less of a problem with improvements made in ball detection. In general, our classifier performs worse on striped balls.
 
+<html> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </html> ![CLASSFY DEMO](./source/CompositeImage.png)  <html> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </html>  <img src="./source/DemoClassificationAccuracy.png" alt="CLASSFT DEMO" width="606.8" height="273" />
 
 
 Dynamic Table Identification(April 30th)
@@ -46,14 +47,3 @@ Convert all code to C/C++(May 14th)
 -----------------------------------
 Before being implemented in HLS, we will need to convert all of our code from high level Python, to lower level C/C++. This may have the additional benefit of improving performance.
 
-
-
-Pool ball detection
--------------------
-
-Improved Ball detection
------------------------
-
-
-Libraries Compiled using FPGA synthesizable code
-------------------------------------------------
