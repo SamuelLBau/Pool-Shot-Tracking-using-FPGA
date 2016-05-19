@@ -11,14 +11,14 @@ A beginning pool player can struggle visualizing the possible shots to score a p
 
 FPGAs are well suited for signal processing tasks for cyber physical systems. Compared to using a larger CPU or adding a GPU an FPGA can be more power efficient, cost effective, and have a smaller physical footprint. However while there are an increasing number of embedded development platforms used by hobbyists, FPGAs are not one of them. Hobbyists may be driven away by the more obscure programming languages, expensive development tools, and long compile time that FPGA development currently requires. An open source platform for FPGA that supports more popular languages like C/C++ and contains pre-compiled methods to shorten overall compile time can go a long ways to encourage hobbyists. To motivate the development of such a platform, we will execute a project on FPGA that would be representative of something a hobbyist may want to do at home: improve their pool game by visualizing possible shots.
 
-<html><br><br></html>
+<html><br></html>
 ####Project Objectives
 
 To motivate the development of such a platform, we will execute a project that would be represen- tative of something a hobbyist may want to do at home: improve their pool game by tracking shots and monitoring their game over time. The goal we will be achieved this quarter is to understand video processing by using FPGA and apply to pool game.
 
 ----------
 
-<html><br><br></html>
+<html><br></html>
 ##Milestones:
 
 ####Pool ball subbtraction(April 11th)
@@ -29,12 +29,12 @@ The purpose of this goal is to take a well-cropped image of a pool table, and su
 target="_blank"><img src="http://img.youtube.com/vi/DhBfrnDcqEQ/0.jpg" 
 alt="POOL BALL SUBBTRACTION" width="360" height="270" border="10" /></a>
 
-<html><br><br></html>
+<html><br></html>
 ####Collect an hour of pool footage(April 15th)
 
 The purpose of this goal is to collect a decent amount of footage to run through our algorithms, preferably under varied light conditions.
 
-<html><br><br></html>
+<html><br></html>
 ####Recognition 80% accurate and integrate with detection end of pipeline(April 26th)
 
 For these two milestones we designed a preliminary algorithm in RGB space. We tested using both the median pixel hue, R, G, and B values of the balls and the R,G,B histograms in classifying and had worse results using the median. We also integrated this with the non-optimized ball detection using Matlab and the results are shown in the video below. This did not identify the “racked” balls accurately so we implemented “racked” and “un-racked” states for detection. We plan to improve on this in Sprint 2.
@@ -43,7 +43,7 @@ For these two milestones we designed a preliminary algorithm in RGB space. We te
 target="_blank"><img src="http://img.youtube.com/vi/HbJJNquY9z8/0.jpg" 
 alt="POOL BALL RECOGNITION" width="360" height="270" border="10" /></a>
 
-<html><br><br></html>
+<html><br></html>
 ####Recognition improved to 95% accurate(April 30th)
 
 To improve identification accuracy we converted the algorithm to HSV space and implemented two different error correction algorithms. First, we applied process of elimination by eliminating the ball classified with the most confidence from possible choices for other balls. This helped improve accuracy for classifying yellow or yellow-striped balls. Second, we weighed the classification confidence with proximity to past location. We found that this improved accuracy over the tested set of detected ball images.
@@ -52,7 +52,7 @@ A selection of ball images used and accuracy on the test set is reported below. 
 
 <html> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </html> ![CLASSFY DEMO](./source/CompositeImage.png)  <html> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </html>  <img src="./source/DemoClassificationAccuracy.png" alt="CLASSFT DEMO" width="606.8" height="273" />
 
-<html><br><br></html>
+<html><br></html>
 ####Dynamic Table Identification(April 30th)
 
 In the interest of easing physics calculations, as well as improving pool ball detection, the bounds of the table should be identified and transformed to fill the frame.. This goal involves detecting the pool table, then cropping and rotating it in order to take up the entire frame, which will standardize calculations later in the pipeline.
@@ -61,19 +61,19 @@ In the interest of easing physics calculations, as well as improving pool ball d
 target="_blank"><img src="http://img.youtube.com/vi/-fDlGlp3wvo/0.jpg" 
 alt="TABLE ISOLATION DEMO" width="360" height="270" border="10" /></a>
 
-<html><br><br></html>
+<html><br></html>
 ####Convert all code to C/C++(May 14th)
 
 Before being implemented in HLS, we will need to convert all of our code from high level Python, to lower level C/C++. This may have the additional benefit of improving performance.
 
-<html><br><br></html>
+<html><br></html>
 ####Physics engine(May 17th)
 
 We found the physics to calculating the physics of the shot to be much simpler than determining the shot difficulty and selecting the best shot. We ran into the following difficulties: First, we had to make limiting assumptions about the velocity with which the cue ball is hit. We also found that we needed to correct for the ball center detection error and classification error.
 
 <img src="./source/collision_demo.png" width="389.9" height="420">
 
-<html><br><br></html>
+<html><br></html>
 ####Shot suggestion(May 17th)
 
 The purpose of this milestone is to help player to learn better of the game siuation and make the best decision. Our work provides the best calculated path of white ball to generate easy shots for player.
