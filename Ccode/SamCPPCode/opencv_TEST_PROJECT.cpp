@@ -10,7 +10,7 @@ using namespace cv;
 
 #define INPUT_VIDEO_FOLDER "D:/Files/UCSD Undergrad/Spring 2016/CSE145/Pool video/5-5-16/"
 #define OUTPUT_VIDEO_FOLDER "D:/Files/UCSD Undergrad/Spring 2016/CSE145/Pool video/result/"
-#define INPUT_VIDEO_NAME "LightWhiteBalance"
+#define INPUT_VIDEO_NAME "Normal_Occlusion_2"
 #define VIDEO_EXTENSION ".mp4"
 
 #define OUTPUT_VIDEO_MASK OUTPUT_VIDEO_FOLDER INPUT_VIDEO_NAME "_MASK" VIDEO_EXTENSION
@@ -20,7 +20,7 @@ using namespace cv;
 
 #define INPUT_VIDEO INPUT_VIDEO_FOLDER INPUT_VIDEO_NAME VIDEO_EXTENSION
 
-#define FRAMES_TO_RUN 30
+#define FRAMES_TO_RUN 200
 int main() {
 	int numFrames = 0;
 	Mat image;          //Create Matrix to store image
@@ -65,15 +65,29 @@ int main() {
 		cout << "Could not open maskVWriter" << OUTPUT_VIDEO_MASK << endl;
 	}
 #endif
-	while (numFrames < FRAMES_TO_RUN) 
+	bool prevEmpty = false;
+	while (numFrames < FRAMES_TO_RUN && cap.isOpened())
 	{
 		cap >> image;          //stream image
+
+		//this checks for end of video stream, quits on 2 consecutive empty frames
+		if (image.empty())
+		{
+			if (prevEmpty == true)
+				break;
+			else
+			{
+				prevEmpty = true;
+				continue;
+			}
+		}
+		prevEmpty = false;
 		numFrames++;
-		#if DEBUG
+		#if true
 			cout << "Printing frame: " << numFrames << endl;
 		#endif
 		#if WRITE_VIDEO
-			finalVWriter << processVideo(image,inputSize,maskVWriter,tableVWriter,circlesVWriter);
+			finalVWriter << processVideo(image,inputSize, true,30,maskVWriter=maskVWriter,tableVWriter=tableVWriter,circlesVWriter=circlesVWriter);
 		#else
 			Mat finalFrame = processVideo(image, inputSize);
 			#if DEBUG

@@ -10,7 +10,7 @@
 using namespace std;
 using namespace cv;
 
-Mat processVideo(Mat inImage,Size insize, VideoWriter maskVWriter, VideoWriter tableVWriter, VideoWriter circlesVWriter)
+Mat processVideo(Mat inImage,Size insize, bool averageTable, int averageCount,  VideoWriter maskVWriter, VideoWriter tableVWriter, VideoWriter circlesVWriter)
 {
 	static Mat tempImage1;
 	static Mat tempImage2;
@@ -18,7 +18,7 @@ Mat processVideo(Mat inImage,Size insize, VideoWriter maskVWriter, VideoWriter t
 	static Mat outImage;
 	
 	//tableImage should be in the gaussian blurred image table in HSV space
-	tableImage = getTable(inImage,insize,tempImage1,tempImage2);
+	tableImage = getTable(inImage,insize,tempImage1,tempImage2,averageTable=averageTable,averageCount=averageCount);
 
 	//TODO: detectedBallList = locateBilliardBalls(tableImage,insize,tempImage1,tempImage2);
 
@@ -61,10 +61,11 @@ Mat processVideo(Mat inImage,Size insize, VideoWriter maskVWriter, VideoWriter t
 
 	return outImage;
 }
-Mat getTable(Mat inImage,Size inSize,Mat tempImage1,Mat tempImageHSV)
+Mat getTable(Mat inImage,Size inSize,Mat tempImage1,Mat tempImageHSV,bool averageTable,int averageCount)
 {
 	//USED IN SUBTRACTIVE THRESHOLDING
 	static int HIST_THRESHOLD = 30000;
+	static int count = 0;
 	//USED IN ADDITIVE THRESHOLDING
 	//THIS IS AFFECTED BY LIGHTING ETC.
 	static uchar THRESH_LOW = 0;
@@ -80,6 +81,8 @@ Mat getTable(Mat inImage,Size inSize,Mat tempImage1,Mat tempImageHSV)
 	static const float* histRange = { range };
 	static Mat singleChannelFrame1 = Mat(inSize.height, inSize.width, CV_8U);
 	static Mat singleChannelFrame2 = Mat(inSize.height, inSize.width, CV_8U);
+	static Point2f rectPoints[4] = { Point2f(0.0,0.0) };   //The bounds of the table output this frame
+	static Point2f newRectPoints[4] = { Point2f(0.0,0.0) }; //the bounds of the table calculated this frame
 
 
 
@@ -90,66 +93,68 @@ Mat getTable(Mat inImage,Size inSize,Mat tempImage1,Mat tempImageHSV)
 		inImage- the input image
 		tempImage1/2 -working frames
 	*/
-	GaussianBlur(inImage, tempImage1, Size(3, 3), 0, 0, 0);
-	cvtColor(tempImage1, tempImageHSV, CV_RGB2HSV);
-
-	split(tempImageHSV, hsv_channels);
-
-	//NOTE: DO NOT EDIR tempIMAGE2 after this point
-	
-	//NOTE: THIS IS THE SUBTRACTIVE METHOD OF GENERATING TABLE MASK
-	//CONSIDER HARDCODING VALUE FOR THE ADDITIVE METHOD
-	#if TABLE_SUBTRACTIVE_MASK
-		calcHist(&hsv_channels[0], 1, 0, Mat(), histogram, 1, &histSize, &histRange, true, false);
-		for (generalCounter = 0;generalCounter < histSize; generalCounter++)
-		{
-			if (histogram.at<float>(generalCounter,0) > HIST_THRESHOLD)
-				histLUT.at<uchar>(generalCounter) = 0;
-			else
-				histLUT.at<uchar>(generalCounter) = 255;
-		}
-		//singleChannelFrame1 should now have the masked image
-		LUT(hsv_channels[0],histLUT, singleChannelFrame1);
-	#endif
-	#if TABLE_ADDITIVE_MASK
-
-		threshold(hsv_channels[0], singleChannelFrame1, THRESH_LOW, 255, THRESH_TOZERO);
-		threshold(hsv_channels[0], singleChannelFrame2, THRESH_HIGH, 255, THRESH_TOZERO_INV);
-		singleChannelFrame2 = singleChannelFrame2 & singleChannelFrame1;
-		threshold(singleChannelFrame2, singleChannelFrame1, 1, 255, THRESH_BINARY);
-	#endif
-	#if DEBUG
-		//imshow("table mask", singleChannelFrame1);
-		//waitKey(33);          //delay 33ms
-	#endif
-	//------------------------------------------------------------------
-	//THIS SEGMENT FINDS THE TABLE CONTOUR
-	vector<vector<Point>> contourList;
-	findContours(singleChannelFrame1, contourList,CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
-	double maxArea = 0;
-	int maxIndex = 0;
-	int numContours = contourList.size();
-	double curArea = 0;
-
-	for (int generalCounter = 0;generalCounter < numContours; generalCounter++)
+	if (!averageTable | (averageTable & (count < averageCount)))
 	{
-		curArea = contourArea(contourList[generalCounter]);
-		if (curArea > maxArea)
+
+		GaussianBlur(inImage, tempImage1, Size(3, 3), 0, 0, 0);
+		cvtColor(tempImage1, tempImageHSV, CV_RGB2HSV);
+
+		split(tempImageHSV, hsv_channels);
+
+		//NOTE: DO NOT EDIR tempIMAGE2 after this point
+
+		//NOTE: THIS IS THE SUBTRACTIVE METHOD OF GENERATING TABLE MASK
+		//CONSIDER HARDCODING VALUE FOR THE ADDITIVE METHOD
+		#if TABLE_SUBTRACTIVE_MASK
+			calcHist(&hsv_channels[0], 1, 0, Mat(), histogram, 1, &histSize, &histRange, true, false);
+			for (generalCounter = 0;generalCounter < histSize; generalCounter++)
+			{
+				if (histogram.at<float>(generalCounter, 0) > HIST_THRESHOLD)
+					histLUT.at<uchar>(generalCounter) = 0;
+				else
+					histLUT.at<uchar>(generalCounter) = 255;
+			}
+			//singleChannelFrame1 should now have the masked image
+			LUT(hsv_channels[0], histLUT, singleChannelFrame1);
+		#endif
+		#if TABLE_ADDITIVE_MASK
+			threshold(hsv_channels[0], singleChannelFrame1, THRESH_LOW, 255, THRESH_TOZERO);
+			threshold(hsv_channels[0], singleChannelFrame2, THRESH_HIGH, 255, THRESH_TOZERO_INV);
+			singleChannelFrame2 = singleChannelFrame2 & singleChannelFrame1;
+			threshold(singleChannelFrame2, singleChannelFrame1, 1, 255, THRESH_BINARY);
+		#endif
+		#if DEBUG
+			//imshow("table mask", singleChannelFrame1);
+			//waitKey(33);          //delay 33ms
+		#endif
+//------------------------------------------------------------------
+//THIS SEGMENT FINDS THE TABLE CONTOUR
+		vector<vector<Point>> contourList;
+		findContours(singleChannelFrame1, contourList, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+		double maxArea = 0;
+		int maxIndex = 0;
+		int numContours = contourList.size();
+		double curArea = 0;
+
+		for (int generalCounter = 0;generalCounter < numContours; generalCounter++)
 		{
-			maxArea = curArea;
-			maxIndex = generalCounter;
+			curArea = contourArea(contourList[generalCounter]);
+			if (curArea > maxArea)
+			{
+				maxArea = curArea;
+				maxIndex = generalCounter;
+			}
 		}
-	}
 
 
 
 
-	//hsv_channels[0] = bitwise_and(singleChannelFrame2, inImage);
-#if DEBUG
-	drawContours(singleChannelFrame2, contourList, maxIndex, Scalar(255, 255, 255), -1);
-	//imshow("table contour", singleChannelFrame2);
-	//waitKey(33);          //delay 33ms
-#endif
+		//hsv_channels[0] = bitwise_and(singleChannelFrame2, inImage);
+		#if DEBUG
+			drawContours(singleChannelFrame2, contourList, maxIndex, Scalar(255, 255, 255), -1);
+			//imshow("table contour", singleChannelFrame2);
+			//waitKey(33);          //delay 33ms
+		#endif
 
 
 
@@ -161,34 +166,54 @@ Mat getTable(Mat inImage,Size inSize,Mat tempImage1,Mat tempImageHSV)
 	//THIS IS RESPONSIBLE FOR DETERMINING TABLE BOUNDS
 	//------------------------------------------------------------------
 	//THIS IS THE SIMPLE MINRECT METHOD
-	//----------------------------------------------------
-	Point2f rectPoints[4];
-#if RECTANGLE_SIMPLE_METHOD
-	RotatedRect rect = minAreaRect(contourList[maxIndex]);
-	rect.points(rectPoints);
-#endif
-#if RECTANGLE_HOUGH_METHOD
-	//TODO: USE HOUGH LINES TO FIND REAL EDGES OF TABLE
-	imshow("singleChannelFrame1", singleChannelFrame1);
-	waitKey(33);          //delay 33ms
-	imshow("singleChannelFrame2", singleChannelFrame2);
-	waitKey(33);          //delay 33ms
-	singleChannelFrame2 = Scalar(0, 0, 0);
-	drawContours(singleChannelFrame2, contourList, maxIndex, Scalar(255, 255, 255), -1);
-	bitwise_and(singleChannelFrame2, singleChannelFrame1, singleChannelFrame1);
+	//---------------------------------------------------
+		#if RECTANGLE_SIMPLE_METHOD
+			RotatedRect rect = minAreaRect(contourList[maxIndex]);
+			rect.points(newRectPoints);
+		#endif
+		#if RECTANGLE_HOUGH_METHOD
+			//TODO: USE HOUGH LINES TO FIND REAL EDGES OF TABLE
+			imshow("singleChannelFrame1", singleChannelFrame1);
+			waitKey(33);          //delay 33ms
+			imshow("singleChannelFrame2", singleChannelFrame2);
+			waitKey(33);          //delay 33ms
+			singleChannelFrame2 = Scalar(0, 0, 0);
+			drawContours(singleChannelFrame2, contourList, maxIndex, Scalar(255, 255, 255), -1);
+			bitwise_and(singleChannelFrame2, singleChannelFrame1, singleChannelFrame1);
 
-	//vector<Vec2f> lines;
-	//HoughLinesP(singleChannelFrame1, lines,);
-
+			//vector<Vec2f> lines;
+			//HoughLinesP(singleChannelFrame1, lines,);
 
 
-	imshow("masked", singleChannelFrame2);
-	waitKey(33);          //delay 33ms
-	imshow("maskedTable", singleChannelFrame1);
-	waitKey(33);          //delay 33ms
-#endif
+
+			imshow("masked", singleChannelFrame2);
+			waitKey(33);          //delay 33ms
+			imshow("maskedTable", singleChannelFrame1);
+			waitKey(33);          //delay 33ms
+		#endif
+		//calculated rect points should be in newRectPoints now
 
 
+		//if I want to average the table on init. use this
+			//this either averages the table, or just used the calculated value
+		if (averageTable & count < averageCount)
+		{
+			averageRectFunc(newRectPoints, count, rectPoints);
+			count++;
+		}
+		else
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				rectPoints[i] = newRectPoints[i];
+			}
+		}
+
+
+	} //closes find new table value
+	//uses rectPoints after this point
+
+	
 
 
 
@@ -259,5 +284,15 @@ Mat getTable(Mat inImage,Size inSize,Mat tempImage1,Mat tempImageHSV)
 
 	return singleChannelFrame1;
 	*/
+
+}
+void averageRectFunc(Point2f inBox[4], int curCount, Point2f outBox[4])
+{
+
+	for (int i = 0; i < 4;i++)
+	{
+		outBox[i].x = (outBox[i].x * curCount + inBox[i].x)/(float)(curCount+1);
+		outBox[i].y = (outBox[i].y * curCount + inBox[i].y) / (float)(curCount + 1);
+	}
 
 }
