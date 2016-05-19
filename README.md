@@ -1,7 +1,7 @@
 Pool-Shot-Tracking-using-FPGA
 =============================
 ####Team Member
-<html> Brian Choi <br>Samuel Bauza <br>Olga Souverneva <br>Chuanqiao Edison Huang </html>
+<html> Brian Choi <br>Samuel Bauza <br>Olga Souverneva <br>Chuanqiao Edison Huang <br></html>
 ####Project Overview
 
 A beginning pool player can struggle visualizing the possible shots to score a point. This project will eliminate that guesswork by displaying an image of plays throughout a pool game. Pool is played with 15 balls that can be differentiated by color and demarcation. We will use specialized hardware, field-programmable gate arrays (FPGAs), for recognizing the balls in play and computing trajectories that would land the correct ball in a pool table pocket.
