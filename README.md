@@ -1,4 +1,4 @@
-Pool-Shot-Tracking-using-FPGA
+POOL-AID:   Pool-Shot-Tracking-using-FPGA
 =============================
 <img src = "./source/logo_bg.png">
 
