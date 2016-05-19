@@ -47,3 +47,9 @@ Convert all code to C/C++(May 14th)
 -----------------------------------
 Before being implemented in HLS, we will need to convert all of our code from high level Python, to lower level C/C++. This may have the additional benefit of improving performance.
 
+
+
+Physics engine(May 18th)
+------------------------
+We found the physics to calculating the physics of the shot to be much simpler than determining the shot difficulty and selecting the best shot. We ran into the following difficulties: First, we had to make limiting assumptions about the velocity with which the cue ball is hit. We also found that we needed to correct for the ball center detection error and classification error.
+
