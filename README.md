@@ -3,8 +3,8 @@ Pool-Shot-Tracking-using-FPGA
 Initial code will be higher level, later in the quarter we will move to lower level c code.
 
 
-Pool ball subbtraction(April 11th)
-----------------------------------
+####Pool ball subbtraction(April 11th)
+-------
 The purpose of this goal is to take a well-cropped image of a pool table, and subtract all colors that are determined to be the table. What remains after the subtraction is potentially a pool ball, and will be analyzed by later algorithms.
 <a href="https://www.youtube.com/watch?v=DhBfrnDcqEQ"
 target="_blank"><img src="http://img.youtube.com/vi/DhBfrnDcqEQ/0.jpg" 
@@ -49,7 +49,17 @@ Before being implemented in HLS, we will need to convert all of our code from hi
 
 
 
-Physics engine(May 18th)
+Physics engine(May 17th)
 ------------------------
 We found the physics to calculating the physics of the shot to be much simpler than determining the shot difficulty and selecting the best shot. We ran into the following difficulties: First, we had to make limiting assumptions about the velocity with which the cue ball is hit. We also found that we needed to correct for the ball center detection error and classification error.
+
+<img src="./source/collision_demo.png" width="389.9" height="420">
+
+
+Shot suggestion(May 17th)
+-------------------------
+The purpose of this milestone is to help player to learn better of the game siuation and make the best decision. Our work provides the best calculated path of white ball to generate easy shots for player.
+
+<img src="./source/shot_suggestion.png" width="389.9" height="420">
+
 
