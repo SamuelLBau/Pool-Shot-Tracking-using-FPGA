@@ -6,7 +6,6 @@ Pool-Shot-Tracking-using-FPGA
 A beginning pool player can struggle visualizing the possible shots to score a point. This project will eliminate that guesswork by displaying an image of plays throughout a pool game. Pool is played with 15 balls that can be differentiated by color and demarcation. We will use specialized hardware, field-programmable gate arrays (FPGAs), for recognizing the balls in play and computing trajectories that would land the correct ball in a pool table pocket.
 
 <html><br><br></html>
-
 ####Project Approach
 
 FPGAs are well suited for signal processing tasks for cyber physical systems. Compared to using a larger CPU or adding a GPU an FPGA can be more power efficient, cost effective, and have a smaller physical footprint. However while there are an increasing number of embedded development platforms used by hobbyists, FPGAs are not one of them. Hobbyists may be driven away by the more obscure programming languages, expensive development tools, and long compile time that FPGA development currently requires. An open source platform for FPGA that supports more popular languages like C/C++ and contains pre-compiled methods to shorten overall compile time can go a long ways to encourage hobbyists. To motivate the development of such a platform, we will execute a project on FPGA that would be representative of something a hobbyist may want to do at home: improve their pool game by visualizing possible shots.
@@ -18,10 +17,8 @@ To motivate the development of such a platform, we will execute a project that w
 
 ----------
 
-
-<html><br></html>
-
-
+<html><br><br></html>
+##Milestones:
 
 ####Pool ball subbtraction(April 11th)
 
