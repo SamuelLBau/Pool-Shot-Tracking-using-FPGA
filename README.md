@@ -1,5 +1,7 @@
 Pool-Shot-Tracking-using-FPGA
 =============================
+<img src = "./source/logo_bg.png">
+
 ####Team Member
 <html> Brian Choi <br>Samuel Bauza <br>Olga Souverneva <br>Chuanqiao Edison Huang <br><br></html>
 ####Project Overview
