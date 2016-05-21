@@ -1,0 +1,5 @@
+# Pool-Aid: Billiard Ball Tracking and shot reccomendation
+
+Video requirements:
+    - The camera must not move relative to the table
+    - The initial (30) frames of video must show the table with no occlusion
