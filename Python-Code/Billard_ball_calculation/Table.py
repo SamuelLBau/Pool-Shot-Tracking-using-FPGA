@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-
+import numpy as np
+import cv2
 from mathUnits import *
 
 class Table:
@@ -10,12 +11,15 @@ class Table:
 
 		self.cue = Cue(Point2D(0,0))
 
-		self.pocket1 = Pocket(1, Point2D(0,          self.length))
-		self.pocket2 = Pocket(2, Point2D(self.width, self.length))
-		self.pocket3 = Pocket(3, Point2D(0,          self.length/2))
-		self.pocket4 = Pocket(4, Point2D(self.width, self.length/2))
-		self.pocket5 = Pocket(5, Point2D(0,          0))
-		self.pocket6 = Pocket(6, Point2D(self.width, 0))
+		radius = 30
+		self.pocket1 = Pocket(1, Point2D(0 + radius,           	0 + radius))
+		self.pocket2 = Pocket(2, Point2D(self.width/2,  		0 + radius/2))
+		self.pocket3 = Pocket(3, Point2D(self.width - radius, 	0 + radius))
+		self.pocket4 = Pocket(4, Point2D(0 + radius,          	self.length - radius ))
+		self.pocket5 = Pocket(5, Point2D(self.width/2,  		self.length - radius/2))
+		self.pocket6 = Pocket(6, Point2D(self.width - radius, 	self.length - radius))
+
+
 
 		self.pockets = [self.pocket1, self.pocket2, self.pocket3, \
 						self.pocket4, self.pocket5, self.pocket6 ]
@@ -34,6 +38,17 @@ class Table:
 
 	def getPocket(self, number):
 		return self.pockets[number - 1]
+
+	def showPockets(self, img = None):
+
+		for pocket in self.pockets:
+			if img == None:
+				print "pocket ", pocket.number, " loacted at: (", pocket.position.x, ",", pocket.position.y, ")"
+			else:
+				cv2.circle(img,(int(pocket.position.x),int(pocket.position.y)), 30, (0,0,255), 2)
+				font = cv2.FONT_HERSHEY_SIMPLEX
+				cv2.putText(img, str(pocket.number), (pocket.position.x, pocket.position.y), font, 1, (0,0,255), 2)
+
 
 
 

@@ -57,33 +57,33 @@ class BilliardGame:
 
 	def __init__(self):
 
-		self.table = Table(411, 750)
+		self.table = Table(1212, 634)
 
-		self.whiteBall =  BilliardBall(0, 9, Point2D(0,0))
-		self.yellowBall = BilliardBall(1, 9, Point2D(0,0))
-		self.blueBall =   BilliardBall(2, 1, Point2D(0,0))
+		self.whiteBall =  BilliardBall(0, 18, Point2D(0,0))
+		self.yellowBall = BilliardBall(1, 1, Point2D(0,0))
+		self.blueBall =   BilliardBall(2, 18, Point2D(0,0))
 		self.redBall =    BilliardBall(3, 1, Point2D(0,0))
 		self.purpleBall = BilliardBall(4, 1, Point2D(0,0))
-		self.orangeBall = BilliardBall(5, 1, Point2D(0,0))
-		self.greenBall =  BilliardBall(6, 1, Point2D(0,0))
-		self.brownBall =  BilliardBall(7, 1, Point2D(0,0))
-		self.blackBall =  BilliardBall(8, 1, Point2D(0,0))
-		self.halfYellowBall = BilliardBall(9, 1, Point2D(0,0))
-		self.halfBlueBall =   BilliardBall(10, 1, Point2D(0,0))
-		self.halfRedBall =    BilliardBall(11, 1, Point2D(0,0))
-		self.halfPurpleBall = BilliardBall(12, 1, Point2D(0,0))
-		self.halfOrangeBall = BilliardBall(13, 1, Point2D(0,0))
-		self.halfGreenBall =  BilliardBall(14, 1, Point2D(0,0))
-		self.halfBrownBall =  BilliardBall(15, 1, Point2D(0,0))
+		self.orangeBall = BilliardBall(5, 18, Point2D(0,0))
+		self.greenBall =  BilliardBall(6, 18, Point2D(0,0))
+		self.brownBall =  BilliardBall(7, 18, Point2D(0,0))
+		self.blackBall =  BilliardBall(8, 18, Point2D(0,0))
+		self.strYellowBall = BilliardBall(9, 18, Point2D(0,0))
+		self.strBlueBall =   BilliardBall(10, 1, Point2D(0,0))
+		self.strRedBall =    BilliardBall(11, 1, Point2D(0,0))
+		self.strPurpleBall = BilliardBall(12, 1, Point2D(0,0))
+		self.strOrangeBall = BilliardBall(13, 1, Point2D(0,0))
+		self.strGreenBall =  BilliardBall(14, 1, Point2D(0,0))
+		self.strBrownBall =  BilliardBall(15, 1, Point2D(0,0))
 
 		self.balls = [ self.whiteBall,  self.yellowBall, \
 		               self.blueBall,   self.redBall, \
 		               self.purpleBall, self.orangeBall, \
 		               self.greenBall,  self.brownBall, \
-		               self.blackBall,      self.halfYellowBall, \
-		               self.halfBlueBall,   self.halfRedBall, \
-		               self.halfPurpleBall, self.halfOrangeBall, \
-		               self.halfGreenBall,  self.halfBrownBall]
+		               self.blackBall,      self.strYellowBall, \
+		               self.strBlueBall,   self.strRedBall, \
+		               self.strPurpleBall, self.strOrangeBall, \
+		               self.strGreenBall,  self.strBrownBall]
 
 
 
@@ -91,10 +91,10 @@ class BilliardGame:
 		self.balls[number].move(vector)
 
 
-	def getCollisionPos(self, moveBallNum, stayBallNum):
-		moveBall = self.balls[moveBallNum]
-		stayBall = self.balls[stayBallNum]
-		radius = self.whiteBall.radius
+	def getCollisionPos(self, moveBall, stayBall):
+		#moveBall = self.balls[moveBallNum]
+		#stayBall = self.balls[stayBallNum]
+		radius = moveBall.radius
 		sx = stayBall.position.x
 		sy = stayBall.position.y
 		#moveFunc = LinearFunc(0, moveBall.velocity.x)
@@ -141,11 +141,13 @@ class BilliardGame:
 
 				k = new_stay_sp / new_stay_ve.length()
 
-				self.balls[stayBallNum].setVelocity(new_stay_ve.scale(k))
+				stayBall.setVelocity(new_stay_ve.scale(k))
+				#self.balls[stayBallNum].setVelocity(new_stay_ve.scale(k))
 
 				new_move_sp = moveBall.speed * m.cos(theta)
 				new_move_ve = new_stay_ve.normal()
 				k_ = new_move_sp / new_move_ve.length()
+
 				self.haloBall = BilliardBall(99, 9, x1y1)
 				self.haloBall.setVelocity(new_move_ve.scale(k_))
 
@@ -154,28 +156,31 @@ class BilliardGame:
 			else:
 
 				theta = m.pi/2 - m.atan(tan_x2y2)
-				print "tan_x2y2 = ", tan_x2y2
-				print "delta = ", m.degrees(m.atan(tan_x2y2))
-				print "theta = ", m.degrees(theta)
+				#print "tan_x2y2 = ", tan_x2y2
+				#print "delta = ", m.degrees(m.atan(tan_x2y2))
+				#print "theta = ", m.degrees(theta)
 
 
 				new_stay_sp = moveBall.speed * m.sin(theta)
-				print "move ball speed = ", moveBall.speed
-				print "new_stay_sp = ", new_stay_sp
+				#print "move ball speed = ", moveBall.speed
+				#print "new_stay_sp = ", new_stay_sp
 
 
 				new_stay_ve = Vector2D(from_point = x2y2, to_point = stayBall.position)
-				print "new_stay_ve = (", new_stay_ve.x_factor, ",", new_stay_ve.y_factor, ")"
+				#print "new_stay_ve = (", new_stay_ve.x_factor, ",", new_stay_ve.y_factor, ")"
 
 				k = new_stay_sp / new_stay_ve.length()
-				print "new_stay_ve.length = ", new_stay_ve.length()
-				print "scale k = ", k
+				#print "new_stay_ve.length = ", new_stay_ve.length()
+				#print "scale k = ", k
 
-				self.balls[stayBallNum].setVelocity(new_stay_ve.scale(k))
+				stayBall.setVelocity(new_stay_ve.scale(k))
+
+				#self.balls[stayBallNum].setVelocity(new_stay_ve.scale(k))
 
 				new_move_sp = moveBall.speed * m.cos(theta)
 				new_move_ve = new_stay_ve.normal()
 				k_ = new_move_sp / new_move_ve.length()
+
 				self.haloBall = BilliardBall(99, 9, x2y2)
 				self.haloBall.setVelocity(new_move_ve.scale(k_))
 
@@ -183,9 +188,18 @@ class BilliardGame:
 				return x2y2
 
 
-	def velocityAfterCollision(self, moveBall, stayBall, collision_pos):
-		new_v_of_stay = Vector2D(stayBall.position.x - collision_pos.x, stayBall.position.y - collision_pos.y)
-		stayBall.setVelocity(new_v_of_stay)
+
+	def getClosestPocket(self, ball):
+
+		min_dist = float('inf')
+		pocket_num = 0
+		for pocket in self.table.pockets:
+			dist = distance(ball.position, pocket.position)
+			if dist < min_dist:
+				min_dist = dist
+				pocket_num = pocket.number
+
+		return pocket_num
 
 
 
@@ -195,47 +209,78 @@ class BilliardGame:
 		print "                                                    "
 		print "          Pool Ball Game Simulation begin           "
 		print "____________________________________________________\n\n"
-		img = cv2.imread('simple_game.jpg')
+		img = cv2.imread('simple_game_crop.png')
 		height, width, channels = img.shape
 		print "image width: ", width
 		print "image height: ", height
 
-		white_ball_pos  = Point2D(602.0, 302.0)
-		yellow_ball_pos = Point2D(504.0, 182.0)
-		sim_velocity = Vector2D(from_point = white_ball_pos, to_point = yellow_ball_pos).scale(0.4)
+		white_ball_pos  = Point2D(1061.0, 510.0)
+		yellow_ball_pos = Point2D(863.0, 268.0)
+		blue_ball_pos = Point2D(271.0, 316.0)
+		brown_ball_pos = Point2D(780.0, 58.0)
+		orange_ball_pos = Point2D(698.0, 185.0)
+		green_ball_pos = Point2D(624.0, 213.0)
+		black_ball_pos = Point2D(71.0, 92.0)
+
+		sim_velocity = Vector2D(from_point = white_ball_pos, to_point = yellow_ball_pos).scale(0.5)
 
 
 		self.balls[0].setPosition(point = white_ball_pos)
-		self.balls[1].setPosition(point = yellow_ball_pos)
-
+		self.balls[9].setPosition(point = yellow_ball_pos)
+		self.balls[2].setPosition(point = blue_ball_pos)
+		self.balls[5].setPosition(point = orange_ball_pos)
+		self.balls[6].setPosition(point = green_ball_pos)
+		self.balls[7].setPosition(point = brown_ball_pos)
+		self.balls[8].setPosition(point = black_ball_pos)
 
 		# check balls have velocity or not
 		self.balls[0].setVelocity(sim_velocity)
 
-		p = self.getCollisionPos(0, 1)
 		#p = Point2D(0,0)
 
 		white = self.balls[0]
-		yellow = self.balls[1]
+		cv2.circle(img,(int(white.position.x),int(white.position.y)), white.radius, (0,0,255), 2)
+
+		yellow = self.balls[9]
+		cv2.circle(img,(int(yellow.position.x),int(yellow.position.y)), yellow.radius, (0,0,255), 2)
+
+
+		blue = self.balls[2]
+		cv2.circle(img,(int(blue.position.x),int(blue.position.y)), blue.radius, (0,0,255), 2)
+
+		orange = self.balls[5]
+		cv2.circle(img,(int(orange.position.x),int(orange.position.y)), orange.radius, (0,0,255), 2)
+
+		green = self.balls[6]
+		cv2.circle(img,(int(green.position.x),int(green.position.y)), green.radius, (0,0,255), 2)
+
+		brown = self.balls[7]
+		cv2.circle(img,(int(brown.position.x),int(brown.position.y)), brown.radius, (0,0,255), 2)
+
+		black = self.balls[8]
+		cv2.circle(img,(int(black.position.x),int(black.position.y)), black.radius, (0,0,255), 2)
+
+
+
+		p = self.getCollisionPos(self.balls[0], self.balls[9])
+
 
 		print "white ball located at: (", white.position.x, ",", white.position.y, ")"
 		print "white ball speed is: ", white.speed
 		print "yellow ball located at: (", yellow.position.x, ",", yellow.position.y, ")"
+		print "the closest pocket to yellow is: ", self.getClosestPocket(yellow)
 		print "collision point is at: (", p.x, ",", p.y, ")"
 
-		yellow = self.balls[1]
+		yellow = self.balls[9]
 
 		print "After collision: \n       yellow ball speed is: ", yellow.speed
 
 
 
-
-		cv2.circle(img,(int(white.position.x),int(white.position.y)), white.radius, (0,0,255), 2)
 		cv2.line(img, (int(white.position.x),int(white.position.y)), (int(white.position.x+white.velocity.x_factor),
 			int(white.position.y+white.velocity.y_factor)), (0,0,255), 2)
 
 
-		cv2.circle(img,(int(yellow.position.x),int(yellow.position.y)), yellow.radius, (0,0,255), 2)
 		cv2.line(img, (int(yellow.position.x),int(yellow.position.y)), (int(yellow.position.x+yellow.velocity.x_factor),
 			int(yellow.position.y+yellow.velocity.y_factor)), (0,0,255), 2)
 
@@ -244,6 +289,10 @@ class BilliardGame:
 
 		q = self.haloBall
 		cv2.line(img, (int(q.position.x),int(q.position.y)), (int(q.position.x+q.velocity.x_factor),int(q.position.y+q.velocity.y_factor)), (0,0,255), 2)
+
+
+
+		self.table.showPockets(img)
 
 		cv2.imshow('image',img)
 		cv2.waitKey(0)
