@@ -10,7 +10,7 @@ using namespace cv;
 
 #define INPUT_VIDEO_FOLDER "D:/Files/UCSD Undergrad/Spring 2016/CSE145/Pool video/5-5-16/"
 #define OUTPUT_VIDEO_FOLDER "D:/Files/UCSD Undergrad/Spring 2016/CSE145/Pool video/result/"
-#define INPUT_VIDEO_NAME "Normal_Occlusion_2"
+#define INPUT_VIDEO_NAME "LightWhiteWithTraining"
 #define VIDEO_EXTENSION ".mp4"
 
 #define OUTPUT_VIDEO_MASK OUTPUT_VIDEO_FOLDER INPUT_VIDEO_NAME "_MASK" VIDEO_EXTENSION
@@ -20,7 +20,7 @@ using namespace cv;
 
 #define INPUT_VIDEO INPUT_VIDEO_FOLDER INPUT_VIDEO_NAME VIDEO_EXTENSION
 
-#define FRAMES_TO_RUN 200
+//set to -1 to do entire video
 int main() {
 	int numFrames = 0;
 	Mat image;          //Create Matrix to store image
@@ -40,7 +40,6 @@ int main() {
 	tableVWriter.open(OUTPUT_VIDEO_TABLE, inputFourCC, inputFrameRate, inputSize,true);
 	circlesVWriter.open(OUTPUT_VIDEO_CIRCLES, inputFourCC, inputFrameRate, inputSize);
 	finalVWriter.open(OUTPUT_VIDEO_FINAL, inputFourCC, inputFrameRate, inputSize);
-	namedWindow("window", 1);          //create window to show image
 	cout << "frameRate = " << inputFrameRate << endl;
 	cout << "fourCC = " << inputFourCC << endl;
 	cout << "input Size = " << inputSize << endl;
@@ -66,8 +65,9 @@ int main() {
 	}
 #endif
 	bool prevEmpty = false;
-	while (numFrames < FRAMES_TO_RUN && cap.isOpened())
+	while (((numFrames < FRAMES_TO_RUN) || (FRAMES_TO_RUN < 0)) && cap.isOpened())
 	{
+		waitKey(1);//Here for debug windows purposes
 		cap >> image;          //stream image
 
 		//this checks for end of video stream, quits on 2 consecutive empty frames
@@ -83,17 +83,13 @@ int main() {
 		}
 		prevEmpty = false;
 		numFrames++;
-		#if true
+		#if DEBUG
 			cout << "Printing frame: " << numFrames << endl;
 		#endif
 		#if WRITE_VIDEO
-			finalVWriter << processVideo(image,inputSize, true,30,maskVWriter=maskVWriter,tableVWriter=tableVWriter,circlesVWriter=circlesVWriter);
+			finalVWriter << processVideo(image,inputSize, maskVWriter=maskVWriter,tableVWriter=tableVWriter,circlesVWriter=circlesVWriter);
 		#else
-			Mat finalFrame = processVideo(image, inputSize);
-			#if DEBUG
-				imshow("table contour", finalFrame);
-				waitKey(33);          //delay 33ms
-			#endif
+			processVideo(image, inputSize);
 		#endif
 	}
 	#if WRITE_VIDEO
