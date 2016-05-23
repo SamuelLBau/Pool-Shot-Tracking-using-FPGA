@@ -8,7 +8,7 @@
 using namespace std;
 using namespace cv;
 
-Mat processVideo(Mat inImage,Size inSize, VideoWriter maskVWriter, VideoWriter tableVWriter, VideoWriter circlesVWriter)
+Mat processVideo(Mat inImage,Size inSize, VideoWriter maskVWriter, VideoWriter tableVWriter, VideoWriter circlesVWriter,VideoWriter maskedTableWriter)
 {
 	#if DEBUG_IN_IMAGE
 		imshow("inImage", inImage);          //print image to screen
@@ -27,6 +27,9 @@ Mat processVideo(Mat inImage,Size inSize, VideoWriter maskVWriter, VideoWriter t
 	vector<float> ballRadii;
 	vector<int> ballIDs;
 
+	//In case system doesn't correctly set an output, should output something in all states
+	inImage.copyTo(outImage);
+
 	#if AVERAGE_BOX_POINTS
 		static Point2f tempTableBounds[4];
 		static int boxAverageFrameCount = 0;
@@ -37,100 +40,137 @@ Mat processVideo(Mat inImage,Size inSize, VideoWriter maskVWriter, VideoWriter t
 		static int BGAverageFrameCount = 0;
 	#endif
 
+	static int STATE = STATE_INIT;
+	cout << "STATE = " << STATE << endl;
+
+	if (STATE == STATE_INIT)
+	{
+		boxAverageFrameCount = 0;
+		BGAverageFrameCount = 0;
+		STATE = STATE_AVERAGE_TABLE;
+	}
+
 	inImage.copyTo(tempImage1);
 	//GaussianBlur(inImage, tempImage1, Size(3, 3), 0, 0, 0);
-
-
 	cvtColor(tempImage1, HSVImage, CV_RGB2HSV);
 
 	#if AVERAGE_BOX_POINTS
-		if (boxAverageFrameCount < NUM_BOX_AVERAGE_FRAMES)
+		if (STATE == STATE_AVERAGE_TABLE)
 		{
-			getTableBounds(HSVImage, inSize, tempTableBounds);
-			averageRectFunc(tempTableBounds, boxAverageFrameCount, tableBounds);
-			boxAverageFrameCount++;
+			if (boxAverageFrameCount < NUM_BOX_AVERAGE_FRAMES)
+			{
+				getTableBounds(HSVImage, inSize, tempTableBounds);
+				averageRectFunc(tempTableBounds, boxAverageFrameCount, tableBounds);
+				boxAverageFrameCount++;
+			}
+			if (boxAverageFrameCount == NUM_BOX_AVERAGE_FRAMES)
+			{
+				STATE = STATE_AVERAGE_BACKGROUND;
+			}
 		}
+		getTableImage(inImage, inSize, tableBounds, tableImage);
 	#else
+		//if not averaging table, needs to be done every frame
 		getTableBounds(HSVImage, inSize, tableBounds);
+		getTableImage(inImage, inSize, tableBounds, tableImage);
+		if (STATE == STATE_AVERAGE_TABLE)
+		{
+			STATE = STATE_AVERAGE_BACKGROUND;
+		}
 	#endif
-
-	//could change these to #if statements
-	getTableImage(inImage, inSize, tableBounds, tableImage);
+	#if DEBUG_WARPED_TABLE
+		imshow("Warped Table", tableImage);
+	#endif
 	#if AVERAGE_BG_FRAME
 		#if !AVERAGE_BOX_POINTS
 			int boxAverageFrameCount = 1000000;
 		#endif
-		//int boxAverageFrameCount = 0;
-		if (!AVERAGE_BOX_POINTS || AVERAGE_BOX_POINTS && (boxAverageFrameCount >= NUM_BOX_AVERAGE_FRAMES))
+		if (STATE == STATE_AVERAGE_BACKGROUND)
 		{
 			if (BGAverageFrameCount < NUM_BG_AVERAGE_FRAMES)
 			{
 				averageImageFunc(tableImage, (float)BGAverageFrameCount, BGImage);
 				BGAverageFrameCount++;
 			}
+			if (BGAverageFrameCount == NUM_BG_AVERAGE_FRAMES)
+			{
+				STATE = STATE_NORMAL_RUN;
+			}
+			#if WRITE_VIDEO 
+				if (tableVWriter.isOpened())
+				{
+					tableVWriter.write(tableImage);
+				}
+			#endif
 		}
+	#else
+		if (STATE == STATE_AVERAGE_BACKGROUND)
+			STATE = STATE_NORMAL_RUN;
 	#endif
-
-	#if DEBUG_WARPED_TABLE
-		//cvtColor(tableImage, warpedTableShow, CV_HSV2RGB);
-	#endif
-
+#if DEBUG_BG_IMAGE && AVERAGE_BG_FRAME
+	imshow("BG Image", BGImage);
+#endif
 
 		//NOTE: May want to update this to make a mask, then add BGImage back with the mask
 		//This will prevent color distortion of our balls
-	#if TABLE_BG_SUBTRACTION_SIMPLE
-		tableBackgroundSubtraction(tempImage1, BGImage, tableImage);
-		cvtColor(tableImage, tableImage, CV_HSV2RGB);
-	#else
-		getBallMask(tableImage, BGImage,inSize, tempChannels, tempImage2, ballMask);
-		imshow("BALLMASK", ballMask);          //print image to screen
-							  //tempImage1.copyTo(tableImage);
-		tableImage.copyTo(tempImage1);
-		bitwise_not(ballMask, tempChannels[0]);
-		bitwise_and(tableImage, Scalar(0), tempImage1, tempChannels[0]);
+	if (STATE == STATE_NORMAL_RUN)
+	{
+		//This likely no longer works
+		#if TABLE_BG_SUBTRACTION_SIMPLE
+			tableBackgroundSubtraction(tempImage1, BGImage, tableImage);
+			cvtColor(tableImage, tableImage, CV_HSV2RGB);
+		#else
+			getBallMask(tableImage, BGImage, inSize, tempChannels, tempImage2, ballMask);
+			#if DEBUG_INITIAL_BALL_MASK
+				imshow("BALLMASK", ballMask);          //print image to screen
+			#endif				  //tempImage1.copyTo(tableImage);
+			#if DEBUG_TABLE_BALL_INITIAL_MASK
+				tableImage.copyTo(tempImage1);
+				bitwise_not(ballMask, tempChannels[0]);
+				bitwise_and(tableImage, Scalar(0), tempImage1, tempChannels[0]);
 
-		//cvtColor(tableImage, tableImage, CV_HSV2RGB);
-		imshow("ballMaskedTableImage", tempImage1);          //print image to screen
-		//waitKey(33);          //delay 33ms
-	#endif
+				//cvtColor(tableImage, tableImage, CV_HSV2RGB);
+
+				imshow("ballMaskedTableImage", tempImage1);          //print image to screen
+				#if WRITE_VIDEO
+					if (maskedTableWriter.isOpened())
+					{
+						maskedTableWriter.write(tempImage1);
+					}
+				#endif
+				//waitKey(33);          //delay 33ms
+			#endif
+		#endif
+		#if WRITE_VIDEO 
+			if (maskVWriter.isOpened())
+			{
+				maskVWriter.write(ballMask);
+			}
+		#endif
 	//NOTE: If I want tableimage to be in RGBspace, I should change HSVImage to inImage for getTableImage call
 
-	ballPoints.clear();
-	ballRadii.clear();
-	ballIDs.clear();
-	locateBilliardBalls(ballMask, inSize,tempChannels,tableImage,tempImage1,ballPoints, ballRadii,ballIDs, maskVWriter);
-	//TODO: detectedBallList = locateBilliardBalls(tableImage,insize,tempImage1,tempImage2);
 
-	//NOTE: To save space, will re-use tempImage1
-	//TODO: drawBilliardBalls(tableImage,outImage,ballPoints,ballRadii,ballIDs);
+		ballPoints.clear();
+		ballRadii.clear();
+		ballIDs.clear();
+		locateBilliardBalls(ballMask, inSize,tempChannels,tableImage,tempImage1,ballPoints, ballRadii,ballIDs, maskVWriter,circlesVWriter);
+		//TODO: detectedBallList = locateBilliardBalls(tableImage,insize,tempImage1,tempImage2);
 
-	//TODO: reccomendedShot = reccomendShot(ballPoints,ballRadii,insize);
+		//NOTE: To save space, will re-use tempImage1
+		drawBilliardBalls(tableImage,outImage,ballPoints,ballRadii,ballIDs);
 
-	//temporary line until draw code is added
-	//outImage = tableImage;
+		//TODO: reccomendedShot = reccomendShot(ballPoints,ballRadii,insize);
 
-#if WRITE_VIDEO 
-	if (maskVWriter.isOpened())
-	{
-		//maskVWriter.write(ballMask);
+		//temporary line until draw code is added
+		//outImage = tableImage;
 	}
-	if (tableVWriter.isOpened())
-	{
-		tableVWriter.write(tableImage);
-	}
-	if (circlesVWriter.isOpened())
-	{
-		//circlesVWriter.write(circlesImage);
-	}
-#endif
-
-	tableImage.copyTo(outImage);
 	return outImage;
 }
 void drawBilliardBalls(Mat tableImage, Mat outImage, Size inSize, vector<Point2f> ballCenters, vector<float>ballRadii, vector<int> ballIDs)
 {
 	tableImage.copyTo(outImage);
 	Scalar color;
+	cout << "Ball Center Size: " << ballCenters.size() << endl;
 	for (int i = 0; i < ballCenters.size(); i++)
 	{
 		color = getBallColor(ballIDs[i]);
@@ -170,50 +210,54 @@ Scalar getBallColor(int ballID)
 	default: return Scalar(-1, -1, -1);//Invalid ID
 	}
 }
-void locateBilliardBalls(Mat ballMask, Size inSize,Mat tempChannel[3],Mat tableImage,Mat tempImage,vector<Point2f> ballPoints, vector<float> ballRadii,vector<int> ballIDs,VideoWriter maskWriter)
+void locateBilliardBalls(Mat ballMask, Size inSize,Mat tempChannel[3],Mat tableImage,Mat tempImage,vector<Point2f> &ballPoints, vector<float> &ballRadii,vector<int> &ballIDs,VideoWriter maskWriter,VideoWriter circlesWriter)
 {
-	int largeErosionSize = 3;
+	int largeErosionSize = INIT_EROSION_SIZE;
 	int largeErosionType = MORPH_ELLIPSE;
 	Mat initErosionElement = getStructuringElement(largeErosionType,
 		Size(2 * largeErosionSize + 1, 2 * largeErosionSize + 1));
 
-	int smallErosionSize = 7;
+	int smallErosionSize = LOOP_EROSION_SIZE;
 	int smallErosionType = MORPH_ELLIPSE;
 	Mat loopErosionElement = getStructuringElement(smallErosionType,
 		Size(2 * smallErosionSize + 1, 2 * smallErosionSize + 1));
 
-	int dilationSize = 3;
+	int initDilationSize = INIT_DILATION_SIZE;
 	int dilationType = MORPH_ELLIPSE;
-	Mat dilationElement = getStructuringElement(dilationType,
-		Size(2 * dilationSize + 1, 2 * dilationSize + 1));
+	Mat initDilationElement = getStructuringElement(dilationType,
+		Size(2 * initDilationSize + 1, 2 * initDilationSize + 1));
+
+	int loopDilationSize = LOOP_DILATION_SIZE;
+	Mat loopDilationElement = getStructuringElement(dilationType,
+		Size(2 * loopDilationSize + 1, 2 * loopDilationSize + 1));
 
 
 	vector<vector<Point>> contourList;
 	vector<vector<Point>> potentialBallContours;
 	vector<Point2f> validBallList;
 	vector<int> validBallIDs;
-	erode(ballMask, tempChannel[1],initErosionElement);
-	dilate(tempChannel[1], tempChannel[0], dilationElement);
+	erode(ballMask, tempChannel[1],initErosionElement,Point(-1,-1),INIT_EROSION_ITERATIONS);
+	dilate(tempChannel[1], tempChannel[0], initDilationElement, Point(-1, -1), INIT_DILATION_ITERATIONS);
 	//imshow("ERDI images", tempChannel[1]);
 	int sourceIndex;
 	int dstIndex;
 	int imageClassifier=0;//placeholder for olga's object
 	//imageClassifier.begin();
-#define NUM_ITERATIONS 4
-	for (int i = 0; i < NUM_ITERATIONS; i++)
+	for (int i = 0; i < NUM_EROSION_LOOP_ITERATIONS; i++)
 	{
+		contourList.clear();
 		//if (i == 3)
 		{
 			maskWriter.write(tempChannel[0]);
 		}
-		tempChannel[0].copyTo(tempChannel[1]);
-		imshow(to_string(i), tempChannel[0]);
+		tempChannel[0].copyTo(tempChannel[2]);
+		#if DEBUG_ERODED_MASKS
+			imshow(to_string(i), tempChannel[0]);
+		#endif
 		findContours(tempChannel[0], contourList, CV_RETR_LIST, CHAIN_APPROX_SIMPLE);
 		//no more contours, no reason to do the difficult calculations
 		if (contourList.size() == 0)
 			break;
-		//cout << "Iteration [" << i<<"] num countours:["<< contourList.size()<<"]"<< endl;
-		//drawCurrentContours(tableImage, tempImage, contourList);
 		for (int i = 0; i < contourList.size(); i++)
 		{
 			if (checkContour(contourList[i], validBallList,i))
@@ -221,19 +265,27 @@ void locateBilliardBalls(Mat ballMask, Size inSize,Mat tempChannel[3],Mat tableI
 				potentialBallContours.push_back(contourList[i]);
 			}
 		}
-		identifyBalls(tableImage,inSize, imageClassifier,potentialBallContours, validBallList, validBallIDs,i);
-		erode(tempChannel[1], tempChannel[0], loopErosionElement);
+		identifyBalls(tableImage, inSize, imageClassifier, potentialBallContours, validBallList, validBallIDs, i, circlesWriter);
+		erode(tempChannel[2], tempChannel[1], loopErosionElement,Point(-1,-1),LOOP_EROSION_ITERATIONS);
+		dilate(tempChannel[1], tempChannel[0], loopDilationElement, Point(-1, -1), LOOP_DILATION_ITERATIONS);
 	}
-	//imageClassifier(ballPoints,ballRadii,ballIDs);
+	//imageClassifier.end(ballPoints,ballRadii,ballIDs);
+	for (int i = 0; i < validBallList.size(); i++)
+	{
+		ballPoints.push_back(validBallList[i]);
+		ballRadii.push_back(BILLIARD_BALL_RADIUS);
+		ballIDs.push_back(validBallIDs[i]);
+	}
 	cout << "Finished finding balls this frame" << endl;
 }
-int identifyBalls(Mat inImage,Size inSize,int imageClassifier, vector<vector<Point>>potentialBallContours,vector<Point2f> validBallList, vector<int>validBallIDs,int iteration)
+int identifyBalls(Mat inImage,Size inSize,int imageClassifier, vector<vector<Point>>potentialBallContours,vector<Point2f> &validBallList, vector<int>&validBallIDs,int iteration,VideoWriter circleWriter)
 {
 	//PotentialBallContours are all contours that may be a ball
 	//Iterate through each of them, create a center list, radii list and then send to Olga's cost
 	vector<Point2f> circleCenters;
 	vector<float> circleRadii;
 	vector<bool> isBallList;
+	vector<int> ballIDList;
 	Point2f curCircle;
 	float radius;
 	for (int i = 0; i < potentialBallContours.size();i++)
@@ -242,49 +294,119 @@ int identifyBalls(Mat inImage,Size inSize,int imageClassifier, vector<vector<Poi
 		circleCenters.push_back(curCircle);
 		circleRadii.push_back(radius);
 		#if DEBUG_POTENTIAL_BALLS
-			debugPotentialBalls(inImage, curCircle, radius);
+			debugPotentialBalls(inImage, curCircle, radius, circleWriter);
 		#endif
 	}
-
-	//Placeholder for olga's object
-	//imageClassifier.classifyContours(inImage, circleCenters, circleRadii, isBallList);
+	#if USE_OLGAS_CLASSIFIER
+		//Placeholder for olga's object
+		//imageClassifier.classifyContours(inImage, circleCenters, circleRadii, isBallList);
+	#else
+		classifyContours(inImage, circleCenters, circleRadii, isBallList, ballIDList,iteration);
+	#endif
 
 	for (int i = 0; i < isBallList.size(); i++)
 	{
 		if (isBallList[i])
 		{
 			validBallList.push_back(circleCenters[i]);
-
+			validBallIDs.push_back(ballIDList[i]);
 		}
 	}
-	//For each item in the contour list, get the circle info, prepare to send to OLGA's code
 	return 0;
 }
-void debugPotentialBalls(Mat inImage, Point2f circleCenter, float radius)
+void debugPotentialBalls(Mat inImage, Point2f circleCenter, float radius,VideoWriter circleWriter)
 {
 	static int writtenCount = 0;
-	cout << circleCenter.x + radius << "|" << circleCenter.y + radius << endl;
+	//cout << circleCenter.x + radius << "|" << circleCenter.y + radius << endl;
+	
 	Rect ballROI = Rect(circleCenter.x - radius, circleCenter.y - radius, 2 * radius, 2 * radius);
 	Mat curBallImage = Mat(inImage, ballROI);
-	imshow("Potential Ball:", curBallImage);
-	int returnChar = waitKey(0);
+	#if DEBUG_POTENTIAL_BALLS_SHOW
+		imshow("Potential Ball:", curBallImage);
+	#endif
+	#if WRITE_VIDEO_CIRCLES
+		Rect ballROITOVID = Rect(circleCenter.x - RADIUS_MIN, circleCenter.y - RADIUS_MIN, 2 * RADIUS_MIN, 2 * RADIUS_MIN);
+		Mat curBallImageTOVID = Mat(inImage, ballROITOVID);
+		circleWriter.write(curBallImageTOVID);
+	#endif
+	int returnChar = 0;
+	#if MANUAL_INPUT_ISBALL
+		returnChar = waitKey(0);
+	#endif
+		//TODO: CHANGE Q
 	//121==y
 	//110 ==n
+	char outFile[80] = "./ballIdentification/";
+	switch (returnChar)
+	{
+	case 49:strcat_s(outFile, "CueBall/");
+		break;
+	case 50:strcat_s(outFile, "SolidYellow/");
+		break;
+	case 51:strcat_s(outFile, "SolidBlue/");
+		break;
+	case 52:strcat_s(outFile, "SolidRed/");
+		break;
+	case 53:strcat_s(outFile, "SolidViolet/");
+		break;
+	case 54:strcat_s(outFile, "SolidOrange/");
+		break;
+	case 55:strcat_s(outFile, "SolidGreen/");
+		break;
+	case 56:strcat_s(outFile, "SolidMaroon/");
+		break;
+	case 57:strcat_s(outFile, "SolidBlack/");
+		break;
+	case 48:strcat_s(outFile, "StripedYellow/");
+		break;
+	case 113:strcat_s(outFile, "StripedBlue/");
+		break;
+	case 119:strcat_s(outFile, "StripedRed/");
+		break;
+	case 101:strcat_s(outFile, "StripedViolet/");
+		break;
+	case 114:strcat_s(outFile, "StripedOrange/");
+		break;
+	case 116:strcat_s(outFile, "StripedGreen/");
+		break;
+	case 121:strcat_s(outFile, "StripedMaroon/");
+		break;
+	case 117:strcat_s(outFile, "NotABall/");
+		break;
+	case 105:strcat_s(outFile, "OccludedOrMixed/");
+		break;
+	case 110://Do not add to folders
+		break;
+	default:
+		returnChar = 110;
+		break;
+	}
+	
+#if !MANUAL_INPUT_ISBALL
+	returnChar = 110;
+#endif
 
-	if (returnChar == 121)
+	if (returnChar != 110)
 	{
 		vector<int> compression_params;
 		compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
 		compression_params.push_back(9);
-		string fileName = to_string(writtenCount) + ".png";
-		cout << fileName << endl;
-		imwrite(fileName, curBallImage, compression_params);
+		strcat_s(outFile,to_string(writtenCount).c_str());
+		strcat_s(outFile, ".png");
+		imwrite(outFile, curBallImage, compression_params);
 		writtenCount++;
 	}
 }
-void classifyContours(Mat inImage,vector<Point2f> circleCenters,vector<float>circleRadii,vector<bool>isBall)
+void classifyContours(Mat inImage,vector<Point2f> &circleCenters,vector<float>&circleRadii,vector<bool>&isBall,vector<int> &ballIDs,int iteration)
 {
-
+	//Placeholder for olga's code, just say all are balls
+	for (int i = 0; i < circleCenters.size();i++)
+	{
+		//For this test, just say all contours are cur balls
+		isBall.push_back(true);
+		ballIDs.push_back(iteration);
+		
+	}
 }
 void contourCircleDetails(vector<Point> contour, Size inSize,Point2f &curCircle, float &radius, int iteration)
 {
@@ -327,10 +449,14 @@ bool checkContour(vector<Point> contour, vector<Point2f> validBallList,int itera
 		return false;
 	}
 	float perimeter = arcLength(contour,true);
+	#if EXCLUDE_CIRCULARITY
+		double eccentricity = FOUR_PI * area / (perimeter * perimeter);
+		if (eccentricity < MIN_CIRCULARITY)
+			return false;
+	#endif
+#if EXCLUDE_NEAR_BALLS
 
-	double eccentricity = FOUR_PI * area / (perimeter * perimeter);
-	if (eccentricity < MIN_CIRCULARITY)
-		return false;
+#endif
 	//TODO: Check if contour contains a valid ball contour
 	//if so, return true
 	return true;
@@ -347,13 +473,13 @@ void cropAndAppendContours(vector < vector<Point> >newContours, vector < vector<
 		}
 	}
 }
-void drawCurrentCircles(Mat inImage, Mat outImage, vector<Point2f> circleCenterList, vector<float> circleRadiiList,vector<int> ballIDs)
+void drawBilliardBalls(Mat inImage, Mat outImage, vector<Point2f> circleCenterList, vector<float> circleRadiiList,vector<int> ballIDs)
 {
 	inImage.copyTo(outImage);
-	//TODO: Base color on ballID
 	for (int i = 0; i < circleCenterList.size(); i++)
 	{
-		circle(outImage, circleCenterList[i], circleRadiiList[i], Scalar((i * 30 % 255), (i * 30 % 255), (i * 30 % 255)), -1);
+		Scalar color = getBallColor(ballIDs[i]);
+		circle(outImage, circleCenterList[i], circleRadiiList[i], color, -1);
 	}
 }
 void drawCurrentContours(Mat inImage, Mat outImage, vector<vector<Point>> contourList)
@@ -524,12 +650,12 @@ void getBallMask(Mat inImage, Mat background,Size inSize,Mat tempChannels[3],Mat
 	//I draw circles on the holes to decrease the number of contours found
 	//Also lessens noise
 	//img,Center,Radius,Color,Thickness
-	circle(outMask, Point(0, 0)							, 60, Scalar(0), -1);
-	circle(outMask, Point(0, inSize.height)				, 60, Scalar(0), -1);
+	circle(outMask, Point(0, 0)							, 80, Scalar(0), -1);
+	circle(outMask, Point(0, inSize.height)				, 80, Scalar(0), -1);
 	circle(outMask, Point(inSize.width/2, 0)			, 40, Scalar(0), -1);
 	circle(outMask, Point(inSize.width/2, inSize.height), 40, Scalar(0), -1);
-	circle(outMask, Point(inSize.width, 0)				, 60, Scalar(0), -1);
-	circle(outMask, Point(inSize.width, inSize.height)	, 60, Scalar(0), -1);
+	circle(outMask, Point(inSize.width, 0)				, 80, Scalar(0), -1);
+	circle(outMask, Point(inSize.width, inSize.height)	, 80, Scalar(0), -1);
 
 #else
 	//TODO: SEE if I should just hardcode another frame in here, or input a temp channel image (see if split reallocates)
@@ -612,6 +738,4 @@ void averageRectFunc(Point2f inBox[4], int curCount, Point2f outBox[4])
 void averageImageFunc(Mat inFrame, float curCount, Mat outFrame)
 {
 	addWeighted(inFrame, (curCount / (curCount + 1)), outFrame, 1 / (curCount + 1), 1, outFrame);
-	cout << "(curCount / (curCount + 1))" << (curCount / (curCount + 1)) << endl;
-	cout << "(curCount + 1)" << 1/(curCount + 1) << endl;
 }
