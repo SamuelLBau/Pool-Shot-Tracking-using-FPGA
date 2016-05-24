@@ -91,6 +91,12 @@ class BilliardGame:
 		self.balls[number].move(vector)
 
 
+	def getAfterCollisionRange(self, moveBall, stayBall):
+		radius = moveBall.radius
+		dist = distance(moveBall.position, stayBall.position)
+		m.
+
+
 	def getCollisionPos(self, moveBall, stayBall):
 		#moveBall = self.balls[moveBallNum]
 		#stayBall = self.balls[stayBallNum]
