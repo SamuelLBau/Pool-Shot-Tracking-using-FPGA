@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "mathUtility.h"
 
 //Point2D::Point2D(){}

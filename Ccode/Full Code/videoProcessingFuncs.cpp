@@ -276,14 +276,14 @@ void locateBilliardBalls(Mat ballMask, Size inSize,Mat tempChannel[3],Mat tableI
 		dilate(tempChannel[1], tempChannel[0], loopDilationElement, Point(-1, -1), LOOP_DILATION_ITERATIONS);
 	}
 	imageClassifier.end(ballPoints,ballRadii,ballIDs);
-	/*
+	
 		for (int i = 0; i < validBallList.size(); i++)
 		{
 			ballPoints.push_back(validBallList[i]);
 			ballRadii.push_back(BILLIARD_BALL_RADIUS);
 			ballIDs.push_back(validBallIDs[i]);
 		}
-	*/
+	
 	cout << "Finished finding balls this frame" << endl;
 }
 int identifyBalls(Mat inImage,Size inSize,Classifier imageClassifier, vector<vector<Point>>potentialBallContours,vector<Point2f> &validBallList, vector<int>&validBallIDs,int iteration,VideoWriter circleWriter)

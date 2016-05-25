@@ -45,17 +45,35 @@ BilliardGame::BilliardGame(vector<Point2f> ballCenters, vector<int> ballIds, vec
 
 	table = Table(inSize.width, inSize.height);
 	bool cueFound = false;
+	for (int i = 0;i < 16; i++)
+	{
+		balls[i] = BilliardBall(0,1,Point2f(0,0));
+	}
 	for(int i = 0; i < ballIds.size(); i++){
+		if (ballIds[i] < 0 || ballIds[i] > 15)
+		{
+			cout << "Invalid ball ID passed to Physics" << ballIds[i] << endl;
+		}
 		balls[ballIds[i]] = BilliardBall(ballIds[i], ballRadii[i], ballCenters[i]);
 		if (ballIds[i] == CUE_BALL_ID)
 			cueFound = true;
 	}
+
 	if (!cueFound)
 		return;
 	BilliardBall cueBall = balls[CUE_BALL_ID];
 
-	for(int i = 0; i < ballIds.size() - 1; i++){
-		BilliardBall haloBall = getCollisionPos(getClosestPocket(balls[i]), balls[i], cueBall);
+	for(int i = 0; i < 16; i++){
+		cout << "i" << i << endl;
+		cout << "Ball id" << balls[i].getNumber() << endl;
+		if (balls[i].getNumber() == CUE_BALL_ID)
+			continue; //Do not calculate for the Cue ball
+		if (balls[i].getPosition() == Point2f(0,0))
+			continue;//skip if the ball was not set (Not found by previous algorithm
+		BilliardBall haloBall;
+		haloBall = getCollisionPos(getClosestPocket(balls[i]), balls[i], cueBall);
+		if (haloBall.getNumber() == -1)
+			continue;//Skip if it is not a valid shot
 		collisionCircles->push_back(haloBall.position);
 		collisionRadii->push_back(haloBall.radius);
 		shotLines->push_back(cueBall.position);
@@ -85,10 +103,16 @@ BilliardBall BilliardGame::getCollisionPos(Pocket pocket, BilliardBall ball, Bil
 	float y2 = to_pocket_function.getValue(x2);
 	Point2f x2y2 = Point2f(x2, y2);
 
-	if (distance(cueBall.position, x1y1) < distance(cueBall.position, x2y2)) 
+	if (distance(cueBall.position, x1y1) < distance(cueBall.position, x2y2))
+	{
+		cout << "x1|y1:" << x1 << "|" << y1 << endl;
 		return BilliardBall(99, cueBall.radius, x1y1);
+	}
 	else
+	{
+		cout << "x2|y2:" << x2 << "|" << y2 << endl;
 		return BilliardBall(99, cueBall.radius, x2y2);
+	}
 }
 
 

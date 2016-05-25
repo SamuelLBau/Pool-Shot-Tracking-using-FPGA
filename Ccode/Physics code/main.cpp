@@ -1,232 +1,9 @@
+#include "BilliardGame.h"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/highgui/highgui.hpp"
 
-//import cv2
-
-//#include "math.h"
-#include <iostream>
-//#include <array>
-#include "BilliardBall.h"
-//#include "mathUtility.h"
-#include "Table.h"
+using namespace cv;
 using namespace std;
-
-// class Failure(Exception):
-//     """Failure exception"""
-//     def __init__(self,value):
-//         self.value=value
-//     def __str__(self):
-//         return repr(self.value)
-
-
-
-class Linear_function{
-public:
-	float slope;
-	float constant;
-
-	Linear_function();
-	~Linear_function();
-	Linear_function(Point2D point1, Point2D point2);
-	Linear_function(float slope, float constant);
-	Linear_function(Point2D point,Vector2D vector);
-	float getValue(float x);
-};
-
-Linear_function::Linear_function(){}
-Linear_function::~Linear_function(){}
-
-Linear_function::Linear_function(Point2D point1, Point2D point2){
-	slope = (point1.getY() - point2.getY())/(point1.getX() - point2.getX());
-	constant = point1.getY() - slope * point1.getY();
-}
-
-Linear_function::Linear_function(float slope, float constant){
-	this -> slope = slope;
-	this -> constant = constant;
-}
-
-Linear_function::Linear_function(Point2D point, Vector2D vector){
-	slope = vector.getY()/ vector.getX();
-	constant = point.getY() - slope * point.getX();
-}
-
-float Linear_function::getValue(float x){
-	return x * slope + constant;
-}
-
-
-class BilliardGame{
-public:
-	Table table;
-
-	BilliardBall whiteBall;
-	BilliardBall yellowBall;
-	BilliardBall blueBall;
-	BilliardBall redBall;
-	BilliardBall purpleBall;
-	BilliardBall orangeBall;
-	BilliardBall greenBall;
-	BilliardBall brownBall;
-	BilliardBall blackBall;
-	BilliardBall strYellowBall;
-	BilliardBall strBlueBall;
-	BilliardBall strRedBall;
-	BilliardBall strPurpleBall;
-	BilliardBall strOrangeBall;
-	BilliardBall strGreenBall;
-	BilliardBall strBrownBall;
-
-	BilliardBall balls[16];
-
-	BilliardGame();
-	~BilliardGame();
-	BilliardBall getCollisionPos(BilliardBall moveBall, BilliardBall stayBall);
-	void transformBall(int num, Vector2D move);
-	int getClosestPocket(BilliardBall ball);
-
-};
-
-BilliardGame::BilliardGame(){
-	table = Table(1212, 634);
-
-	whiteBall =  BilliardBall(0, 18, Point2D(0,0));
-	yellowBall = BilliardBall(1, 1, Point2D(0,0));
-	blueBall =   BilliardBall(2, 18, Point2D(0,0));
-	redBall =    BilliardBall(3, 1, Point2D(0,0));
-	purpleBall = BilliardBall(4, 1, Point2D(0,0));
-	orangeBall = BilliardBall(5, 18, Point2D(0,0));
-	greenBall =  BilliardBall(6, 18, Point2D(0,0));
-	brownBall =  BilliardBall(7, 18, Point2D(0,0));
-	blackBall =  BilliardBall(8, 18, Point2D(0,0));
-	strYellowBall = BilliardBall(9, 18, Point2D(0,0));
-	strBlueBall =   BilliardBall(10, 1, Point2D(0,0));
-	strRedBall =    BilliardBall(11, 1, Point2D(0,0));
-	strPurpleBall = BilliardBall(12, 1, Point2D(0,0));
-	strOrangeBall = BilliardBall(13, 1, Point2D(0,0));
-	strGreenBall =  BilliardBall(14, 1, Point2D(0,0));
-	strBrownBall =  BilliardBall(15, 1, Point2D(0,0));
-
-	balls[0] = whiteBall;
-	balls[1] = yellowBall;
-	balls[2] = blueBall;
-	balls[3] = redBall;
-	balls[4] = purpleBall;
-	balls[5] = orangeBall;
-	balls[6] = greenBall;
-	balls[7] = brownBall;
-	balls[8] = blackBall;
-	balls[9] = strYellowBall;
-	balls[10] = strBlueBall;
-	balls[11] = strRedBall;
-	balls[12] = strPurpleBall;
-	balls[13] = strOrangeBall;
-	balls[14] = strGreenBall;
-	balls[15] = strBrownBall;
-}
-
-
-BilliardBall BilliardGame::getCollisionPos(BilliardBall moveBall, BilliardBall stayBall){
-		int radius = moveBall.radius;
-		float sx = stayBall.position.getX();
-		float sy = stayBall.position.getY();
-
-		Linear_function move_function = Linear_function(moveBall.getPosition(), moveBall.getVelocity());
-		float a = move_function.slope * move_function.slope + 1;
-		float b = 2 * (move_function.slope * move_function.constant - move_function.slope * sy - sx);
-		float c = sx * sx - 4 * radius * radius + (sy - move_function.constant) * (sy - move_function.constant);
-		float delta = b * b - 4 * a * c;
-
-		if (delta <= 0){
-			cout<<"no collision detected";
-			return moveBall;
-		}
-
-		else{
-			float x1 = ((-1 * b) - sqrt(delta)) / (2 * a);
-			float y1 = move_function.getValue(x1);
-			Point2D x1y1 = Point2D(x1, y1);
-
-			float x2 = ((-1 * b) + sqrt(delta)) / (2 * a);
-			float y2 = move_function.getValue(x2);
-			Point2D x2y2 = Point2D(x2, y2);
-
-
-			Linear_function x1y1_to_stay_function = Linear_function(x1y1, stayBall.position);
-
-			Linear_function x2y2_to_stay_function = Linear_function(x2y2, stayBall.position);
-
-			float tan_x1y1 = (x1y1_to_stay_function.slope - move_function.slope) / (1 + x1y1_to_stay_function.slope * move_function.slope);
-
-			float tan_x2y2 = (x2y2_to_stay_function.slope - move_function.slope) / (1 + x2y2_to_stay_function.slope * move_function.slope);
-
-			if (distance(moveBall.position, x1y1) < distance(moveBall.position, x2y2)){
-
-				float theta = M_PI/2 - atan(tan_x1y1);
-
-				float new_stay_sp = moveBall.speed * sin(theta);
-
-				Vector2D new_stay_ve = Vector2D(x1y1, stayBall.position);
-
-				float k = new_stay_sp / new_stay_ve.length();
-
-				stayBall.setVelocity(new_stay_ve.scale(k));
-
-				float new_move_sp = moveBall.speed * cos(theta);
-				Vector2D new_move_ve = new_stay_ve.normal();
-				float k_ = new_move_sp / new_move_ve.length();
-
-				BilliardBall haloBall = BilliardBall(99, 9, x1y1);
-				haloBall.setVelocity(new_move_ve.scale(k_));
-
-				return haloBall;
-			}
-
-			else{
-
-				float theta = M_PI/2 - atan(tan_x2y2);
-
-				float new_stay_sp = moveBall.speed * sin(theta);
-
-				Vector2D new_stay_ve = Vector2D(x2y2, stayBall.position);
-
-				float k = new_stay_sp / new_stay_ve.length();
-
-				stayBall.setVelocity(new_stay_ve.scale(k));
-
-				float new_move_sp = moveBall.speed * cos(theta);
-				Vector2D new_move_ve = new_stay_ve.normal();
-				float k_ = new_move_sp / new_move_ve.length();
-
-				BilliardBall haloBall = BilliardBall(99, 9, x2y2);
-				haloBall.setVelocity(new_move_ve.scale(k_));
-
-
-				return haloBall;
-			}
-		}
-}
-
-void BilliardGame::transformBall(int num, Vector2D move){
-	balls[num].move(move);
-}
-
-
-int BilliardGame::getClosestPocket(BilliardBall ball){
-
-	float min_dist = INFINITY;
-	int pocket_num = 0;
-
-	for(int i = 0; i < 6; i++){
-		float dist = distance(ball.position, table.pockets->at(i).position);
-		if(dist < min_dist){
-			min_dist = dist;
-			pocket_num = table.pockets->at(i).number;
-		}
-	}
-
-	return pocket_num;
-}
-
-
 
 
 int main(){
@@ -234,6 +11,76 @@ int main(){
 	cout<<"                                                    "<<endl;
 	cout<<"          Pool Ball Game Simulation begin           "<<endl;
 	cout<<"____________________________________________________\n\n"<<endl;
+
+
+
+	BilliardGame bg = BilliardGame();
+
+	Point2f white_ball_pos  = Point2f(1061.0, 510.0);
+	Point2f yellow_ball_pos = Point2f(863.0, 268.0);
+	Point2f blue_ball_pos = Point2f(271.0, 316.0);
+	Point2f brown_ball_pos = Point2f(780.0, 58.0);
+	Point2f orange_ball_pos = Point2f(698.0, 185.0);
+	Point2f green_ball_pos = Point2f(624.0, 213.0);
+	Point2f black_ball_pos = Point2f(71.0, 92.0);
+	Vector2D sim_velocity = Vector2D(white_ball_pos, yellow_ball_pos).scale(0.5);
+
+
+    Point2f testpoint = Point2f(0, 0);
+    
+
+	bg.balls[0].setPosition(white_ball_pos);
+	bg.balls[9].setPosition(yellow_ball_pos);
+	bg.balls[2].setPosition(blue_ball_pos);
+	bg.balls[5].setPosition(orange_ball_pos);
+	bg.balls[6].setPosition(green_ball_pos);
+	bg.balls[7].setPosition(brown_ball_pos);
+	bg.balls[8].setPosition(black_ball_pos);
+
+
+	bg.balls[0].setVelocity(sim_velocity);
+
+
+
+	BilliardBall white = bg.balls[0];
+		//cv2.circle(img,(int(white.position.x),int(white.position.y)), white.radius, (0,0,255), 2)
+
+	BilliardBall yellow = bg.balls[9];
+		//cv2.circle(img,(int(yellow.position.x),int(yellow.position.y)), yellow.radius, (0,0,255), 2)
+
+
+	BilliardBall blue = bg.balls[2];
+		//cv2.circle(img,(int(blue.position.x),int(blue.position.y)), blue.radius, (0,0,255), 2)
+
+	BilliardBall orange = bg.balls[5];
+		//cv2.circle(img,(int(orange.position.x),int(orange.position.y)), orange.radius, (0,0,255), 2)
+
+	BilliardBall green = bg.balls[6];
+		//cv2.circle(img,(int(green.position.x),int(green.position.y)), green.radius, (0,0,255), 2)
+
+	BilliardBall brown = bg.balls[7];
+		//cv2.circle(img,(int(brown.position.x),int(brown.position.y)), brown.radius, (0,0,255), 2)
+
+	BilliardBall black = bg.balls[8];
+		//cv2.circle(img,(int(black.position.x),int(black.position.y)), black.radius, (0,0,255), 2)
+
+
+
+
+	BilliardBall haloBall = bg.getCollisionPos(&bg.balls[0], &bg.balls[9]);
+
+
+	cout<<"white ball located at: (" << white.position.x << "," << white.position.y << ")" <<endl;
+	cout << "white ball speed is: " << white.speed << endl;
+	cout << "yellow ball located at: (" << yellow.position.x << "," << yellow.position.y << ")" <<endl;
+	//cout << "the closest pocket to yellow is: " << bg.getClosestPocket(yellow) << endl;
+	cout << "collision point is at: ("<< haloBall.position.x << "," << haloBall.position.y << ")" << endl;
+
+	yellow = bg.balls[9];
+
+	cout << "After collision: \n       yellow ball speed is: " << yellow.speed << endl;
+
+
 
 }
 
@@ -249,13 +96,13 @@ int main(){
 		print "image width: ", width
 		print "image height: ", height
 
-		white_ball_pos  = Point2D(1061.0, 510.0)
-		yellow_ball_pos = Point2D(863.0, 268.0)
-		blue_ball_pos = Point2D(271.0, 316.0)
-		brown_ball_pos = Point2D(780.0, 58.0)
-		orange_ball_pos = Point2D(698.0, 185.0)
-		green_ball_pos = Point2D(624.0, 213.0)
-		black_ball_pos = Point2D(71.0, 92.0)
+		white_ball_pos  = Point2f(1061.0, 510.0)
+		yellow_ball_pos = Point2f(863.0, 268.0)
+		blue_ball_pos = Point2f(271.0, 316.0)
+		brown_ball_pos = Point2f(780.0, 58.0)
+		orange_ball_pos = Point2f(698.0, 185.0)
+		green_ball_pos = Point2f(624.0, 213.0)
+		black_ball_pos = Point2f(71.0, 92.0)
 
 		sim_velocity = Vector2D(from_point = white_ball_pos, to_point = yellow_ball_pos).scale(0.5)
 
@@ -271,7 +118,7 @@ int main(){
 		# check balls have velocity or not
 		self.balls[0].setVelocity(sim_velocity)
 
-		#p = Point2D(0,0)
+		#p = Point2f(0,0)
 
 		white = self.balls[0]
 		cv2.circle(img,(int(white.position.x),int(white.position.y)), white.radius, (0,0,255), 2)

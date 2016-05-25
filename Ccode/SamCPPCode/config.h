@@ -1,8 +1,9 @@
 #ifndef config_h
 #define config_h
 
+#include "stdafx.h"
 
-#define FRAMES_TO_RUN 300
+#define FRAMES_TO_RUN 100
 
 #define STATE_INIT 0
 #define STATE_AVERAGE_TABLE 1
@@ -73,13 +74,41 @@
 #define INIT_DILATION_SIZE 3
 #define INIT_DILATION_ITERATIONS 1
 
-#define EXCLUDE_CIRCULARITY false
 #define EXCLUDE_NEAR_BALLS true
+#define BLOB_MIN_SEPARATION 0		//This is minimum distance from a blob to center of existing circle
+
+#define EXCLUDE_CIRCULARITY false
 #define MIN_CIRCULARITY .6 //This may be bit low
 #define FOUR_PI 4*3.1415927
 
 
 #define USE_OLGAS_CLASSIFIER false
 
+
+#define SOLID_YELLOW_ID 0
+#define SOLID_BLUE_ID 1
+#define SOLID_RED_ID 2
+#define SOLID_VIOLET_ID 3
+#define SOLID_ORANGE_ID 4
+#define SOLID_GREEN_ID 5
+#define SOLID_MAROON_ID 6
+#define SOLID_BLACK_ID 7
+#define STRIPED_YELLOW_ID 8
+#define STRIPED_BLUE_ID 9
+#define STRIPED_RED_ID 10
+#define STRIPED_VIOLET_ID 11
+#define STRIPED_ORANGE_ID 12
+#define STRIPED_GREEN_ID 13
+#define STRIPED_MAROON_ID 14
+#define CUE_BALL_ID 15
+#define MAX_BALLS_IDENTIFIED 32
+
+
+
+
+
+
+///OTHER CONSTANTS
+#define M_PI 3.14159265358979323846
 
 #endif
