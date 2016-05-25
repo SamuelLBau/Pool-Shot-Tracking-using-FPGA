@@ -9,9 +9,12 @@ using namespace cv;
 #include <opencv2/opencv.hpp>
 #include <opencv/highgui.h>
 #include "config.h"
+#include "Classifier.h"
 
 //this should encapsulate all of the processing
 //void getContour
+void getRecommendedShot(vector<Point2f>, vector<int>, vector<float>, Size, vector<Point2f>&, vector<float>&, vector<Point2f>&);
+void drawRecommendedShot(Mat, vector<Point2f>, vector<float>, vector<Point2f>);
 void debugPotentialBalls(Mat, Point2f, float,VideoWriter);
 Scalar getBallColor(int);
 void classifyContours(Mat, vector<Point2f>&, vector<float>&, vector<bool>&,vector<int>&,int);
@@ -20,7 +23,7 @@ bool checkContour(vector<Point>,vector<Point2f>,int);
 void cropAndAppendContours(vector < vector<Point> >, vector < vector<Point>>, int, int);
 Mat processVideo(Mat,Size,VideoWriter maskVWriter=VideoWriter(),VideoWriter tableVWriter=VideoWriter(),VideoWriter circlesVWriter=VideoWriter(),VideoWriter maskedTableWriter=VideoWriter());
 //TODO: Replace the int with OLGA's imageClassifier object
-int identifyBalls(Mat, Size, int, vector<vector<Point>>, vector<Point2f>&, vector<int>&,int,VideoWriter);
+int identifyBalls(Mat, Size, Classifier, vector<vector<Point>>, vector<Point2f>&, vector<int>&,int,VideoWriter);
 void locateBilliardBalls(Mat, Size,Mat[3],Mat,Mat,vector<Point2f>&, vector<float>&,vector<int>&, VideoWriter,VideoWriter);
 void getTableBounds(Mat,Size,Point2f[4]);
 void getTableImage(Mat, Size, Point2f[4], Mat);

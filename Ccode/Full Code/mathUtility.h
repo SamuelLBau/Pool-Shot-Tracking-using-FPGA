@@ -1,28 +1,11 @@
 #ifndef mathUtility_h
 #define mathUtility_h
 
-//#include <stdio.h>
 #include "math.h"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/highgui/highgui.hpp"
 
-
-class Point2D{
-
-public:
-	Point2D(){};
-	~Point2D(){};
-	Point2D(float x, float y);
-	float getX();
-	void setX(float x);
-	float getY();
-	void setY(float y);
-	void setPoint(Point2D point);
-
-private:
-	float x;
-	float y;
-};
-
-
+using namespace cv;
 
 class Vector2D{
 public:
@@ -32,9 +15,9 @@ public:
 		this-> x_factor = x_factor;
 		this-> y_factor = y_factor;
 	}
-	Vector2D(Point2D from_point, Point2D to_point){
-		x_factor = to_point.getX() - from_point.getX();
-		y_factor = to_point.getY() - from_point.getY();
+	Vector2D(Point2f from_point, Point2f to_point){
+		x_factor = to_point.x - from_point.x;
+		y_factor = to_point.y - from_point.y;
 	}
 
 	float getX(){return x_factor;}
@@ -54,14 +37,27 @@ public:
 
 	Vector2D normal(){return Vector2D(y_factor, -1 * x_factor);}
 
-
-
 private:
 	float x_factor;
 	float y_factor;
 };
 
-int distance(Point2D point1, Point2D point2);
+
+
+class Linear_function{
+public:
+	float slope;
+	float constant;
+
+	Linear_function(){};
+	~Linear_function(){};
+	Linear_function(Point2f point1, Point2f point2);
+	Linear_function(float slope, float constant);
+	Linear_function(Point2f point,Vector2D vector);
+	float getValue(float x);
+};
+
+int distance(Point2f point1, Point2f point2);
 
 
 
