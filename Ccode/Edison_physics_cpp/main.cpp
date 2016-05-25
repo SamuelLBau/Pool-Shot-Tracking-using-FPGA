@@ -1,4 +1,8 @@
 #include "BilliardGame.h"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/highgui/highgui.hpp"
+
+using namespace cv;
 using namespace std;
 
 
@@ -12,16 +16,18 @@ int main(){
 
 	BilliardGame bg = BilliardGame();
 
-	Point2D white_ball_pos  = Point2D(1061.0, 510.0);
-	Point2D yellow_ball_pos = Point2D(863.0, 268.0);
-	Point2D blue_ball_pos = Point2D(271.0, 316.0);
-	Point2D brown_ball_pos = Point2D(780.0, 58.0);
-	Point2D orange_ball_pos = Point2D(698.0, 185.0);
-	Point2D green_ball_pos = Point2D(624.0, 213.0);
-	Point2D black_ball_pos = Point2D(71.0, 92.0);
+	Point2f white_ball_pos  = Point2f(1061.0, 510.0);
+	Point2f yellow_ball_pos = Point2f(863.0, 268.0);
+	Point2f blue_ball_pos = Point2f(271.0, 316.0);
+	Point2f brown_ball_pos = Point2f(780.0, 58.0);
+	Point2f orange_ball_pos = Point2f(698.0, 185.0);
+	Point2f green_ball_pos = Point2f(624.0, 213.0);
+	Point2f black_ball_pos = Point2f(71.0, 92.0);
 	Vector2D sim_velocity = Vector2D(white_ball_pos, yellow_ball_pos).scale(0.5);
 
 
+    Point2f testpoint = Point2f(0, 0);
+    
 
 	bg.balls[0].setPosition(white_ball_pos);
 	bg.balls[9].setPosition(yellow_ball_pos);
@@ -64,11 +70,11 @@ int main(){
 	BilliardBall haloBall = bg.getCollisionPos(&bg.balls[0], &bg.balls[9]);
 
 
-	cout<<"white ball located at: (" << white.position.getX() << "," << white.position.getY() << ")" <<endl;
+	cout<<"white ball located at: (" << white.position.x << "," << white.position.y << ")" <<endl;
 	cout << "white ball speed is: " << white.speed << endl;
-	cout << "yellow ball located at: (" << yellow.position.getX() << "," << yellow.position.getY() << ")" <<endl;
-	cout << "the closest pocket to yellow is: " << bg.getClosestPocket(yellow) << endl;
-	cout << "collision point is at: ("<< haloBall.position.getX() << "," << haloBall.position.getY() << ")" << endl;
+	cout << "yellow ball located at: (" << yellow.position.x << "," << yellow.position.y << ")" <<endl;
+	//cout << "the closest pocket to yellow is: " << bg.getClosestPocket(yellow) << endl;
+	cout << "collision point is at: ("<< haloBall.position.x << "," << haloBall.position.y << ")" << endl;
 
 	yellow = bg.balls[9];
 
@@ -90,13 +96,13 @@ int main(){
 		print "image width: ", width
 		print "image height: ", height
 
-		white_ball_pos  = Point2D(1061.0, 510.0)
-		yellow_ball_pos = Point2D(863.0, 268.0)
-		blue_ball_pos = Point2D(271.0, 316.0)
-		brown_ball_pos = Point2D(780.0, 58.0)
-		orange_ball_pos = Point2D(698.0, 185.0)
-		green_ball_pos = Point2D(624.0, 213.0)
-		black_ball_pos = Point2D(71.0, 92.0)
+		white_ball_pos  = Point2f(1061.0, 510.0)
+		yellow_ball_pos = Point2f(863.0, 268.0)
+		blue_ball_pos = Point2f(271.0, 316.0)
+		brown_ball_pos = Point2f(780.0, 58.0)
+		orange_ball_pos = Point2f(698.0, 185.0)
+		green_ball_pos = Point2f(624.0, 213.0)
+		black_ball_pos = Point2f(71.0, 92.0)
 
 		sim_velocity = Vector2D(from_point = white_ball_pos, to_point = yellow_ball_pos).scale(0.5)
 
@@ -112,7 +118,7 @@ int main(){
 		# check balls have velocity or not
 		self.balls[0].setVelocity(sim_velocity)
 
-		#p = Point2D(0,0)
+		#p = Point2f(0,0)
 
 		white = self.balls[0]
 		cv2.circle(img,(int(white.position.x),int(white.position.y)), white.radius, (0,0,255), 2)

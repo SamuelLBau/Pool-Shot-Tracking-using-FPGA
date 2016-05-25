@@ -4,6 +4,7 @@
 #include <iostream>
 #include "BilliardBall.h"
 #include "Table.h"
+#include "config.h"
 using namespace std;
 
 class BilliardGame{
@@ -30,10 +31,13 @@ public:
 	BilliardBall balls[16];
 
 	BilliardGame();
+	BilliardGame(vector<Point2f> ballCenters, vector<int> ballIds, vector<float> ballRadii, Size inSize, 
+		vector<Point2f>* collisionCircles, vector<float>* collisionRadii, vector<Point2f>* shotLines);
 	~BilliardGame(){};
 	BilliardBall getCollisionPos(BilliardBall* moveBall, BilliardBall* stayBall);
 	void transformBall(int num, Vector2D move);
-	int getClosestPocket(BilliardBall ball);
+	Pocket getClosestPocket(BilliardBall ball);
+	BilliardBall getCollisionPos(Pocket pocket, BilliardBall ball, BilliardBall cueBall);
 
 };
 

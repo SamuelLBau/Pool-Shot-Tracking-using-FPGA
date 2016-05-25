@@ -1,0 +1,164 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/BilliardBall.cpp
+BilliardBall.h
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/BilliardBall.h
+
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/BilliardBall.h
+mathUtility.h
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/mathUtility.h
+
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/BilliardGame.cpp
+BilliardGame.h
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/BilliardGame.h
+
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/BilliardGame.h
+iostream
+-
+BilliardBall.h
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/BilliardBall.h
+Table.h
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/Table.h
+config.h
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/config.h
+
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/Table.cpp
+Table.h
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/Table.h
+
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/Table.h
+vector
+-
+mathUtility.h
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/mathUtility.h
+
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/config.h
+
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/main.cpp
+BilliardGame.h
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/BilliardGame.h
+opencv2/imgproc/imgproc.hpp
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/opencv2/imgproc/imgproc.hpp
+opencv2/highgui/highgui.hpp
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/opencv2/highgui/highgui.hpp
+
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/mathUtility.cpp
+mathUtility.h
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/mathUtility.h
+
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/mathUtility.h
+math.h
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/math.h
+opencv2/imgproc/imgproc.hpp
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/opencv2/imgproc/imgproc.hpp
+opencv2/highgui/highgui.hpp
+/Users/Edison/Documents/UCSD/Spring 2016/CSE 145/physics_cpp/opencv2/highgui/highgui.hpp
+
+/usr/local/include/opencv2/core/core.hpp
+opencv2/core/types_c.h
+/usr/local/include/opencv2/core/opencv2/core/types_c.h
+opencv2/core/version.hpp
+/usr/local/include/opencv2/core/opencv2/core/version.hpp
+limits.h
+-
+algorithm
+-
+cmath
+-
+cstddef
+-
+complex
+-
+map
+-
+new
+-
+string
+-
+vector
+-
+sstream
+-
+opencv2/core/operations.hpp
+/usr/local/include/opencv2/core/opencv2/core/operations.hpp
+opencv2/core/mat.hpp
+/usr/local/include/opencv2/core/opencv2/core/mat.hpp
+
+/usr/local/include/opencv2/core/core_c.h
+opencv2/core/types_c.h
+/usr/local/include/opencv2/core/opencv2/core/types_c.h
+
+/usr/local/include/opencv2/core/mat.hpp
+limits.h
+-
+string.h
+-
+
+/usr/local/include/opencv2/core/operations.hpp
+string.h
+-
+limits.h
+-
+ext/atomicity.h
+-
+bits/atomicity.h
+-
+limits
+-
+
+/usr/local/include/opencv2/core/types_c.h
+assert.h
+-
+stdlib.h
+-
+string.h
+-
+float.h
+-
+stdint.h
+-
+intrin.h
+-
+emmintrin.h
+-
+fastmath.h
+-
+math.h
+-
+ipl.h
+-
+ipl/ipl.h
+-
+tegra_round.hpp
+/usr/local/include/opencv2/core/tegra_round.hpp
+emmintrin.h
+/usr/local/include/opencv2/core/emmintrin.h
+
+/usr/local/include/opencv2/core/version.hpp
+
+/usr/local/include/opencv2/highgui/highgui.hpp
+opencv2/core/core.hpp
+/usr/local/include/opencv2/highgui/opencv2/core/core.hpp
+opencv2/highgui/highgui_c.h
+/usr/local/include/opencv2/highgui/opencv2/highgui/highgui_c.h
+
+/usr/local/include/opencv2/highgui/highgui_c.h
+opencv2/core/core_c.h
+/usr/local/include/opencv2/highgui/opencv2/core/core_c.h
+
+/usr/local/include/opencv2/imgproc/imgproc.hpp
+opencv2/core/core.hpp
+/usr/local/include/opencv2/imgproc/opencv2/core/core.hpp
+opencv2/imgproc/types_c.h
+/usr/local/include/opencv2/imgproc/opencv2/imgproc/types_c.h
+
+/usr/local/include/opencv2/imgproc/types_c.h
+opencv2/core/core_c.h
+/usr/local/include/opencv2/imgproc/opencv2/core/core_c.h
+

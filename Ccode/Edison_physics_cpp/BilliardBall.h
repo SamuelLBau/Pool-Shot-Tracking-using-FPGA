@@ -8,14 +8,14 @@ class BilliardBall{
 public:
 	BilliardBall();
 	~BilliardBall();
-	BilliardBall(int ballNum, float radius, Point2D position);
+	BilliardBall(int ballNum, float radius, Point2f position);
 	void setPosition(float x, float y);
-	void setPosition(Point2D point);
-	Point2D getPosition();
+	void setPosition(Point2f point);
+	Point2f getPosition();
 	int getNumber();
 	void setNumber(int number);
-	int getRadius();
-	void setRadius(int radius);
+	float getRadius();
+	void setRadius(float radius);
 	Vector2D getVelocity();
 	void setVelocity(Vector2D velocity);
 	void move(Vector2D move);
@@ -23,7 +23,7 @@ public:
 	bool checkInPocket();
 	void setPocket(bool status);
 
-	Point2D position;
+	Point2f position;
 	int number;
 	int radius;
 	Vector2D velocity;

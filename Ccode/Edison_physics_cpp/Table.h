@@ -8,29 +8,29 @@
 
 class Pocket{
 public:
-	Point2D position;
+	Point2f position;
 	int number;
 
 	Pocket(){};
 	~Pocket(){};
-	Pocket(int number, Point2D position);
+	Pocket(int number, Point2f position);
 	int getNumber();
 	void setNumber(int number);
-	Point2D getPosition();
-	void setPosition(Point2D point);
+	Point2f getPosition();
+	void setPosition(Point2f point);
 };
 
 
 class Cue{
 public:
-	Point2D position;
+	Point2f position;
 	Vector2D velocity;
 
 	Cue(){};
 	~Cue(){};
-	Cue(Point2D position);
-	Point2D getPosition();
-	void setPosition(Point2D point);
+	Cue(Point2f position);
+	Point2f getPosition();
+	void setPosition(Point2f point);
 	Vector2D getVelocity();
 	void setVelocity(Vector2D velocity);
 
