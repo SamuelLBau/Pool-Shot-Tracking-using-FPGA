@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.8)
+project( poolgame )
+find_package( OpenCV )
+include_directories( ${OpenCV_INCLUDE_DIRS} )
+add_executable( poolgame main.cpp BilliardBall.cpp Table.cpp mathUtility.cpp BilliardGame.cpp )
+target_link_libraries( poolgame ${OpenCV_LIBS} )
