@@ -13,6 +13,8 @@ int main(){
 	cout<<"____________________________________________________\n\n"<<endl;
 
 
+	Mat img = imread("simple_game_crop.png" ,CV_LOAD_IMAGE_COLOR);
+
 
 	BilliardGame bg = BilliardGame();
 
@@ -43,44 +45,54 @@ int main(){
 
 
 	BilliardBall white = bg.balls[0];
-		//cv2.circle(img,(int(white.position.x),int(white.position.y)), white.radius, (0,0,255), 2)
+	circle(img, white.position, white.radius, Scalar(0,0,255), 2);
 
 	BilliardBall yellow = bg.balls[9];
-		//cv2.circle(img,(int(yellow.position.x),int(yellow.position.y)), yellow.radius, (0,0,255), 2)
+	circle(img, yellow.position, yellow.radius, Scalar(0,0,255), 2);
 
 
 	BilliardBall blue = bg.balls[2];
-		//cv2.circle(img,(int(blue.position.x),int(blue.position.y)), blue.radius, (0,0,255), 2)
+	circle(img, blue.position, blue.radius, Scalar(0,0,255), 2);
 
 	BilliardBall orange = bg.balls[5];
-		//cv2.circle(img,(int(orange.position.x),int(orange.position.y)), orange.radius, (0,0,255), 2)
+	circle(img, orange.position, orange.radius, Scalar(0,0,255), 2);
 
 	BilliardBall green = bg.balls[6];
-		//cv2.circle(img,(int(green.position.x),int(green.position.y)), green.radius, (0,0,255), 2)
+	circle(img, green.position, green.radius, Scalar(0,0,255), 2);
 
 	BilliardBall brown = bg.balls[7];
-		//cv2.circle(img,(int(brown.position.x),int(brown.position.y)), brown.radius, (0,0,255), 2)
+	circle(img, brown.position, brown.radius, Scalar(0,0,255), 2);
 
 	BilliardBall black = bg.balls[8];
-		//cv2.circle(img,(int(black.position.x),int(black.position.y)), black.radius, (0,0,255), 2)
+	circle(img, black.position, black.radius, Scalar(0,0,255), 2);
 
 
 
 
-	BilliardBall haloBall = bg.getCollisionPos(&bg.balls[0], &bg.balls[9]);
+	//BilliardBall haloBall = bg.getCollisionPos(&bg.balls[0], &bg.balls[9]);
 
 
-	cout<<"white ball located at: (" << white.position.x << "," << white.position.y << ")" <<endl;
-	cout << "white ball speed is: " << white.speed << endl;
-	cout << "yellow ball located at: (" << yellow.position.x << "," << yellow.position.y << ")" <<endl;
-	//cout << "the closest pocket to yellow is: " << bg.getClosestPocket(yellow) << endl;
-	cout << "collision point is at: ("<< haloBall.position.x << "," << haloBall.position.y << ")" << endl;
+	//cout<<"white ball located at: (" << white.position.x << "," << white.position.y << ")" <<endl;
+	//cout << "white ball speed is: " << white.speed << endl;
+	//cout << "yellow ball located at: (" << yellow.position.x << "," << yellow.position.y << ")" <<endl;
+	cout << "the best pocket to yellow is: " << bg.getPocket(yellow, white).number << endl;
+	cout << "the closest pocket to yellow is: " << bg.getClosestPocket(yellow).number << endl;
+
+	cout << "check cue ball and orange ball interaction " << bg.checkBallInteraction(white, orange) << endl;
+	cout << "check cue ball and yellow ball interaction " << bg.checkBallInteraction(white, yellow) << endl;
+	cout << "check cue ball and brown ball interaction " << bg.checkBallInteraction(white, brown) << endl;
+	cout << "check cue ball and blue ball interaction " << bg.checkBallInteraction(white, blue) << endl;
+
+
+
+	//cout << "collision point is at: ("<< haloBall.position.x << "," << haloBall.position.y << ")" << endl;
 
 	yellow = bg.balls[9];
 
-	cout << "After collision: \n       yellow ball speed is: " << yellow.speed << endl;
+	//cout << "After collision: \n       yellow ball speed is: " << yellow.speed << endl;
 
-
+	imshow("window",img);
+	waitKey(0);
 
 }
 

@@ -40,6 +40,7 @@ public:
 	Pocket getClosestPocket(BilliardBall ball);
 	BilliardBall getCollisionPos(Pocket pocket, BilliardBall ball, BilliardBall cueBall);
 	bool checkBallInteraction(BilliardBall ball, BilliardBall cueBall);
+	Pocket getPocket(BilliardBall ball, BilliardBall cueBall);
 
 };
 

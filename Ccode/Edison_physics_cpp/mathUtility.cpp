@@ -19,10 +19,18 @@ bool checkBetweenTwoPoints(Point2f point_to_be_check, Point2f point1, Point2f po
 	float min_y = min(point1.y, point2.y);
 	float max_y = max(point1.y, point2.y);
 
-	if( point_to_be_check.x >= min_x &&
-		point_to_be_check.x <= max_x &&
-		point_to_be_check.y >= min_y &&
-		point_to_be_check.y <= max_y){
+	if( point_to_be_check.x > min_x &&
+		point_to_be_check.x < max_x &&
+		point_to_be_check.y > min_y &&
+		point_to_be_check.y < max_y){
+		return true;
+	}
+	return false;
+}
+
+bool pointIsOnLine(Point2f point, Linear_function function){
+
+	if(function.getValue(point.x) == point.y){
 		return true;
 	}
 	return false;
@@ -31,7 +39,7 @@ bool checkBetweenTwoPoints(Point2f point_to_be_check, Point2f point1, Point2f po
 
 Linear_function::Linear_function(Point2f point1, Point2f point2){
 	slope = (point1.y - point2.y)/(point1.x - point2.x);
-	constant = point1.y - slope * point1.y;
+	constant = point1.y - slope * point1.x;
 }
 
 Linear_function::Linear_function(float slope, float constant){
