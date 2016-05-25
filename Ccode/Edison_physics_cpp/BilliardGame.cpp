@@ -44,13 +44,32 @@ BilliardGame::BilliardGame(vector<Point2f> ballCenters, vector<int> ballIds, vec
 
 	table = Table(inSize.width, inSize.height);
 
-	for(int i = 0; i < ballIds.size(); i++){
-		balls[i] = BilliardBall(ballIds[i], ballRadii[i], ballCenters[i]);
+	for(int i = 0; i < sizeof(balls); i++){
+		balls[i] = BilliardBall(-1, 0, Point2f(-100,-100));
 	}
 
-	BilliardBall cueBall = balls[15];
+	bool cueFound = false;
 
-	for(int i = 0; i < ballIds.size() - 1; i++){
+	for(int i = 0; i < ballIds.size(); i++){
+
+		//overwritten will take place
+		balls[ballIds[i]] = BilliardBall(ballIds[i], ballRadii[i], ballCenters[i]);
+
+		if(ballIds[i] == CUE_BALL_ID)
+			cueFound = true;
+	}
+
+	if(!cueFound)
+		return;
+
+	BilliardBall cueBall = balls[CUE_BALL_ID];
+
+	for(int i = 0; i < 16; i++){
+
+		if(balls[i].getNumber() == CUE_BALL_ID || balls[i].getNumber() == -1)
+			continue;
+
+
 		BilliardBall haloBall = getCollisionPos(getClosestPocket(balls[i]), balls[i], cueBall);
 		collisionCircles->push_back(haloBall.position);
 		collisionRadii->push_back(haloBall.radius);
@@ -81,12 +100,41 @@ BilliardBall BilliardGame::getCollisionPos(Pocket pocket, BilliardBall ball, Bil
 	float y2 = to_pocket_function.getValue(x2);
 	Point2f x2y2 = Point2f(x2, y2);
 
-	if (distance(cueBall.position, x1y1) < distance(cueBall.position, x2y2)) 
+	if (distance(cueBall.position, x1y1) < distance(cueBall.position, x2y2)){
+
+		if( checkBetweenTwoPoints(x1y1, pocket.position, ball.position) ||
+			checkBallInteraction(ball, cueBall))
+			return BilliardBall(-1, 0, Point2f(-100, -100));
+
 		return BilliardBall(99, cueBall.radius, x1y1);
-	else
+	}
+	else{
+		if( checkBetweenTwoPoints(x2y2, pocket.position, ball.position) ||
+			checkBallInteraction(ball, cueBall))
+			return BilliardBall(-1, 0, Point2f(-100, -100));
 		return BilliardBall(99, cueBall.radius, x2y2);
+	}
 }
 
+
+bool BilliardGame::checkBallInteraction(BilliardBall ball, BilliardBall cueBall){
+	Linear_function move_function = Linear_function(ball.position, cueBall.position);
+	float radius = ball.radius;
+
+	for(int i=0; i < sizeof(balls); i++){
+
+		if(checkBetweenTwoPoints(balls[i].position, ball.position, cueBall.position)){
+
+			float dist = abs(move_function.slope * balls[i].position.x + move_function.constant
+				 - balls[i].position.y)/(sqrt(move_function.slope * move_function.slope + 1));
+
+			if(dist <= 2 * radius){
+				return false;
+			}
+		} 
+	}
+	return true;
+}
 
 
 

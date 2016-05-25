@@ -12,6 +12,7 @@ BilliardBall::BilliardBall(int ballNum, float radius, Point2f position){
 }
 
 BilliardBall::BilliardBall(){}
+
 BilliardBall::~BilliardBall(){}
 
 void BilliardBall::setPosition(float x, float y){

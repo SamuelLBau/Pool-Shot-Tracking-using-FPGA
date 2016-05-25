@@ -58,7 +58,7 @@ public:
 };
 
 int distance(Point2f point1, Point2f point2);
-
+bool checkBetweenTwoPoints(Point2f point_to_be_check, Point2f point1, Point2f point2);
 
 
 #endif

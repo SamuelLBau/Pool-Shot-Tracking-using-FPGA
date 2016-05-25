@@ -53,6 +53,22 @@
 
 
 //BEGIN
+#define SOLID_YELLOW_ID 0
+#define SOLID_BLUE_ID 1
+#define SOLID_RED_ID 2
+#define SOLID_VIOLET_ID 3
+#define SOLID_ORANGE_ID 4
+#define SOLID_GREEN_ID 5
+#define SOLID_MAROON_ID 6
+#define SOLID_BLACK_ID 7
+#define STRIPED_YELLOW_ID 8
+#define STRIPED_BLUE_ID 9
+#define STRIPED_RED_ID 10
+#define STRIPED_VIOLET_ID 11
+#define STRIPED_ORANGE_ID 12
+#define STRIPED_GREEN_ID 13
+#define STRIPED_MAROON_ID 14
+#define CUE_BALL_ID 15
 #define TABLE_BG_SUBTRACTION_SIMPLE false //KEEP FALSE, the true version does not make a mask and will not work with subsequent functions
 
 #define CONTOUR_MIN_AREA 250
