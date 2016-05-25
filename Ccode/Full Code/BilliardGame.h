@@ -5,7 +5,11 @@
 #include "BilliardBall.h"
 #include "Table.h"
 #include "config.h"
-#include <algorithm>
+
+
+
+
+
 using namespace std;
 
 class BilliardGame{
@@ -39,7 +43,6 @@ public:
 	void transformBall(int num, Vector2D move);
 	Pocket getClosestPocket(BilliardBall ball);
 	BilliardBall getCollisionPos(Pocket pocket, BilliardBall ball, BilliardBall cueBall);
-	bool checkBallInteraction(BilliardBall ball, BilliardBall cueBall);
 
 };
 

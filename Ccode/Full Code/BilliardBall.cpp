@@ -1,8 +1,9 @@
+#include "stdafx.h"
 #include "BilliardBall.h"
 //#include "mathUtility.cpp"
 
 
-BilliardBall::BilliardBall(int ballNum, float radius, Point2D position){
+BilliardBall::BilliardBall(int ballNum, float radius, Point2f position){
 	this-> number = ballNum;
 	this-> radius = radius;
 	this-> position = position;
@@ -15,15 +16,15 @@ BilliardBall::BilliardBall(){}
 BilliardBall::~BilliardBall(){}
 
 void BilliardBall::setPosition(float x, float y){
-	position.setX(x);
-	position.setY(y);
+	position.x = x;
+	position.y = y;
 }
 
-void BilliardBall::setPosition(Point2D point){
-	position.setPoint(point);
+void BilliardBall::setPosition(Point2f point){
+	position = point;
 }
 
-Point2D BilliardBall::getPosition(){
+Point2f BilliardBall::getPosition(){
 	return position;
 }
 
@@ -35,11 +36,11 @@ void BilliardBall::setNumber(int number){
 	this-> number = number;
 }
 
-int BilliardBall::getRadius(){
+float BilliardBall::getRadius(){
 	return radius;
 }
 
-void BilliardBall::setRadius(int radius){
+void BilliardBall::setRadius(float radius){
 	this-> radius = radius;
 }
 
@@ -53,8 +54,8 @@ void BilliardBall::setVelocity(Vector2D velocity){
 }
 
 void BilliardBall::move(Vector2D move){
-	position.setX(position.getX() + move.getX());
-	position.setY(position.getY() + move.getY());
+	position.x += move.getX();
+	position.y += move.getY();
 
 }
 
@@ -70,3 +71,4 @@ bool BilliardBall::checkInPocket(){
 void BilliardBall::setPocket(bool status){
 	inPocket = status;
 }
+

@@ -3,10 +3,11 @@
 
 //#include "mathUtility.cpp"
 //#include <array>
+#include "stdafx.h"
 #include "Table.h"
 
 
-Pocket::Pocket(int number, Point2D position){
+Pocket::Pocket(int number, Point2f position){
 	this -> position = position;
 	this -> number = number;
 }
@@ -19,26 +20,26 @@ void Pocket::setNumber(int number){
 	this -> number = number;
 }
 
-Point2D Pocket::getPosition(){
+Point2f Pocket::getPosition(){
 	return position;
 }
 
-void Pocket::setPosition(Point2D position){
-	this -> position.setPoint(position);
+void Pocket::setPosition(Point2f position){
+	this -> position = position;
 }
 
 
 
-Cue::Cue(Point2D position){
-	this -> position.setPoint(position);
+Cue::Cue(Point2f position){
+	this -> position = position;
 }
 
-Point2D Cue::getPosition(){
+Point2f Cue::getPosition(){
 	return position;
 }
 
-void Cue::setPosition(Point2D position){
-	this -> position.setPoint(position);
+void Cue::setPosition(Point2f position){
+	this -> position = position;
 }
 
 Vector2D Cue::getVelocity(){
@@ -60,27 +61,49 @@ Table::Table(int width, int length){
 	int radius = 30;
 
 
-	pocket1 = Pocket(1, Point2D(0 + radius,     0 + radius));
-	pocket2 = Pocket(2, Point2D(width/2,  		0 + radius/2));
-	pocket3 = Pocket(3, Point2D(width - radius, 0 + radius));
-	pocket4 = Pocket(4, Point2D(0 + radius,     length - radius ));
-	pocket5 = Pocket(5, Point2D(width/2,  		length - radius/2));
-	pocket6 = Pocket(6, Point2D(width - radius, length - radius));
+	pocket1 = Pocket(1, Point2f(0 + radius,     0 + radius));
+	pocket2 = Pocket(2, Point2f(width/2,  		0 + radius/2));
+	pocket3 = Pocket(3, Point2f(width - radius, 0 + radius));
+	pocket4 = Pocket(4, Point2f(0 + radius,     length - radius ));
+	pocket5 = Pocket(5, Point2f(width/2,  		length - radius/2));
+	pocket6 = Pocket(6, Point2f(width - radius, length - radius));
 
 
-	pockets = new std::vector<Pocket>;
+	//pockets = new Pocket[6];
 
-	pockets->push_back(pocket1);
-	pockets->push_back(pocket2);
-	pockets->push_back(pocket3);
-	pockets->push_back(pocket4);
-	pockets->push_back(pocket5);
-	pockets->push_back(pocket6);
+	//pockets[0] = pocket1;
+	//pockets[1] = pocket2;
+	//pockets[2] = pocket3;
+	//pockets[3] = pocket4;
+	//pockets[4] = pocket5;
+	//pockets[5] = pocket6;
+
+	
+	//pockets = new std::vector<Pocket*>;
+
+	pockets.push_back(pocket1);
+	pockets.push_back(pocket2);
+	pockets.push_back(pocket3);
+	pockets.push_back(pocket4);
+	pockets.push_back(pocket5);
+	pockets.push_back(pocket6);
+	
 	
 }
 
 Table::~Table(){
+
+/*
+	delete pocket1;
+	delete pocket2;
+	delete pocket3;
+	delete pocket4;
+	delete pocket5;
+	delete pocket6;
+
+
 	delete pockets;
+	*/
 }
 
 int Table::getLength(){
@@ -100,7 +123,8 @@ void Table::setWidth(int width){
 }
 
 Pocket Table::getPocket(int number){
-	return pockets->at(number - 1);
+	return pockets[number - 1];
+	//return pockets[number - 1];
 }
 
 

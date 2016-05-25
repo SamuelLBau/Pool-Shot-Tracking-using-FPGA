@@ -3,6 +3,8 @@
 #include <opencv2/opencv.hpp>
 #include <opencv/highgui.h>
 #include "videoProcessingFuncs.h"
+#include "BilliardGame.h"
+#include "Classifier.h"
 #include "config.h"
 
 using namespace std;
@@ -159,55 +161,56 @@ Mat processVideo(Mat inImage,Size inSize, VideoWriter maskVWriter, VideoWriter t
 		//NOTE: To save space, will re-use tempImage1
 		drawBilliardBalls(tableImage,outImage,ballPoints,ballRadii,ballIDs);
 
-		//TODO: reccomendedShot = reccomendShot(ballPoints,ballRadii,insize);
+		vector<Point2f> shotLines;
+		vector<Point2f> collisionCircles;
+		vector<float> collisionRadii;
+		getRecommendedShot(ballPoints,ballIDs,ballRadii,inSize,collisionCircles,collisionRadii,shotLines);
 
+		drawRecommendedShot(outImage, collisionCircles, collisionRadii, shotLines);
 		//temporary line until draw code is added
 		//outImage = tableImage;
 	}
 	return outImage;
 }
-void drawBilliardBalls(Mat tableImage, Mat outImage, Size inSize, vector<Point2f> ballCenters, vector<float>ballRadii, vector<int> ballIDs)
-{
-	tableImage.copyTo(outImage);
-	Scalar color;
-	cout << "Ball Center Size: " << ballCenters.size() << endl;
-	for (int i = 0; i < ballCenters.size(); i++)
-	{
-		color = getBallColor(ballIDs[i]);
-		if (color[0] > 0)
-		{
-			cout << "Invalid Ball id " << ballIDs[i] << endl;
-			continue;
-		}
-		circle(outImage, ballCenters[i], ballRadii[i], color, -1);
-		if (ballIDs[i] > 8)
-		{
-			//These balls are striped, add an inner circle
-			circle(outImage, ballCenters[i], ballRadii[i] * .5, Scalar(255,255,255), -1);
-		}
-	}
-}
 Scalar getBallColor(int ballID)
 {
 	switch (ballID)
 	{
-	case 0: return Scalar(255, 255, 255); //Cue Ball
-	case 1: return Scalar(255, 255, 0); //Solid Yellow Ball
-	case 2: return Scalar(0, 0, 255); //Solid Blue Ball
-	case 3: return Scalar(255, 0, 0); //Solid Red Ball
-	case 4: return Scalar(255, 0, 255); //Solid Violet Ball
-	case 5: return Scalar(255, 100, 0); //Solid Orange Ball
-	case 6: return Scalar(0, 255, 0); //Solid Green Ball
-	case 7: return Scalar(120, 50, 0); //Solid Maroon Ball
-	case 8: return Scalar(0, 0, 0); //Solid Black Ball
-	case 9: return Scalar(255, 255, 0); //Striped Yellow Ball
-	case 10: return Scalar(0, 0, 255); //Striped Blue Ball
-	case 11: return Scalar(255, 0, 0); //Striped Red Ball
-	case 12: return Scalar(255, 0, 255); //Striped Violet Ball
-	case 13: return Scalar(255, 100, 0); //Striped Orange Ball
-	case 14: return Scalar(0, 255, 0); //Striped Green Ball
-	case 15: return Scalar(120, 50, 0); //Striped Maroon Ball
+		//NOTE: THESE SHOULD BE BGR COLOR, not RGB
+	case CUE_BALL_ID: return Scalar(255, 255, 255); //Cue Ball
+	case SOLID_YELLOW_ID: return Scalar(0, 255, 255); //Solid Yellow Ball
+	case SOLID_BLUE_ID: return Scalar(255, 0, 0); //Solid Blue Ball
+	case SOLID_RED_ID: return Scalar(0, 0, 255); //Solid Red Ball
+	case SOLID_VIOLET_ID: return Scalar(255, 0, 255); //Solid Violet Ball
+	case SOLID_ORANGE_ID: return Scalar(0, 100, 255); //Solid Orange Ball
+	case SOLID_GREEN_ID: return Scalar(0, 255, 0); //Solid Green Ball
+	case SOLID_MAROON_ID: return Scalar(0, 50, 120); //Solid Maroon Ball
+	case SOLID_BLACK_ID: return Scalar(0, 0, 0); //Solid Black Ball
+	case STRIPED_YELLOW_ID: return Scalar(0, 255, 255); //Striped Yellow Ball
+	case STRIPED_BLUE_ID: return Scalar(255, 0, 0); //Striped Blue Ball
+	case STRIPED_RED_ID: return Scalar(0, 0, 255); //Striped Red Ball
+	case STRIPED_VIOLET_ID: return Scalar(255, 0, 255); //Striped Violet Ball
+	case STRIPED_ORANGE_ID: return Scalar(0, 100, 255); //Striped Orange Ball
+	case STRIPED_GREEN_ID: return Scalar(0, 255, 0); //Striped Green Ball
+	case STRIPED_MAROON_ID: return Scalar(0, 50, 120); //Striped Maroon Ball
 	default: return Scalar(-1, -1, -1);//Invalid ID
+	}
+}
+void getRecommendedShot(vector<Point2f> ballPoints, vector<int> ballIDs, vector<float> ballRadii,Size inSize,vector<Point2f> &collisionCircles,vector<float>&collisionRadii,vector<Point2f>&shotLines)
+{
+	BilliardGame BG = BilliardGame(ballPoints,ballIDs,ballRadii,inSize,&collisionCircles,&collisionRadii,&shotLines);
+
+	return;
+}
+void drawRecommendedShot(Mat outImage, vector<Point2f>circlePoints, vector<float>circleRadii, vector<Point2f>linePoints)
+{
+	for (int i = 0; i < circlePoints.size();i++)
+	{
+		circle(outImage, circlePoints[i], circleRadii[i], Scalar(0, 0, 255), 2);
+	}
+	for (int i = 0; i < ((int)linePoints.size()-1);i+=2)
+	{
+		line(outImage, linePoints[i], linePoints[i + 1], Scalar(0, 0, 255), 2);
 	}
 }
 void locateBilliardBalls(Mat ballMask, Size inSize,Mat tempChannel[3],Mat tableImage,Mat tempImage,vector<Point2f> &ballPoints, vector<float> &ballRadii,vector<int> &ballIDs,VideoWriter maskWriter,VideoWriter circlesWriter)
@@ -241,10 +244,11 @@ void locateBilliardBalls(Mat ballMask, Size inSize,Mat tempChannel[3],Mat tableI
 	//imshow("ERDI images", tempChannel[1]);
 	int sourceIndex;
 	int dstIndex;
-	int imageClassifier=0;//placeholder for olga's object
-	//imageClassifier.begin();
+	Classifier imageClassifier;//placeholder for olga's object
+	imageClassifier.begin();
 	for (int i = 0; i < NUM_EROSION_LOOP_ITERATIONS; i++)
 	{
+		potentialBallContours.clear();
 		contourList.clear();
 		//if (i == 3)
 		{
@@ -258,36 +262,44 @@ void locateBilliardBalls(Mat ballMask, Size inSize,Mat tempChannel[3],Mat tableI
 		//no more contours, no reason to do the difficult calculations
 		if (contourList.size() == 0)
 			break;
-		for (int i = 0; i < contourList.size(); i++)
+		int addedCount = 0;
+		for (int j = 0; j < contourList.size(); j++)
 		{
-			if (checkContour(contourList[i], validBallList,i))
+			if (checkContour(contourList[j], validBallList,j))
 			{
-				potentialBallContours.push_back(contourList[i]);
+				addedCount++;
+				potentialBallContours.push_back(contourList[j]);
 			}
 		}
 		identifyBalls(tableImage, inSize, imageClassifier, potentialBallContours, validBallList, validBallIDs, i, circlesWriter);
 		erode(tempChannel[2], tempChannel[1], loopErosionElement,Point(-1,-1),LOOP_EROSION_ITERATIONS);
 		dilate(tempChannel[1], tempChannel[0], loopDilationElement, Point(-1, -1), LOOP_DILATION_ITERATIONS);
 	}
-	//imageClassifier.end(ballPoints,ballRadii,ballIDs);
-	for (int i = 0; i < validBallList.size(); i++)
-	{
-		ballPoints.push_back(validBallList[i]);
-		ballRadii.push_back(BILLIARD_BALL_RADIUS);
-		ballIDs.push_back(validBallIDs[i]);
-	}
+	imageClassifier.end(ballPoints,ballRadii,ballIDs);
+	
+		for (int i = 0; i < validBallList.size(); i++)
+		{
+			ballPoints.push_back(validBallList[i]);
+			ballRadii.push_back(BILLIARD_BALL_RADIUS);
+			ballIDs.push_back(validBallIDs[i]);
+		}
+	
 	cout << "Finished finding balls this frame" << endl;
 }
-int identifyBalls(Mat inImage,Size inSize,int imageClassifier, vector<vector<Point>>potentialBallContours,vector<Point2f> &validBallList, vector<int>&validBallIDs,int iteration,VideoWriter circleWriter)
+int identifyBalls(Mat inImage,Size inSize,Classifier imageClassifier, vector<vector<Point>>potentialBallContours,vector<Point2f> &validBallList, vector<int>&validBallIDs,int iteration,VideoWriter circleWriter)
 {
 	//PotentialBallContours are all contours that may be a ball
 	//Iterate through each of them, create a center list, radii list and then send to Olga's cost
-	vector<Point2f> circleCenters;
-	vector<float> circleRadii;
-	vector<bool> isBallList;
-	vector<int> ballIDList;
+	static vector<Point2f> circleCenters;
+	static vector<float> circleRadii;
+	static vector<bool> isBallList;
+	static vector<int> ballIDList;
 	Point2f curCircle;
 	float radius;
+	circleCenters.clear();
+	circleRadii.clear();
+	isBallList.clear();
+	ballIDList.clear();
 	for (int i = 0; i < potentialBallContours.size();i++)
 	{
 		contourCircleDetails(potentialBallContours[i],inSize,curCircle,radius,iteration);
@@ -308,6 +320,7 @@ int identifyBalls(Mat inImage,Size inSize,int imageClassifier, vector<vector<Poi
 	{
 		if (isBallList[i])
 		{
+			//cout << ballIDList[i] << endl;
 			validBallList.push_back(circleCenters[i]);
 			validBallIDs.push_back(ballIDList[i]);
 		}
@@ -404,7 +417,7 @@ void classifyContours(Mat inImage,vector<Point2f> &circleCenters,vector<float>&c
 	{
 		//For this test, just say all contours are cur balls
 		isBall.push_back(true);
-		ballIDs.push_back(iteration);
+		ballIDs.push_back((iteration*5)%16);
 		
 	}
 }
@@ -454,9 +467,18 @@ bool checkContour(vector<Point> contour, vector<Point2f> validBallList,int itera
 		if (eccentricity < MIN_CIRCULARITY)
 			return false;
 	#endif
-#if EXCLUDE_NEAR_BALLS
-
-#endif
+	#if EXCLUDE_NEAR_BALLS
+		Point2f curCenter;
+		float radius;
+		minEnclosingCircle(contour, curCenter, radius);
+		float dist;
+		for (int i = 0; i < validBallList.size();i++)
+		{
+			double dist = norm(curCenter - validBallList[i]);
+			if (dist < BLOB_MIN_SEPARATION + BILLIARD_BALL_RADIUS)
+				return false;
+		}
+	#endif
 	//TODO: Check if contour contains a valid ball contour
 	//if so, return true
 	return true;
@@ -480,6 +502,11 @@ void drawBilliardBalls(Mat inImage, Mat outImage, vector<Point2f> circleCenterLi
 	{
 		Scalar color = getBallColor(ballIDs[i]);
 		circle(outImage, circleCenterList[i], circleRadiiList[i], color, -1);
+		if (ballIDs[i] > 8)
+		{
+			//These balls are striped, add an inner circle
+			circle(outImage, circleCenterList[i], circleRadiiList[i] * .5, Scalar(255, 255, 255), -1);
+		}
 	}
 }
 void drawCurrentContours(Mat inImage, Mat outImage, vector<vector<Point>> contourList)
