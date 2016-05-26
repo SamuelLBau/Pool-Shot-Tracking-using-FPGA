@@ -1,5 +1,6 @@
 #ifndef BilliardBall_h
 #define BilliardBall_h
+#include "stdafx.h"
 #include "mathUtility.h"
 
 //#include <stdio.h>

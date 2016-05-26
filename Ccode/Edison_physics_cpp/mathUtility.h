@@ -1,6 +1,6 @@
 #ifndef mathUtility_h
 #define mathUtility_h
-
+#include "stdafx.h"
 #include "math.h"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"

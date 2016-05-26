@@ -3,6 +3,7 @@
 
 //#include "mathUtility.cpp"
 //#include <array>
+#include "stdafx.h"
 #include "Table.h"
 
 

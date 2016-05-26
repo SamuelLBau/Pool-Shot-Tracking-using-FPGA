@@ -2,6 +2,7 @@
 #define Table_h
 
 //#include <stdio.h>
+#include "stdafx.h"
 #include <vector>
 #include "mathUtility.h"
 

@@ -1,6 +1,6 @@
 #ifndef mathUtility_h
 #define mathUtility_h
-
+#include "stdafx.h"
 #include "math.h"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
@@ -58,7 +58,8 @@ public:
 };
 
 int distance(Point2f point1, Point2f point2);
-
+bool checkBetweenTwoPoints(Point2f point_to_be_check, Point2f point1, Point2f point2);
+bool pointIsOnLine(Point2f point, Linear_function function);
 
 
 #endif

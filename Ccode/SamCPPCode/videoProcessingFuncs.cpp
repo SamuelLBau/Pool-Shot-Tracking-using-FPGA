@@ -155,10 +155,15 @@ Mat processVideo(Mat inImage,Size inSize, VideoWriter maskVWriter, VideoWriter t
 		ballPoints.clear();
 		ballRadii.clear();
 		ballIDs.clear();
-		locateBilliardBalls(ballMask, inSize,tempChannels,tableImage,tempImage1,ballPoints, ballRadii,ballIDs, maskVWriter,circlesVWriter);
-		//TODO: detectedBallList = locateBilliardBalls(tableImage,insize,tempImage1,tempImage2);
+		#if CLASSIFY_ON_HSV
+			cvtColor(tableImage, HSVImage, CV_RGB2HSV);
+			locateBilliardBalls(ballMask, inSize,tempChannels, HSVImage,tempImage1,ballPoints, ballRadii,ballIDs, maskVWriter,circlesVWriter);
+		#else
+			locateBilliardBalls(ballMask, inSize, tempChannels, tableImage, tempImage1, ballPoints, ballRadii, ballIDs, maskVWriter, circlesVWriter);
+		#endif
 
 		//NOTE: To save space, will re-use tempImage1
+			//tableImage.copyTo(outImage);
 		drawBilliardBalls(tableImage,outImage,ballPoints,ballRadii,ballIDs);
 
 		vector<Point2f> shotLines;
@@ -275,18 +280,20 @@ void locateBilliardBalls(Mat ballMask, Size inSize,Mat tempChannel[3],Mat tableI
 		erode(tempChannel[2], tempChannel[1], loopErosionElement,Point(-1,-1),LOOP_EROSION_ITERATIONS);
 		dilate(tempChannel[1], tempChannel[0], loopDilationElement, Point(-1, -1), LOOP_DILATION_ITERATIONS);
 	}
-	imageClassifier.end(ballPoints,ballRadii,ballIDs);
-	
+	#if USE_SAMS_CLASSIFIER
+		imageClassifier.end(ballPoints,ballRadii,ballIDs);
+	#else
 		for (int i = 0; i < validBallList.size(); i++)
 		{
 			ballPoints.push_back(validBallList[i]);
 			ballRadii.push_back(BILLIARD_BALL_RADIUS);
 			ballIDs.push_back(validBallIDs[i]);
 		}
+	#endif
 	
 	cout << "Finished finding balls this frame" << endl;
 }
-int identifyBalls(Mat inImage,Size inSize,Classifier imageClassifier, vector<vector<Point>>potentialBallContours,vector<Point2f> &validBallList, vector<int>&validBallIDs,int iteration,VideoWriter circleWriter)
+int identifyBalls(Mat inImage,Size inSize,Classifier &imageClassifier, vector<vector<Point>>potentialBallContours,vector<Point2f> &validBallList, vector<int>&validBallIDs,int iteration,VideoWriter circleWriter)
 {
 	//PotentialBallContours are all contours that may be a ball
 	//Iterate through each of them, create a center list, radii list and then send to Olga's cost
@@ -309,9 +316,8 @@ int identifyBalls(Mat inImage,Size inSize,Classifier imageClassifier, vector<vec
 			debugPotentialBalls(inImage, curCircle, radius, circleWriter);
 		#endif
 	}
-	#if USE_OLGAS_CLASSIFIER
-		//Placeholder for olga's object
-		//imageClassifier.classifyContours(inImage, circleCenters, circleRadii, isBallList);
+	#if USE_SAMS_CLASSIFIER
+		imageClassifier.classify(inImage, circleCenters, circleRadii, isBallList);
 	#else
 		classifyContours(inImage, circleCenters, circleRadii, isBallList, ballIDList,iteration);
 	#endif
@@ -322,7 +328,9 @@ int identifyBalls(Mat inImage,Size inSize,Classifier imageClassifier, vector<vec
 		{
 			//cout << ballIDList[i] << endl;
 			validBallList.push_back(circleCenters[i]);
-			validBallIDs.push_back(ballIDList[i]);
+			#if !USE_SAMS_CLASSIFIER
+				validBallIDs.push_back(ballIDList[i]);
+			#endif
 		}
 	}
 	return 0;
@@ -417,7 +425,7 @@ void classifyContours(Mat inImage,vector<Point2f> &circleCenters,vector<float>&c
 	{
 		//For this test, just say all contours are cur balls
 		isBall.push_back(true);
-		ballIDs.push_back((iteration*5)%16);
+		ballIDs.push_back((iteration*5)%2+14);
 		
 	}
 }

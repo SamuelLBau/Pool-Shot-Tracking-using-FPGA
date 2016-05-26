@@ -8,9 +8,9 @@
 using namespace std;
 using namespace cv;
 
-#define INPUT_VIDEO_FOLDER "D:/Files/UCSD Undergrad/Spring 2016/CSE145/Pool video/5-5-16/"
+#define INPUT_VIDEO_FOLDER "D:/Files/UCSD Undergrad/Spring 2016/CSE145/Pool video/5-24-16_Test_Videos-2016-05-24/"
 #define OUTPUT_VIDEO_FOLDER "D:/Files/UCSD Undergrad/Spring 2016/CSE145/Pool video/result/"
-#define INPUT_VIDEO_NAME "LightWhiteWithTraining"
+#define INPUT_VIDEO_NAME "TestEddieHits"
 #define VIDEO_EXTENSION ".mp4"
 
 #define OUTPUT_VIDEO_MASK OUTPUT_VIDEO_FOLDER INPUT_VIDEO_NAME "_MASK" VIDEO_EXTENSION

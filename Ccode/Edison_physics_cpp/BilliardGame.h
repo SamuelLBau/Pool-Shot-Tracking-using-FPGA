@@ -1,6 +1,6 @@
 #ifndef BilliardGame_h
 #define BilliardGame_h
-
+#include "stdafx.h"
 #include <iostream>
 #include "BilliardBall.h"
 #include "Table.h"

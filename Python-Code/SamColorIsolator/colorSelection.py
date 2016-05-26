@@ -24,13 +24,13 @@ class colorSelection(Tk.Toplevel):
     def __init__(self,parent=None):
         Tk.Toplevel.__init__(self,parent,bg='#F0F0F0',bd=1,relief='sunken',width=100,height=100)
         
-        VIDEO_IN_NAME = "LightWhiteBalance"
+        VIDEO_IN_NAME = "TestEddieHits"
         VIDEO_EXTENSION = ".mp4"
-        VIDEO_IN_NAME = VIDEO_IN_NAME+ VIDEO_EXTENSION
+        self.VIDEO_IN_NAME = VIDEO_IN_NAME+ VIDEO_EXTENSION
         fourcc = cv2.VideoWriter_fourcc("X","V","I","D")
 
 
-        self.cap = cv2.VideoCapture(VIDEO_IN_NAME)
+        self.cap = cv2.VideoCapture(self.VIDEO_IN_NAME)
         
         self.runButton = Tk.Button(self,width=15,text="Run, q to stop",command=self.mainLoop)
         self.runButton.grid(row=0,column=1)
@@ -99,8 +99,12 @@ class colorSelection(Tk.Toplevel):
         
         while(self.cap.isOpened()):
             ret, frame = self.cap.read()
-            frame = cv2.GaussianBlur(frame.copy(),(3,3),0)
-            hsv = cv2.cvtColor(frame.copy(), cv2.COLOR_BGR2HSV)
+            if(frame == None):
+                self.cap.release()
+                self.cap = cv2.VideoCapture(self.VIDEO_IN_NAME)
+                continue
+            #frame = cv2.GaussianBlur(frame.copy(),(3,3),0)
+            hsv = cv2.cvtColor(frame.copy(), cv2.COLOR_RGB2HSV)
             #TODO: Code that thresholds stuff
             outFrame = self.thresholdFrame(frame,hsv,HHigh=HHigh,HLow=HLow,SHigh=SHigh,SLow=SLow,VHigh=VHigh,VLow=VLow)
             
