@@ -1,0 +1,11 @@
+Outstanding items:
+
+*RGB to HSV conversion?
+*KDE is different from matlab
+
+*Number of no-balls is static const. Ideally would like to allow more options.
+*Warnings in the NormalHue/ReddishHue/Value cpp files because floats are declared as doubles.
+*Adjustment by proximity
+*KDE uses std, memory allocation. Needs to be updated. This is also someone elses implementation.
+*Updated to use OpenCV and open CV types
+*The code is a mix of C/C++. Should make some of the modules their own objects to be more OO.
