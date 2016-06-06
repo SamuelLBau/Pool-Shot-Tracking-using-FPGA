@@ -1,6 +1,8 @@
 POOL-AID:   Pool-Shot-Tracking-using-FPGA
 =============================
 <img src = "./source/logo_bg.png">
+[Video here](https://www.youtube.com/watch?v=7V0d5P2D2YU)
+
 
 ####Team Member
 <html> Brian Choi <br>Samuel Bauza <br>Olga Souverneva <br>Chuanqiao Edison Huang <br><br></html>
