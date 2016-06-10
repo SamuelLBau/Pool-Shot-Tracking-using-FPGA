@@ -56,7 +56,7 @@ To improve identification accuracy we converted the algorithm to HSV space and i
 
 A selection of ball images used and accuracy on the test set is reported below. If we take into account the images that contain no balls, our average accuracy is slightly less than 95%, however we expect this to be less of a problem with improvements made in ball detection. In general, our classifier performs worse on striped balls.
 
-<html> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </html> ![CLASSFY DEMO](./source/CompositeImage.png)  <html> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </html>  <img src="./source/FinalAccuracyResults.jpg" alt="CLASSFT DEMO" width="410" height="210" />
+<html> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </html> ![CLASSFY DEMO](./source/CompositeImage.png)  <html> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </html>  <img src="./source/FinalAccuracyResults.jpg" alt="CLASSFT DEMO" width="546" height="280" />
 
 <html><br></html>
 ####Dynamic Table Identification(April 30th)
@@ -75,14 +75,15 @@ Before being implemented in HLS, we will need to convert all of our code from hi
 <html><br></html>
 ####Physics engine(May 17th)
 
-We found the physics to calculating the physics of the shot to be much simpler than determining the shot difficulty and selecting the best shot. We ran into the following difficulties: First, we had to make limiting assumptions about the velocity with which the cue ball is hit. We also found that we needed to correct for the ball center detection error and classification error.
+For the shot recommendation we need to know the angle with which to hit a cue ball, "A," to make a target ball, "B," go into a pocket (blue arrow). We apply physics to calculate the collision point (CP) from the initial location values. Note that the velocity of the cue ball, "A," is user dependant. We can calculate the velocity vector of ball "B."
+<img src="./source/ShotDiagram.png" width="172" height="244">
 
 <img src="./source/collision_demo.png" width="389.9" height="420">
 
 <html><br></html>
 ####Shot suggestion(May 17th)
 
-The purpose of this milestone is to help player to learn better of the game siuation and make the best decision. Our work provides the best calculated path of white ball to generate easy shots for player.
+The purpose of this milestone is to help player to learn better of the game siuation and make the best decision. Our work provides the best calculated path of white ball to generate easy shots for player. While ideally we want to recommend a sequence of balls to hit to maximize the outcome of the game, however recommending the most hittable shot on the table satisfies this milestone.
 
 <img src="./source/shot_suggestion.png" width="389.9" height="420">
 
@@ -92,6 +93,16 @@ The purpose of this milestone is to help player to learn better of the game siua
 ##Project status (June 9th):
 
 [Final report](./source/CSE145Pool-aidfinalreport.pdf)
+
+Milestones completed:
+
+1. Collect an hour of pool footage and create test and training data sets.
+2. Dynamic Pool Table Identification.
+3. Pool table subtraction.
+4. Accurate Pool Ball Detection
+5. Pool ball classification 95% accurate and at 40fps.
+6. Convert all code to C/C++.
+7. Shot physics/trajectory calculation.
 
 Through working on this project we found that the following key steps are needed to upload a video processing structure onto an FPGA
 
@@ -109,3 +120,11 @@ Screenshots of our HLS and IP block design are shown below:
 Unfortunately we found that this was much harder to complete than expected. While we were unable to load frames and actually accelerate object detection, we were able to output solid color bars form the FPGA HDMI port.
 
 ![](./source/FPGA1.png) ![](./source/FPGA2.png)
+
+Other improvements and future work:
+
+1. Stable end-to-end integration.
+2. Support different pool ball sets and tables.
+3. Keep track of pool balls that were shot into pool pockets for the duration of the game.
+4. Make use of a non-color-based classifier.
+5. Recommend not a single shot, but the first of a sequence of balls to hit to maximize the outcome of the game.
