@@ -77,14 +77,14 @@ Before being implemented in HLS, we will need to convert all of our code from hi
 
 For the shot recommendation we need to know the angle with which to hit a cue ball, "A," to make a target ball, "B," go into a pocket (blue arrow). We apply physics to calculate the collision point (CP) from the initial location values. Note that the velocity of the cue ball, "A," is user dependant. We can calculate the velocity vector of ball "B."
 
-<img src="./source/ShotDiagram.png" width="296.6" height="420"> <img src="./source/collision_demo.png" width="389.9" height="420">
+<img src="./source/collision_physics.png" width="296.6" height="420"> <img src="./source/collision_demo.png" width="389.9" height="420">
 
 <html><br></html>
 ####Shot suggestion(May 17th)
 
 The purpose of this milestone is to help player to learn better of the game siuation and make the best decision. Our work provides the best calculated path of white ball to generate easy shots for player. While ideally we want to recommend a sequence of balls to hit to maximize the outcome of the game, however recommending the most hittable shot on the table satisfies this milestone.
 
-<img src="./source/shot_suggestion.png" width="389.9" height="420">
+<img src="./source/shot_suggestion_demo.gif">
 
 ----------
 
