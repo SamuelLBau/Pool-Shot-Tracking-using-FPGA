@@ -2,6 +2,7 @@ POOL-AID:   Pool-Shot-Tracking-using-FPGA
 =============================
 <img src = "./source/logo_bg.png">
 [Video here](https://www.youtube.com/watch?v=7V0d5P2D2YU)
+
 [Final report](./source/CSE145Pool-aidfinalreport.pdf)
 
 
