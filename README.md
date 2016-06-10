@@ -2,6 +2,7 @@ POOL-AID:   Pool-Shot-Tracking-using-FPGA
 =============================
 <img src = "./source/logo_bg.png">
 [Video here](https://www.youtube.com/watch?v=7V0d5P2D2YU)
+[Final report](./source/CSE145Pool-aidfinalreport.pdf)
 
 
 ####Team Member
@@ -92,6 +93,7 @@ The purpose of this milestone is to help player to learn better of the game siua
 [Final report](./source/CSE145Pool-aidfinalreport.pdf)
 
 Through working on this project we found that the following key steps are needed to upload a video processing structure onto an FPGA
+
 1. Write HLS code using C/C++, or use existing openCV HLS libraries
 2. Use Vivado HLS to generate an IP core, which can be imagined as a hardware block
 3. Use a separate program to connect your custom IP core to the processor
@@ -100,6 +102,7 @@ Through working on this project we found that the following key steps are needed
 
 Screenshots of our HLS and IP block design are shown below:
 <img src="./source/HLS_coding.JPG" width="600" height="300">
+
 <img src="./source/IP_block_design2.JPG" width="600" height="300">
 
 Unfortunately we found that this was much harder to complete than expected. While we were unable to load frames and actually accelerate object detection, we were able to output solid color bars form the FPGA HDMI port.
