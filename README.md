@@ -77,9 +77,7 @@ Before being implemented in HLS, we will need to convert all of our code from hi
 
 For the shot recommendation we need to know the angle with which to hit a cue ball, "A," to make a target ball, "B," go into a pocket (blue arrow). We apply physics to calculate the collision point (CP) from the initial location values. Note that the velocity of the cue ball, "A," is user dependant. We can calculate the velocity vector of ball "B."
 
-<img src="./source/ShotDiagram.png" width="172" height="244">
-
-<img src="./source/collision_demo.png" width="389.9" height="420">
+<img src="./source/ShotDiagram.png" width="172" height="244"> <img src="./source/collision_demo.png" width="389.9" height="420">
 
 <html><br></html>
 ####Shot suggestion(May 17th)
