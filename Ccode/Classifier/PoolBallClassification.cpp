@@ -7,6 +7,7 @@
 #include "TestFrame1.h"
 #include "stdafx.h"
 #include <iostream>
+#include "Windows.h"
 
 HSV_Frame _frame;
 Classifier _classifier;
@@ -65,12 +66,27 @@ int _tmain(int argc, _TCHAR* argv[])
 		_coordinates[i].y = MANUAL_DATA_1[i].y;
 	}
 
-	_classifier.Begin();
-	_classifier.Classify(_frame, _coordinates, _radii, _found, _cnt);
-	OutputFound();
-	_classifier.Output(_coordinates, _labels, _cnt);
-	OutputLabels();
-	OutputAccuracy();
+	LARGE_INTEGER start;
+	LARGE_INTEGER end;
+	LARGE_INTEGER frequency;
+	LONGLONG average = 0;
+	int cnt = 5;
+
+	for (int i=0; i<cnt; i++)
+	{
+		QueryPerformanceCounter(&start);
+		_classifier.Begin();
+		_classifier.Classify(_frame, _coordinates, _radii, _found, _cnt);
+		//OutputFound();
+		_classifier.Output(_coordinates, _labels, _cnt);
+		//OutputLabels();
+		//OutputAccuracy();
+		QueryPerformanceCounter(&end);
+		QueryPerformanceFrequency(&frequency);
+		average += (end.QuadPart - start.QuadPart)*1000000/frequency.QuadPart;
+	}
+
+	cout << "Run Time: " << average/cnt << "\n";
 
 	return 0;
 }

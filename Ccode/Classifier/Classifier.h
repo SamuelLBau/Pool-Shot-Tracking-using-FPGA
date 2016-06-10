@@ -4,6 +4,7 @@
 #include "ClassifierConst.h"
 #include "MunkresMatching.h"
 #include "Histogram.h"
+#include "Windows.h"
 
 #ifndef _CLASSIFIER
 #define _CLASSIFIER
@@ -40,9 +41,28 @@ public:
 	// The label that will be used to indicate ball was not found
 	static const unsigned char NOT_FOUND = 0xFF;
 
+	// The number of threads to use. Must be > 1.
+	static const unsigned int THREAD_CNT = 3;
+
+	struct InputData
+	{
+		unsigned char begin;
+		unsigned char end;
+		Classifier* pClassifier;
+	};
+
+	// Breaks up the classification for multi thread parallelization. Thread cnt must be less than MAX_SIZE.
+	void ClassifyThread(unsigned char begin, unsigned char end);
+
 private:
-	// Private overload to classify the probability tabel
-	void Classify();
+	// Classify the entire cost matrix
+	void ClassifyCostMatrix();
+
+	HANDLE  m_hThreadArray[THREAD_CNT];
+	const HSV_Frame* m_inputFrame;
+	unsigned int* m_radii;
+	bool* m_found;
+	unsigned char m_offset;
 
 	struct ClassificationData
 	{
@@ -73,25 +93,28 @@ private:
 	// Helper function to reset the clasification data
 	void ResetClassificationData();
 
+	static const unsigned char MAX_BINS = 0xFF;
+
+	struct ThreadData
+	{
+		Histogram<float, MAX_BINS>*  histogram;
+		Histogram<float, MAX_BINS>*  reddishHistogram;
+		float* normKDE;
+		float* reddishKDE;
+		float* valueKDE;
+	};
+	
 	// Helper function to compute the cost of a classification.
-	void ComputeClassificationCost(unsigned char id, const HSV_Frame& inputFrame, unsigned int radius);
+	void ComputeClassificationCost(unsigned char id, ThreadData* pThreadData, unsigned int radius);
 
 	// Helper function to compute the probability for a given ball
-	void ComputeBallKDE(const HSV_Frame& inputFrame, const Coordinates& min, const Coordinates& max, const Coordinates& center, int radius);
+	void ComputeBallKDE(const Coordinates& min, const Coordinates& max, const Coordinates& center, int radius, ThreadData* pThreadData);
 
 	// Helper function to compute the probability for a given ball
-	float GetBallProbability(BallId id);
+	float GetBallProbability(BallId id, ThreadData* pThreadData);
 
 	// Helper function to determine if the ball is most likely not a ball
 	bool ClassificationUnlikely(unsigned char idx);
-
-	// Buffer to store probability
-	static const unsigned char MAX_BINS = 0xFF;
-	Histogram<float, MAX_BINS>  m_histogram;
-	Histogram<float, MAX_BINS>  m_reddishHistogram;
-	float m_normKDE[MAX_BINS];
-	float m_reddishKDE[MAX_BINS];
-	float m_valueKDE[MAX_BINS];
 };
 
 #endif

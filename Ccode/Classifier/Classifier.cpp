@@ -10,9 +10,10 @@
 
 static HSV_Pixel _ballImage[MAX_RADIUS][MAX_RADIUS] = {};
 
-Classifier::Classifier():
-	m_histogram(NORMAL_HUE_MIN, NORMAL_HUE_MAX),
-	m_reddishHistogram(REDDISH_HUE_MIN, REDDISH_HUE_MAX)
+// Function for child threads to call
+DWORD WINAPI MyThreadFunction(LPVOID lpParam);
+
+Classifier::Classifier()
 {
 	ResetClassificationData();
 }
@@ -40,31 +41,110 @@ void Classifier::Classify(const HSV_Frame& inputFrame,
 	if (start >= MAX_SIZE)
 		return;
 
-	// Fill in new rows of data.
+	// Compute the last available index.
 	unsigned char end = size < (MAX_SIZE-start) ? start+size : MAX_SIZE;
-	unsigned char j = 0;
-	for (unsigned char i=start; i<end; i++)
+
+	// Compute the max number of threads to create
+	unsigned char threadCnt = end - start;
+	threadCnt = threadCnt < THREAD_CNT ? threadCnt : THREAD_CNT;
+	if (threadCnt == 0)
+		return;
+
+	// Save input data
+	m_inputFrame = &inputFrame;
+	m_radii = radii;
+	m_found = found;
+	m_offset = start;
+	unsigned char j = start;
+	for (unsigned char i=0; i < end; i++)
 	{
-		m_classificationData[i].center = detectedCenters[j];
-		m_classificationData[i].free = false;
-		ComputeClassificationCost(i, inputFrame, radii[j]);
+		m_classificationData[j].center = detectedCenters[i];
+		m_classificationData[j].free = false;
 		j++;
+	}
+
+	// Fill in the thread data
+	InputData* pInputData[THREAD_CNT];
+	unsigned char step = (end - start)/threadCnt;
+	if ((end - start)%threadCnt > 0)
+		step++;
+	unsigned char begin = 0;
+	for (unsigned char i=0; i < threadCnt; i++)
+	{
+		pInputData[i] = (InputData*)HeapAlloc(GetProcessHeap(), 
+			HEAP_ZERO_MEMORY, sizeof(InputData));
+		pInputData[i]->begin = begin;
+		pInputData[i]->pClassifier = this;
+		if (i != threadCnt-1)
+			pInputData[i]->end = begin + step;
+		else
+			pInputData[i]->end = end;
+		begin = pInputData[i]->end;
+	}
+
+	// Create child threads
+	for (unsigned char i=0; i < threadCnt; i++)
+	{
+		m_hThreadArray[i] = CreateThread( NULL, 0, MyThreadFunction, pInputData[i], 0, NULL);
+	}
+
+	// Wait for the threads to finish.
+	WaitForMultipleObjects(threadCnt, m_hThreadArray, TRUE, INFINITE);
+
+	// Close all handles & free all memory
+	for (unsigned char i=0; i < threadCnt; i++)
+	{
+		CloseHandle(m_hThreadArray[i]);
+		HeapFree(GetProcessHeap(), 0, pInputData[i]);
+		pInputData[i] = NULL;
+	}
+}
+
+void Classifier::ClassifyThread(unsigned char begin, unsigned char end)
+{
+	// Each thread needs its own
+	Histogram<float, MAX_BINS>  histogram(NORMAL_HUE_MIN, NORMAL_HUE_MAX);
+	Histogram<float, MAX_BINS>  reddishHistogram(REDDISH_HUE_MIN, REDDISH_HUE_MAX);
+	float normKDE[MAX_BINS];
+	float reddishKDE[MAX_BINS];
+	float valueKDE[MAX_BINS];
+	ThreadData data;
+	data.histogram = &histogram;
+	data.reddishHistogram = &reddishHistogram;
+	data.normKDE = normKDE;
+	data.reddishKDE = reddishKDE;
+	data.valueKDE = valueKDE;
+	
+	// Fill in new rows of data.
+	for (unsigned char i=begin; i<end; i++)
+	{
+		unsigned char j = i+m_offset;
+		ComputeClassificationCost(j, &data, m_radii[i]);
 	}
 
 	// Mark any entries that are unlikely to be balls to be free to use in 
 	// the next iteration. Output the not-found entries.
-	j = 0;
-	for (unsigned char i=start; i<end; i++)
+	for (unsigned char i=begin; i<end; i++)
 	{
-		if (ClassificationUnlikely(i))
+		unsigned char j = i+m_offset;
+		if (ClassificationUnlikely(j))
 		{
-			found[j] = false;
-			m_classificationData[i].free = true;
+			m_found[i] = false;
+			m_classificationData[j].free = true;
 		}
 		else
-			found[j] = true;
-		j++;
+			m_found[i] = true;
 	}
+}
+
+DWORD WINAPI MyThreadFunction(LPVOID lpParam)
+{
+	if (lpParam == NULL)
+		return 1;
+
+	Classifier::InputData* pData = (Classifier::InputData*)lpParam;
+	pData->pClassifier->ClassifyThread(pData->begin, pData->end);
+	return 0;
 }
 
 void Classifier::Output(Coordinates* labeledCenters, unsigned char* labels, unsigned char labelsSize)
@@ -73,7 +153,7 @@ void Classifier::Output(Coordinates* labeledCenters, unsigned char* labels, unsi
 		return;
 	
 	// Classify the cost matrix
-	Classify();
+	ClassifyCostMatrix();
 	
 	for (unsigned char i=0; i<labelsSize; i++)
 	{
@@ -91,7 +171,7 @@ void Classifier::Output(Coordinates* labeledCenters, unsigned char* labels, unsi
 	}
 }
 
-void Classifier::Classify()
+void Classifier::ClassifyCostMatrix()
 {
 	static unsigned char labels[MAX_SIZE];
 	unsigned char idx = GetLastFilled();
@@ -166,7 +246,7 @@ void Classifier::ResetClassificationData()
 	}
 }
 
-void Classifier::ComputeClassificationCost(unsigned char id, const HSV_Frame& inputFrame, unsigned int radius)
+void Classifier::ComputeClassificationCost(unsigned char id, Classifier::ThreadData* pThreadData, unsigned int radius)
 {	
 	// Make sure R is in the allowed range
 	unsigned int newR = radius > MIN_RADIUS ? MIN_RADIUS : 
@@ -181,14 +261,14 @@ void Classifier::ComputeClassificationCost(unsigned char id, const HSV_Frame& in
 	max.y = m_classificationData[id].center.y < MAX_FRAME_WIDTH - newR ? m_classificationData[id].center.y + newR : MAX_FRAME_WIDTH;
 
 	// Compute the KDE
-	ComputeBallKDE(inputFrame, min, max, m_classificationData[id].center, newR);
+	ComputeBallKDE(min, max, m_classificationData[id].center, newR, pThreadData);
 
 	// Compute the cost matrix
 	// Balls
 	for (unsigned char i=0; i<BALL_MAX; i++)
 	{
 		// Cost is 1-probability
-		m_costMatrix[id][i] = 1.0f + PROXIMITY_FACTOR - GetBallProbability(static_cast<BallId>(i));
+		m_costMatrix[id][i] = 1.0f + PROXIMITY_FACTOR - GetBallProbability(static_cast<BallId>(i), pThreadData);
 	}
 	// Not a ball
 	for (unsigned char i=BALL_MAX; i<MAX_SIZE; i++)
@@ -197,10 +277,10 @@ void Classifier::ComputeClassificationCost(unsigned char id, const HSV_Frame& in
 	}
 }
 
-float Classifier::GetBallProbability(BallId id)
+float Classifier::GetBallProbability(BallId id, Classifier::ThreadData* pThreadData)
 {
 	float out = 0.0f;
-	float step = m_histogram.GetWidth();
+	float step = pThreadData->histogram->GetWidth();
 	
 	switch(id)
 	{
@@ -209,7 +289,7 @@ float Classifier::GetBallProbability(BallId id)
 			for (int i=0; i<MAX_BINS; i++)
 			{
 				float compare = GetValuePd(id, i);
-				out += (m_valueKDE[i] < compare ? m_valueKDE[i] : compare)*step;
+				out += (pThreadData->valueKDE[i] < compare ? pThreadData->valueKDE[i] : compare)*step;
 			}
 			break;
 		}
@@ -222,7 +302,7 @@ float Classifier::GetBallProbability(BallId id)
 			for (int i=0; i<MAX_BINS; i++)
 			{
 				float compare = GetReddishHuePd(id, i);
-				out += (m_reddishKDE[i] < compare ? m_reddishKDE[i] : compare)*step;
+				out += (pThreadData->reddishKDE[i] < compare ? pThreadData->reddishKDE[i] : compare)*step;
 			}
 			break;
 		}
@@ -231,7 +311,7 @@ float Classifier::GetBallProbability(BallId id)
 			for (int i=0; i<MAX_BINS; i++)
 			{
 				float compare = GetNormalHuePd(id, i);
-				out += (m_normKDE[i] < compare ? m_normKDE[i] : compare)*step;
+				out += (pThreadData->normKDE[i] < compare ? pThreadData->normKDE[i] : compare)*step;
 			}
 			break;
 		}
@@ -240,46 +320,47 @@ float Classifier::GetBallProbability(BallId id)
 	return out;
 }
 
-void Classifier::ComputeBallKDE(const HSV_Frame& inputFrame, const Coordinates& min, const Coordinates& max, const Coordinates& center, int radius)
+void Classifier::ComputeBallKDE(const Coordinates& min, const Coordinates& max, const Coordinates& center, int radius, 
+								ThreadData* pThreadData)
 {
 	unsigned int r_sq = radius*radius;
 
 	// Value
-	m_histogram.Reset();
+	pThreadData->histogram->Reset();
 	for (unsigned int x=min.x; x<max.x; x++)
 	{
 		for (unsigned int y=min.y; y<max.y; y++)
 		{
 			if (((x-center.x)*(x-center.x) + (y-center.y)*(y-center.y) ) <= r_sq)
-				m_histogram.AddSample(inputFrame.pixel[x][y].chanel[VALUE]);
+				pThreadData->histogram->AddSample(m_inputFrame->pixel[x][y].chanel[VALUE]);
 		}
 	}
-	m_histogram.Output(m_valueKDE, false);
+	pThreadData->histogram->Output(pThreadData->valueKDE, false);
 	
 	// Normal hue
-	m_histogram.Reset();
+	pThreadData->histogram->Reset();
 	for (unsigned int x=min.x; x<max.x; x++)
 	{
 		for (unsigned int y=min.y; y<max.y; y++)
 		{
 			if (((x-center.x)*(x-center.x) + (y-center.y)*(y-center.y) ) <= r_sq)
-				m_histogram.AddSample(inputFrame.pixel[x][y].chanel[HUE]);
+				pThreadData->histogram->AddSample(m_inputFrame->pixel[x][y].chanel[HUE]);
 		}
 	}
-	m_histogram.Output(m_normKDE, false);
+	pThreadData->histogram->Output(pThreadData->normKDE, false);
 
 	// Reddish hue
-	m_reddishHistogram.Reset();
+	pThreadData->reddishHistogram->Reset();
 	for (unsigned int x=min.x; x<max.x; x++)
 	{
 		for (unsigned int y=min.y; y<max.y; y++)
 		{
 			if (((x-center.x)*(x-center.x) + (y-center.y)*(y-center.y) ) <= r_sq)
-				m_reddishHistogram.AddSample((inputFrame.pixel[x][y].chanel[HUE] > 0.5f) ? 
-					inputFrame.pixel[x][y].chanel[HUE] - 1.0f : inputFrame.pixel[x][y].chanel[HUE]);
+				pThreadData->reddishHistogram->AddSample((m_inputFrame->pixel[x][y].chanel[HUE] > 0.5f) ? 
+					m_inputFrame->pixel[x][y].chanel[HUE] - 1.0f : m_inputFrame->pixel[x][y].chanel[HUE]);
 		}
 	}
-	m_reddishHistogram.Output(m_reddishKDE, false);
+	pThreadData->reddishHistogram->Output(pThreadData->reddishKDE, false);
 }
 
 bool Classifier::ClassificationUnlikely(unsigned char idx)
