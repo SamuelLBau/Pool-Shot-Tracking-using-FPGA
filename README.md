@@ -54,12 +54,12 @@ To improve identification accuracy we converted the algorithm to HSV space and i
 
 A selection of ball images used and accuracy on the test set is reported below. If we take into account the images that contain no balls, our average accuracy is slightly less than 95%, however we expect this to be less of a problem with improvements made in ball detection. In general, our classifier performs worse on striped balls.
 
-<html> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </html> ![CLASSFY DEMO](./source/CompositeImage.png)  <html> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </html>  <img src="./source/DemoClassificationAccuracy.png" alt="CLASSFT DEMO" width="606.8" height="273" />
+<html> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </html> ![CLASSFY DEMO](./source/CompositeImage.png)  <html> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </html>  <img src="./source/FinalAccuracyResults.jpg" alt="CLASSFT DEMO" width="410" height="210" />
 
 <html><br></html>
 ####Dynamic Table Identification(April 30th)
 
-In the interest of easing physics calculations, as well as improving pool ball detection, the bounds of the table should be identified and transformed to fill the frame.. This goal involves detecting the pool table, then cropping and rotating it in order to take up the entire frame, which will standardize calculations later in the pipeline.
+In the interest of easing physics calculations, as well as improving pool ball detection, the bounds of the table should be identified and transformed to fill the frame. This goal involves detecting the pool table, then cropping and rotating it in order to take up the entire frame, which will standardize calculations later in the pipeline.
 
 <a href="https://www.youtube.com/watch?v=-fDlGlp3wvo"
 target="_blank"><img src="http://img.youtube.com/vi/-fDlGlp3wvo/0.jpg" 
@@ -84,4 +84,24 @@ The purpose of this milestone is to help player to learn better of the game siua
 
 <img src="./source/shot_suggestion.png" width="389.9" height="420">
 
+----------
 
+<html><br></html>
+##Project status (June 9th):
+
+[Final report](./source/CSE145Pool-aidfinalreport.pdf)
+
+Through working on this project we found that the following key steps are needed to upload a video processing structure onto an FPGA
+1. Write HLS code using C/C++, or use existing openCV HLS libraries
+2. Use Vivado HLS to generate an IP core, which can be imagined as a hardware block
+3. Use a separate program to connect your custom IP core to the processor
+4. Program the processor using more accessible C/C++ code, though in a way that integrates your block
+5. Upload everything onto the board and processor.
+
+Screenshots of our HLS and IP block design are shown below:
+<img src="./source/HLS_coding.JPG" width="600" height="300">
+<img src="./source/IP_block_design2.JPG" width="600" height="300">
+
+Unfortunately we found that this was much harder to complete than expected. While we were unable to load frames and actually accelerate object detection, we were able to output solid color bars form the FPGA HDMI port.
+
+![](./source/FPGA1.png) ![](./source/FPGA2.png)
